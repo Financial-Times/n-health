@@ -17,11 +17,11 @@ function allEqual(responses){
 
 class ResponseCompareCheck extends Check {
 
-	constructor(options){super(options);
-		let {interval, comparison, urls} = options;
-		this.interval = interval;
-		this.comparison = comparison;
-		this.urls = urls;
+	constructor(options){
+		super(options);
+		this.interval = options.interval;
+		this.comparison = options.comparison;
+		this.urls = options.urls;
 	}
 
 	get checkOutput(){

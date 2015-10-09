@@ -7,10 +7,9 @@ class AggregateCheck extends Check {
 
 	constructor(options, parent){
 		super(options);
-		var {watch, mode, interval} = options;
-		this.interval = interval;
-		this.watch = watch;
-		this.mode = mode;
+		this.interval = options.interval;
+		this.watch = options.watch;
+		this.mode = options.mode;
 		this.parent = parent;
 	}
 

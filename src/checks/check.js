@@ -3,19 +3,12 @@ const status = require('./status');
 
 class Check {
 
-	constructor({
-		name,
-		severity,
-		businessImpact,
-		technicalSummary,
-		panicGuide
-		}
-	){
-		this.name = name;
-		this.severity = severity;
-		this.businessImpact = businessImpact;
-		this.technicalSummary = technicalSummary;
-		this.panicGuide = panicGuide;
+	constructor(opts){
+		this.name = opts.name;
+		this.severity = opts.severity;
+		this.businessImpact = opts.businessImpact;
+		this.technicalSummary = opts.technicalSummary;
+		this.panicGuide = opts.panicGuide;
 		this.status = status.PENDING;
 		this.lastUpdated = null;
 	}

@@ -1,10 +1,4 @@
 'use strict';
-try{
-	require('babel/register');
-}catch(e){
-	// babel already loaded
-}
-
 const startup = require('./src/startup');
 const Check = require('./src/checks/check');
 const status = require('./src/checks/status');

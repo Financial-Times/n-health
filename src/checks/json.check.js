@@ -9,11 +9,10 @@ class JsonCheck extends Check{
 
 	constructor(options){
 		super(options);
-		var {callback, interval, url, checkResult} = options;
-		this.callback = callback;
-		this.interval = ms(interval);
-		this.url = url;
-		this.checkResultInternal = checkResult;
+		this.callback = options.callback;
+		this.interval = ms(options.interval);
+		this.url = options.url;
+		this.checkResultInternal = options.checkResult;
 	}
 
 	get checkOutput(){

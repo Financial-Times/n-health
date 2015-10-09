@@ -2,10 +2,10 @@
 
 class HealthChecks {
 
-	constructor({name, description, checks = []}, healthchecks = {}){
-		this.name = name;
-		this.description = description;
-		this.checks = checks.map(check => {
+	constructor(config, healthchecks){
+		this.name = config.name;
+		this.description = config.description;
+		this.checks = config.checks.map(check => {
 			if(!healthchecks[check.type]){
 				throw new Error(`Can not find check type ${check.type}`);
 			}

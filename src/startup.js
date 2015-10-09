@@ -27,12 +27,21 @@ function getConfigDir(){
 	throw new Error('Failed to find config directory checked ' + dirs.join(' & '));
 }
 
-function startup(configPath = null, additionalChecks = {}){
+function startup(configPath, additionalChecks){
+	if(arguments.length === 1 && typeof configPath !== "string"){
+		configPath = additionalChecks;
+		additionalChecks = null;
+	}
+
 	let checks = require('./checks/');
 	Object.assign(checks, additionalChecks);
 	let configDir = configPath || getConfigDir();
 	var healthCheckMap = new Map();
 	readConfigDir(configDir).forEach(function(configFile){
+		if(configFile.indexOf('.json') > -1){
+			return
+		}
+
 		var name = configFile.replace('.js', '');
 		var config = require(path.resolve(configDir, configFile));
 		var healthchecks = new HealthChecks(config, checks);

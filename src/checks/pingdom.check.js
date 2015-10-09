@@ -9,9 +9,8 @@ export default class PingdomCheck extends Check{
 
 	constructor(options){
 		super(options);
-		let {checkId, interval} = options;
-		this.checkId = checkId;
-		this.interval = ms(interval || '60s');
+		this.checkId = options.checkId;
+		this.interval = ms(options.interval || '60s');
 		this.url = `https://api.pingdom.com/api/2.0/checks/${this.checkId}`;
 		this.headers = {
 			'Authorization' : 'Basic ' + new Buffer(process.env.PINGDOM_USERNAME + ':' + process.env.PINGDOM_PASSWORD).toString('base64'),
