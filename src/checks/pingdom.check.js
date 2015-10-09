@@ -5,7 +5,7 @@ const ms = require('ms');
 const fetch = require('node-fetch');
 require('promise.prototype.finally');
 
-export default class PingdomCheck extends Check{
+class PingdomCheck extends Check{
 
 	constructor(options){
 		super(options);
@@ -54,3 +54,5 @@ export default class PingdomCheck extends Check{
 	}
 
 }
+
+module.exports = PingdomCheck;
