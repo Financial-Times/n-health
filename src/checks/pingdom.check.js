@@ -36,17 +36,18 @@ class PingdomCheck extends Check{
 		})
 			.then(function(response){
 				if(!response.ok){
-					throw new Error('Pingdom API returned ' + response.status);
+					throw new Error(`Pingdom API returned ${response.status}`);
 				}
 
 				return response.json();
 			})
 			.then(function(json) {
 				pingdomCheck.status = (json.check.status === 'up') ? status.PASSED : status.FAILED;
+				pingdomCheck.checkOutput = `Pingdom status: ${json.check.status}`;
 			})
 			.catch(function(err){
 				pingdomCheck.status = status.FAILED;
-				pingdomCheck.checkOutput = 'Failed to get status: ' + err.message;
+				pingdomCheck.checkOutput = `Failed to get status: ${err.message}`;
 			})
 			.finally(function(){
 				pingdomCheck.lastUpdated = new Date();
