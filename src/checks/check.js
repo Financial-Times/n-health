@@ -7,11 +7,14 @@ const ms = require('ms');
 class Check {
 
 	constructor(opts){
+		if (!(opts.name && opts.severity && opts.businessImpact && opts.panicGuide && opts.technicalSummary)) {
+			throw new Error('name, severity, businessImpact, panicGuide and technicalSummary are required for every healthcheck');
+		}
 		this.name = opts.name;
 		this.severity = opts.severity;
 		this.businessImpact = opts.businessImpact;
 		this.technicalSummary = opts.technicalSummary;
-		this.interval = ms(opts.interval || '1m');
+		this.interval = typeof opts.interval === 'string' ? ms(opts.interval) || opts.interval || 60000;
 		this.panicGuide = opts.panicGuide;
 		this.status = status.PENDING;
 		this.lastUpdated = null;

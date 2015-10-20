@@ -1,70 +1,57 @@
 # n-health
 
-Makes it easy to add healthchecks to an app.  Extracted from the next-health repo.
-
-## Types of Check
-
-### Pingdom
-Will poll the pingdom API to get the status of a specific check
-
-### Nightwatch
-Will get the results of an automated test from Saucelabs.
-
-### Response Compare
-Fetches from multiple urls and compares the responses.  Useful to check that replication is working
-
-### Json
-Calls a url, gets some json and runs a callback to check it's form
-
-### Aggregate
-Reports on the status of other checks.  Useful if you have a multi-region service and, if one check fails it is not as bad as if ALL the checks fail.
-
-### Beacon
-This check will most likely be removed as it goes straight to the Keen API.  If you want a healthcheck based on analytics, you'll need to rewrite this first!
-
+Makes it easy to add a variety of healthchecks to an app.
 
 ## Adding Health Checks
 To Add more health checks create a new file in the `config` directory.  It should be a .js file which exports an object.  The object must have the following properties:
 
-* **name:** A name for the healthcheck - is supposed to match to a name in the CMDB, ideally
-* **description:** Test description for the checks - for reference only
-* **checks:** Array of checks - see below for check config
+* name: A name for the healthcheck - is supposed to match to a name in the CMDB, ideally
+* description: Test description for the checks - for reference only
+* checks: Array of checks - see below for check config
 
+## Standard check options
 
-### Checks
+* name, severity, businessImpact, technicalSummary and panicGuide are all required. See the [specification](https://docs.google.com/document/edit?id=1ftlkDj1SUXvKvKJGvoMoF1GnSUInCNPnNGomqTpJaFk) for details
+* interval: time between checks in milliseconds or any string compatible with [ms](https://www.npmjs.com/package/ms) [default: 1minute]
+* type: The type of check (see below)
 
-#### Mandatory Fields
+## Healthcheck types and options
 
-Every check must contain the following fields.  Most of these are required by the [FT Health Check Spec](https://docs.google.com/document/d/18hefJjImF5IFp9WvPAm9Iq5_GmWzI9ahlKSzShpQl1s/edit)
+### pingdom
+Will poll the pingdom API to get the status of a specific check
 
-* **name:** This should be test describing the **successfull** state of the check
-* **severity:** A number either 1, 2 or 3 describing the importance of the feature being checked
-* **businessImpact:** The impact to the business/users if this service is down
-* **technicalSummary:** Text explaining exactly what your check is testing
-* **panicGuide:** A link to a panic guide (not currently implemented in any our checks, but any platinum service requires it)
-* **type** The type of check (see above for types)
+* checkId: The id of the check in pingdom
 
+### nightwatch
+Will get the results of an automated test from Saucelabs.
 
-#### Additional Fields
+* session: The session name in Saucelabs for the tests
 
-Each Check has a couple of extra configuration options:
+### responseCompare
+Fetches from multiple urls and compares the responses. Useful to check that replication is working
 
-Each check that polls some kind of service will have an interval property which uses [ms](https://www.npmjs.com/package/ms)
+* urls: An array of urls to call
+* comparison: Type of comparison to apply to the responses (Only "equal" so far
 
-##### Pingdom
-* **checkId:** The id of the check in pingdom
+### json
+Calls a url, gets some json and runs a callback to check it's form
 
-##### Nightwatch
-* **session**: The session name in Saucelabs for the tests
+* url: url to call and get the json
+* callback: A function to run on the response.  Accepts the parsed json as an argument and should return true or false
 
-##### Aggregate
-* **watch:** Array of names of checks to aggregate
-* **mode:** Aggregate mode.  I think "atLeastOne" is the only valid option so far
+### aggregate
+Reports on the status of other checks.  Useful if you have a multi-region service and, if one check fails it is not as bad as if ALL the checks fail.
 
-##### responseCompare
-* **urls:** An array of urls to call
-* **comparison:** Type of comparison to apply to the responses (Only "equal" so far
+* watch: Array of names of checks to aggregate
+* mode: Aggregate mode.  I think "atLeastOne" is the only valid option so far
 
-##### json
-* **url:** url to call and get the json
-* **callback:** A function to run on the response.  Accepts the parsed json as an argument and should return true or false
+### graphiteSpike
+Compares current and historical graphite metrics to see if there is a spike
+
+* numerator: [required] Name of main graphite metric to count (may contain wildcards)
+* divisor: [optional] Name of graphite metric to divide by (may contain wildcards)
+* samplePeriod: [default: '10min'] Length of time to count metrics for a sample of current behaviour
+* baselinePeriod: [default: '7d'] Length of time to count metrics for to establish baseline behaviour
+* direction: [default: 'up'] Direction in ehich to look for spikes; 'up' = sharp increase in activity, 'down' = sharp decrease in activity
+* threshold: [default: 3] Amount of difference between current and baseline activity which registers as a spike e.g. 5 means current activity must be 5 times greater/less than the baseline activity
+
