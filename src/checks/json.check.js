@@ -1,7 +1,6 @@
 'use strict';
 const status = require('./status');
 const Check = require('./check');
-const ms = require('ms');
 const fetch = require('node-fetch');
 require('promise.prototype.finally');
 
@@ -10,22 +9,12 @@ class JsonCheck extends Check{
 	constructor(options){
 		super(options);
 		this.callback = options.callback;
-		this.interval = ms(options.interval);
 		this.url = options.url;
 		this.checkResultInternal = options.checkResult;
 	}
 
 	get checkOutput(){
 		return this.checkResultInternal[this.status];
-	}
-
-	start(){
-		this.int = setInterval(this.tick.bind(this), this.interval);
-		this.tick();
-	}
-
-	stop(){
-		clearInterval(this.int);
 	}
 
 	tick(){

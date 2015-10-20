@@ -1,6 +1,6 @@
 'use strict';
 const status = require('./status');
-
+const ms = require('ms');
 class Check {
 
 	constructor(opts){
@@ -8,9 +8,19 @@ class Check {
 		this.severity = opts.severity;
 		this.businessImpact = opts.businessImpact;
 		this.technicalSummary = opts.technicalSummary;
+		this.interval = ms(opts.interval || '1m');
 		this.panicGuide = opts.panicGuide;
 		this.status = status.PENDING;
 		this.lastUpdated = null;
+	}
+
+	start(){
+		this.int = setInterval(this.tick.bind(this), this.interval);
+		this.tick();
+	}
+
+	stop(){
+		clearInterval(this.int);
 	}
 
 	getStatus(){

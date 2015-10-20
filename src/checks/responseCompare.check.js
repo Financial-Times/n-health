@@ -1,7 +1,6 @@
 'use strict';
 const status = require('./status');
 const Check = require('./check');
-const ms = require('ms');
 const fetch = require('node-fetch');
 require('promise.prototype.finally');
 
@@ -19,7 +18,6 @@ class ResponseCompareCheck extends Check {
 
 	constructor(options){
 		super(options);
-		this.interval = options.interval;
 		this.comparison = options.comparison;
 		this.urls = options.urls;
 	}
@@ -33,15 +31,6 @@ class ResponseCompareCheck extends Check {
 		if(this.comparison === ResponseCompareCheck.comparisons.EQUAL){
 			return `${urls} are ${this.status === status.PASSED ? '' : 'not'} equal`;
 		}
-	}
-
-	start(){
-		this.int = setInterval(this.tick.bind(this), ms(this.interval || '60s'));
-		this.tick();
-	}
-
-	stop(){
-		clearInterval(this.int);
 	}
 
 	tick(){
