@@ -1,7 +1,6 @@
 'use strict';
 const Check = require('./check');
 const status = require('./status');
-const fetch = require('node-fetch');
 require('promise.prototype.finally');
 
 class PingdomCheck extends Check{

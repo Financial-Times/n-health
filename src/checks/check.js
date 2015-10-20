@@ -1,4 +1,7 @@
 'use strict';
+
+require('isomorphic-fetch');
+
 const status = require('./status');
 const ms = require('ms');
 class Check {

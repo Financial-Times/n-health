@@ -1,7 +1,6 @@
 'use strict';
 const status = require('./status');
 const Check = require('./check');
-const fetch = require('node-fetch');
 require('promise.prototype.finally');
 
 class JsonCheck extends Check{
