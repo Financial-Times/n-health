@@ -47,6 +47,7 @@ class GraphiteSpikeCheck extends Check {
 	}
 
 	tick(){
+
 		return Promise.all([
 			fetch(this.sampleUrl)
 				.then(fetchres.json),
@@ -54,9 +55,11 @@ class GraphiteSpikeCheck extends Check {
 				.then(fetchres.json)
 		])
 			.then(jsons => {
+
 				return this.normalize({
-					sample: jsons[0][0].datapoints[0][0],
-					baseline: jsons[1][0].datapoints[0][0]
+					sample: jsons[0][0] ? jsons[0][0].datapoints[0][0] : 0,
+					// baseline should not be allowed to be smaller than one as it is use as a divisor
+					baseline: jsons[1][0] ? jsons[1][0].datapoints[0][0] : 1
 				});
 			})
 			.then(data => {
@@ -80,4 +83,3 @@ class GraphiteSpikeCheck extends Check {
 }
 
 module.exports = GraphiteSpikeCheck;
-
