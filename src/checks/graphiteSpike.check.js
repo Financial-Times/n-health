@@ -2,8 +2,7 @@
 const status = require('./status');
 const Check = require('./check');
 const fetchres = require('fetchres');
-
-require('promise.prototype.finally');
+const ms = require('ms');
 
 /** Detects spikes/troughs in a given metric compared to baseline historical data */
 
@@ -13,8 +12,18 @@ class GraphiteSpikeCheck extends Check {
 		super(options);
 		this.threshold = options.threshold || 3;
 		this.direction = options.direction || 'up';
-		this.sampleUrl = this.generateUrl(options.numerator, options.divisor, options.samplePeriod || '10min');
-		this.baselineUrl = this.generateUrl(options.numerator, options.divisor, options.baselinePeriod || '7d');
+
+		this.samplePeriod = options.samplePeriod || '10min';
+		this.baselinePeriod = options.baselinePeriod || '7d';
+		this.sampleUrl = this.generateUrl(options.numerator, options.divisor, this.samplePeriod);
+		this.baselineUrl = this.generateUrl(options.numerator, options.divisor, this.baselinePeriod);
+
+		// If there's no divisor specified we probably need to normalize sample and baseline to account for the difference in size between their time ranges
+		this.shouldNormalize = typeof options.normalize !== 'undefined' ? options.normalize : !options.divisor;
+		if (this.shouldNormalize) {
+			this.sampleMs = ms(this.samplePeriod);
+			this.baselineMs = ms(this.baselinePeriod);
+		}
 	}
 
 	generateUrl(numerator, divisor, period) {
@@ -26,28 +35,40 @@ class GraphiteSpikeCheck extends Check {
 		}
 	}
 
+	normalize (data) {
+		if (this.shouldNormalize) {
+			data.sample = data.sample * this.baselineMs/this.sampleMs;
+			data.baseline = data.baseline * this.sampleMs/this.baselineMs;
+		}
+
+		return data;
+	}
+
 	tick(){
-		Promise.all([
+		return Promise.all([
 			fetch(this.sampleUrl)
 				.then(fetchres.json),
 			fetch(this.baselineUrl)
 				.then(fetchres.json)
 		])
 			.then(jsons => {
+				return this.normalize({
+					sample: jsons[0][0].datapoints[0][0],
+					baseline: jsons[1][0].datapoints[0][0]
+				});
+			})
+			.then(data => {
 				let ok;
 				if (this.direction === 'up') {
-					ok = jsons[0][0].datapoints[0][0] / jsons[1][0].datapoints[0][0] < this.threshold;
+					ok = data.sample / data.baseline < this.threshold;
 				} else {
-					ok = jsons[0][0].datapoints[0][0] / jsons[1][0].datapoints[0][0] > 1 / this.threshold;
+					ok = data.sample / data.baseline > 1 / this.threshold;
 				}
 				this.status = ok ? status.PASSED : status.FAILED;
 			})
 			.catch(err => {
 				console.error('Failed to get JSON', err);
 				this.status = status.FAILED;
-			})
-			.finally(() => {
-				this.lastUpdated = new Date();
 			});
 	}
 

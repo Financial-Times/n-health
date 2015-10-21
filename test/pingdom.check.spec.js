@@ -14,7 +14,7 @@ describe('Pingdom Check', function(){
 
 	beforeEach(function(){
 		mitm = mitmFactory();
-		fixture = require('./fixtures/pingdomCheckFixture.js').checks[0];
+		fixture = require('./fixtures/config/pingdomCheckFixture.js').checks[0];
 		PingdomCheck = require('../src/checks/').pingdom;
 		pingdomCheck = new PingdomCheck(fixture);
 	});

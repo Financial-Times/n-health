@@ -33,22 +33,18 @@ class ResponseCompareCheck extends Check {
 	}
 
 	tick(){
-		let check = this;
-		Promise.all(this.urls.map(url => fetch(url)))
-			.then(function(responses){
+		return Promise.all(this.urls.map(url => fetch(url)))
+			.then(responses => {
 				return Promise.all(responses.map(r => r.text()));
 			})
-			.then(function(responses){
-				if(check.comparison === ResponseCompareCheck.comparisons.EQUAL){
-					check.status = allEqual(responses) ? status.PASSED : status.FAILED;
+			.then(responses => {
+				if(this.comparison === ResponseCompareCheck.comparisons.EQUAL){
+					this.status = allEqual(responses) ? status.PASSED : status.FAILED;
 				}
 			})
-			.catch(function(err){
+			.catch(err => {
 				console.error(err);
 				setTimeout(() => {throw err; }, 0);
-			})
-			.finally(function(){
-				check.lastUpdated = new Date();
 			});
 	}
 }

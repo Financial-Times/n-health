@@ -25,10 +25,14 @@ module.exports = {
 		},
 		{
 			type: "aggregate",
+			severity: 3,
 			name: "name",
 			watch : ["test1", "test2"],
 			mode : "atLeastOne",
-			interval : "1s"
+			interval : "1s",
+			"panicGuide" : "Don't Panic",
+			"technicalSummary" : "god knows",
+			"businessImpact" : "blah",
 		}
 	]
 };

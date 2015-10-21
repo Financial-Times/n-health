@@ -43,8 +43,7 @@ class AggregateCheck extends Check {
 		if(this.mode === AggregateCheck.modes.AT_LEAST_ONE){
 			this.status = results.length && results.some(r => r) ? status.PASSED : status.FAILED;
 		}
-
-		this.lastUpdated = new Date();
+		return Promise.resolve();
 	}
 }
 

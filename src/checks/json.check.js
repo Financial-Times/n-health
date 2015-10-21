@@ -18,7 +18,7 @@ class JsonCheck extends Check{
 
 	tick(){
 		let check = this;
-		fetch(this.url)
+		return fetch(this.url)
 			.then(function(response){
 				if(!response.ok){
 					throw new Error('BadResponse ' + response.status);
@@ -34,9 +34,6 @@ class JsonCheck extends Check{
 				console.error('Failed to get JSON', err);
 				check.status = status.FAILED;
 			})
-			.finally(function(){
-				check.lastUpdated = new Date();
-			});
 	}
 }
 

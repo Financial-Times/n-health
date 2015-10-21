@@ -1,28 +1,39 @@
 'use strict';
-
-require('isomorphic-fetch');
-
 const status = require('./status');
 const ms = require('ms');
+
 class Check {
 
 	constructor(opts){
-		if (!(opts.name && opts.severity && opts.businessImpact && opts.panicGuide && opts.technicalSummary)) {
-			throw new Error('name, severity, businessImpact, panicGuide and technicalSummary are required for every healthcheck');
-		}
+		'name,severity,businessImpact,panicGuide,technicalSummary'
+			.split(',')
+			.forEach(prop => {
+				if (!opts[prop]) {
+					throw new Error(`${prop} is required for every healthcheck`);
+				}
+			})
+
 		this.name = opts.name;
 		this.severity = opts.severity;
 		this.businessImpact = opts.businessImpact;
 		this.technicalSummary = opts.technicalSummary;
-		this.interval = typeof opts.interval === 'string' ? ms(opts.interval) || opts.interval || 60000;
+		this.interval = typeof opts.interval === 'string' ? ms(opts.interval) : (opts.interval || 60000);
 		this.panicGuide = opts.panicGuide;
 		this.status = status.PENDING;
 		this.lastUpdated = null;
 	}
 
 	start(){
-		this.int = setInterval(this.tick.bind(this), this.interval);
-		this.tick();
+		this.int = setInterval(this._tick.bind(this), this.interval);
+		this._tick();
+	}
+
+	_tick () {
+		this.tick()
+			.catch(() => {})
+			.then(() => {
+				this.lastUpdated = new Date();
+			});
 	}
 
 	stop(){

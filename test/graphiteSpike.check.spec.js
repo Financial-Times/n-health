@@ -1,19 +1,12 @@
 'use strict';
 
-require('isomorphic-fetch');
 const expect = require('chai').expect;
 const fetchMock = require('fetch-mock');
 const Check = require('../src/checks/').graphiteSpike;
+const fixture = require('./fixtures/config/graphiteSpikeFixture').checks[0];
 
 function getCheckConfig (conf) {
-	return Object.assign({
-		numerator: 'metric.200',
-		name: 'test',
-		severity: 2,
-		businessImpact: 'catastrophic',
-		technicalSummary: 'god knows',
-		panicGuide: 'Don\'t Panic',
-	}, conf || {});
+	return Object.assign({}, fixture, conf || {});
 }
 
 // Mocks a pair of calls to graphite for sample and baseline data
@@ -49,7 +42,9 @@ describe('Graphite Spike Check', function(){
 	it('Should be able to report a successful check of absolute values', function (done) {
 
 		mockGraphite([2, 1]);
-		check = new Check(getCheckConfig());
+		check = new Check(getCheckConfig({
+			normalize: false
+		}));
 		check.start();
 		setTimeout(() => {
 			expect(fetchMock.calls('graphite')[0][0]).to.contain('from=-10min&format=json&target=summarize(sumSeries(metric.200),"10min","sum",true)');
@@ -76,7 +71,9 @@ describe('Graphite Spike Check', function(){
 
 	it('Should be possible to detect spikes', function(done){
 		mockGraphite([4, 1]);
-		check = new Check(getCheckConfig());
+		check = new Check(getCheckConfig({
+			normalize: false
+		}));
 		check.start();
 		setTimeout(() => {
 			expect(check.getStatus().ok).to.be.false;
@@ -87,7 +84,8 @@ describe('Graphite Spike Check', function(){
 	it('Should be possible to detect negative non-spikes', function(done){
 		mockGraphite([1, 2]);
 		check = new Check(getCheckConfig({
-			direction: 'down'
+			direction: 'down',
+			normalize: false
 		}));
 		check.start();
 		setTimeout(() => {
@@ -99,7 +97,8 @@ describe('Graphite Spike Check', function(){
 	it('Should be possible to detect negative spikes', function(done){
 		mockGraphite([1, 4]);
 		check = new Check(getCheckConfig({
-			direction: 'down'
+			direction: 'down',
+			normalize: false
 		}));
 		check.start();
 		setTimeout(() => {
@@ -113,7 +112,8 @@ describe('Graphite Spike Check', function(){
 		check = new Check(getCheckConfig({
 			samplePeriod: '24h',
 			baselinePeriod: '2d',
-			divisor: 'metric.*'
+			divisor: 'metric.*',
+			normalize: false
 		}));
 		check.start();
 		setTimeout(() => {
@@ -123,10 +123,27 @@ describe('Graphite Spike Check', function(){
 		});
 	});
 
+
+	it('Should normalize by default when no divisor specified', function(done){
+		mockGraphite([1.5, 1]);
+		check = new Check(getCheckConfig({
+			samplePeriod: '1h',
+			baselinePeriod: '2h',
+			threshold: 2
+		}));
+		check.start();
+		setTimeout(() => {
+			// because the 1.5 should get converted to a 3 once normalized
+			expect(check.getStatus().ok).to.be.false;
+			done();
+		});
+	});
+
 	it('Should be possible to configure spike threshold', function(done){
 		mockGraphite([6, 1]);
 		check = new Check(getCheckConfig({
-			threshold: 5
+			threshold: 5,
+			normalize: false
 		}));
 		check.start();
 		setTimeout(() => {
@@ -139,7 +156,8 @@ describe('Graphite Spike Check', function(){
 		mockGraphite([1, 6]);
 		check = new Check(getCheckConfig({
 			direction: 'down',
-			threshold: 5
+			threshold: 5,
+			normalize: false
 		}));
 		check.start();
 		setTimeout(() => {

@@ -19,7 +19,7 @@ class PingdomCheck extends Check{
 	tick(){
 		let pingdomCheck = this;
 
-		fetch(this.url, {
+		return fetch(this.url, {
 			headers : this.headers
 		})
 			.then(function(response){
@@ -36,9 +36,6 @@ class PingdomCheck extends Check{
 				pingdomCheck.status = status.FAILED;
 				pingdomCheck.checkOutput = 'Failed to get status: ' + err.message;
 			})
-			.finally(function(){
-				pingdomCheck.lastUpdated = new Date();
-			});
 	}
 
 }

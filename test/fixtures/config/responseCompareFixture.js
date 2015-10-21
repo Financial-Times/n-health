@@ -10,6 +10,7 @@ module.exports = {
 				'http://url2.com'
 			],
 			comparison : 'equal',
+			"name": "response check",
 			"severity": 2,
 			"businessImpact" : "blah",
 			"technicalSummary" : "god knows",

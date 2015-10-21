@@ -5,6 +5,6 @@ verify:
 	nbt verify --skip-layout-checks | grep -v Warning
 
 unit-test:
-	mocha
+	mocha test/all.spec.js
 
 test: unit-test verify

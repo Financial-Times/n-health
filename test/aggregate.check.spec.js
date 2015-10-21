@@ -27,7 +27,7 @@ describe('Aggregate Check', function(){
 	};
 
 	before(function(){
-		var config = require('./fixtures/aggregate').checks[2];
+		var config = require('./fixtures/config/aggregate').checks[2];
 		AggregateCheck = require('../src/checks/').aggregate;
 		check = new AggregateCheck(config, MockHealthChecks);
 	});
@@ -41,7 +41,7 @@ describe('Aggregate Check', function(){
 			setTimeout(function(){
 				expect(check.getStatus().ok).to.be.true;
 				done();
-			}, 1500);
+			});
 		});
 
 		it('Should be false if none of the checks if passing', function(done){
@@ -51,7 +51,7 @@ describe('Aggregate Check', function(){
 			setTimeout(function(){
 				expect(check.getStatus().ok).to.be.false;
 				done();
-			}, 1000);
+			});
 		});
 	})
 });

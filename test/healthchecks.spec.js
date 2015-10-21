@@ -11,7 +11,7 @@ describe('Healthchecks', function(){
 
 	before(function(){
 		Healthchecks = require('../src/healthchecks');
-		fixture = require('./fixtures/paywall.js');
+		fixture = require('./fixtures/config/paywall.js');
 		healthchecks = new Healthchecks(fixture, require('../src/checks/'));
 	});
 
