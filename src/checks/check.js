@@ -41,7 +41,7 @@ class Check {
 	}
 
 	getStatus(){
-		var output = {
+		const output = {
 			name: this.name,
 			ok: this.status === status.PASSED,
 			severity: this.severity,

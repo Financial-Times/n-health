@@ -1,7 +1,6 @@
 'use strict';
 const Check = require('./check');
 const status = require('./status');
-require('promise.prototype.finally');
 
 class PingdomCheck extends Check{
 
@@ -28,7 +27,7 @@ class PingdomCheck extends Check{
 
 				return response.json();
 			})
-			.then(json =>  {
+			.then(json => {
 				if (json.check.status === 'up') {
 					this.status = status.PASSED;
 					this.checkOutput = `Pingdom check ${this.checkId} ok`;

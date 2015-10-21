@@ -1,10 +1,9 @@
 'use strict';
 const status = require('./status');
 const Check = require('./check');
-require('promise.prototype.finally');
 
 function allEqual(responses){
-	for(var i = 1, l = responses.length; i < l; i++){
+	for(let i = 1, l = responses.length; i < l; i++){
 		if(responses[i] !== responses[0]){
 			return false;
 		}
@@ -26,7 +25,7 @@ class ResponseCompareCheck extends Check {
 			return 'this test has not yet run';
 		}
 
-		var urls = this.urls.join(' & ');
+		const urls = this.urls.join(' & ');
 		if(this.comparison === ResponseCompareCheck.comparisons.EQUAL){
 			return `${urls} are ${this.status === status.PASSED ? '' : 'not'} equal`;
 		}

@@ -1,15 +1,14 @@
 'use strict';
-require('babel/register');
-var expect = require('chai').expect;
-var mitmFactory = require('mitm');
 
+const expect = require('chai').expect;
+const mitmFactory = require('mitm');
 
 describe('Pingdom Check', function(){
 
-	var PingdomCheck;
-	var fixture;
-	var pingdomCheck;
-	var mitm;
+	let PingdomCheck;
+	let fixture;
+	let pingdomCheck;
+	let mitm;
 
 
 	beforeEach(function(){

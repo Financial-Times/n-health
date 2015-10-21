@@ -30,12 +30,10 @@
     "isomorphic-fetch": "^2.1.1",
     "mitm": "^1.2.0",
     "mocha": "^2.3.3",
-    "mockery": "^1.4.0",
-    "next-build-tools": "^4.3.2",
+    "next-build-tools": "^5.0.0",
     "sinon": "^1.17.1"
   },
   "dependencies": {
-    "babel": "^5.8.23",
     "ms": "^0.7.1"
   }
 }

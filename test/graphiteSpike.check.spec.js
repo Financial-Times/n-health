@@ -17,7 +17,7 @@ function mockGraphite (results) {
 			{
 				name: 'graphite',
 				matcher: '^https://www.hostedgraphite.com/bbaf3ccf/',
-				response: (url) => {
+				response: () => {
 					return [
 						{datapoints: [[results.shift()]]}
 					];
@@ -30,9 +30,6 @@ function mockGraphite (results) {
 describe('Graphite Spike Check', function(){
 
 	let check;
-
-	beforeEach(function() {
-	});
 
 	afterEach(function(){
 		check.stop();

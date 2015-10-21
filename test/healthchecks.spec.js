@@ -1,13 +1,13 @@
 'use strict';
 
-var expect = require('chai').expect;
-var PingdomCheck = require('../src/checks/').pingdom;
+const expect = require('chai').expect;
+const PingdomCheck = require('../src/checks/').pingdom;
 
 describe('Healthchecks', function(){
 
-	var Healthchecks;
-	var fixture;
-	var healthchecks;
+	let Healthchecks;
+	let fixture;
+	let healthchecks;
 
 	before(function(){
 		Healthchecks = require('../src/healthchecks');
@@ -16,7 +16,7 @@ describe('Healthchecks', function(){
 	});
 
 	function extract(obj, props){
-		var extracted = {};
+		const extracted = {};
 		props.forEach(function(prop){
 			extracted[prop] = obj[prop];
 		});
@@ -25,7 +25,7 @@ describe('Healthchecks', function(){
 	}
 
 	it('Should be able to read in the config object', function(){
-		var props = ['name', 'description'];
+		const props = ['name', 'description'];
 		expect(extract(healthchecks, props)).to.deep.equal(extract(fixture, props));
 	});
 
@@ -34,7 +34,7 @@ describe('Healthchecks', function(){
 	});
 
 	it("Should report it's status correctly", function(){
-		var status = healthchecks.getStatus();
+		const status = healthchecks.getStatus();
 		expect(status.name).to.equal(fixture.name);
 		expect(status.description).to.equal(fixture.description);
 		expect(status.checks.length).to.equal(1);
