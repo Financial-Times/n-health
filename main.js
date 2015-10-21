@@ -35,5 +35,5 @@ module.exports.getCheck = conf => {
 module.exports.runCheck = conf => {
 	const check = new checks[conf.type](conf);
 	check.start();
-	return check();
+	return check;
 };
