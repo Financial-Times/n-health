@@ -2,6 +2,7 @@
 const startup = require('./src/startup');
 const Check = require('./src/checks/check');
 const status = require('./src/checks/status');
+const checks = require('./src/checks')
 
 function categoryInCheckName(healthCheck, check){
 	check.name = healthCheck.name + ': ' + check.name;
@@ -26,3 +27,13 @@ module.exports = function(config, additionalChecks){
 
 module.exports.Check = Check;
 module.exports.status = status;
+
+module.exports.getCheck = conf => {
+	return new checks[conf.ype](conf);
+};
+
+module.exports.runCheck = conf => {
+	const check = new checks[conf.type](conf);
+	check.start();
+	return check();
+};
