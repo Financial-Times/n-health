@@ -1,78 +1,70 @@
 'use strict';
-require('babel/register');
-var expect = require('chai').expect;
-var mitmFactory = require('mitm');
 
+const expect = require('chai').expect;
+const fixture = require('./fixtures/config/pingdomCheckFixture.js').checks[0];
+const PingdomCheck = require('../src/checks/').pingdom;
+const fetchMock = require('fetch-mock');
 
 describe('Pingdom Check', function(){
 
-	var PingdomCheck;
-	var fixture;
-	var pingdomCheck;
-	var mitm;
+	let check;
+
+	function setup(body){
+		fetchMock.mock({
+			routes: [
+				{
+					name: 'pingdom',
+					matcher: 'https://api.pingdom.com/api/2.0/checks/' + fixture.checkId,
+					response: body || 500
+				}
+			]
+		});
+		check = new PingdomCheck(fixture);
+	}
 
 
-	beforeEach(function(){
-		mitm = mitmFactory();
-		fixture = require('./fixtures/pingdomCheckFixture.js').checks[0];
-		PingdomCheck = require('../src/checks/').pingdom;
-		pingdomCheck = new PingdomCheck(fixture);
-	});
-
-	after(function(){
-		mitm.disable();
+	afterEach(function (){
+		fetchMock.restore();
 	});
 
 	it('Should be able to contact pingdom to get the status of a given check', function(done){
-		mitm.once('request', function(req){
-			expect(req.url).to.equal('/api/2.0/checks/' + fixture.checkId);
-			expect(req.headers['app-key']).to.exist;
-			expect(req.headers['account-email']).to.exist;
-			expect(req.headers.host).to.equal('api.pingdom.com');
+		setup({});
+		check.start();
+		setTimeout(() => {
+			expect(fetchMock.calls('pingdom').length).to.equal(1);
+			expect(fetchMock.calls('pingdom')[0][1].headers['App-Key']).to.exist;
+			expect(fetchMock.calls('pingdom')[0][1].headers['Account-Email']).to.exist;
 			done();
 		});
-
-		pingdomCheck.start();
 	});
 
 	it('Should be ok if the pingdom status is "up', function(done){
-		mitm.once('request', function(req, res){
-			res.statusCode = 200;
-			res.end(JSON.stringify(require('./fixtures/pingdomUpResponse.json')), 'utf8');
-			setTimeout(function(){
-				expect(pingdomCheck.getStatus().ok).to.be.true;
-				done();
-			},5);
+		setup(require('./fixtures/pingdomUpResponse.json'));
+		check.start();
+		setTimeout(function(){
+			expect(check.getStatus().ok).to.be.true;
+			done();
 		});
-
-		pingdomCheck.start();
 	});
 
 	it('Should not be ok if the pingdom status is not "up', function(done){
-		mitm.once('request', function(req, res){
-			res.statusCode = 200;
-			res.end(JSON.stringify(require('./fixtures/pingdomDownResponse.json')), 'utf8');
-			setTimeout(function(){
-				expect(pingdomCheck.getStatus().ok).to.be.false;
-				done();
-			},5);
+		setup(require('./fixtures/pingdomDownResponse.json'));
+		check.start();
+		setTimeout(function(){
+			expect(check.getStatus().ok).to.be.false;
+			done();
 		});
-
-		pingdomCheck.start();
 	});
 
 	it('Should not be ok if the status check failed', function(done){
-		mitm.once('request', function(req, res){
-			res.statusCode = 500;
-			res.end();
-			setTimeout(function(){
-				expect(pingdomCheck.getStatus().ok).to.be.false;
-				done();
-			},5);
+		setup();
+		check.start();
+		setTimeout(function(){
+			expect(check.getStatus().ok).to.be.false;
+			done();
 		});
-
-		pingdomCheck.start();
 	});
+
 });
 
 

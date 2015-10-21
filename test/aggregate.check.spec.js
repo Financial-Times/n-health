@@ -1,34 +1,34 @@
 'use strict';
-require('babel/register');
-var expect = require('chai').expect;
 
+const expect = require('chai').expect;
+const config = require('./fixtures/config/aggregate').checks[2];
+const AggregateCheck = require('../src/checks/').aggregate;
 
-describe('Aggregate Check', function(){
-
-	var AggregateCheck;
-	var check;
-
-	var MockCheck = function(name){
+class MockCheck {
+	constructor (name) {
 		this.name = name;
 		this.ok = true;
-	};
+	}
 
-	MockCheck.prototype.getStatus = function(){
+	getStatus () {
 		return {
 			ok : this.ok
 		}
-	};
+	}
+}
 
-	var MockHealthChecks = {
-		checks : [
-			new MockCheck('test1'),
-			new MockCheck('test2')
-		]
-	};
+const MockHealthChecks = {
+	checks : [
+		new MockCheck('test1'),
+		new MockCheck('test2')
+	]
+};
 
-	before(function(){
-		var config = require('./fixtures/aggregate').checks[2];
-		AggregateCheck = require('../src/checks/').aggregate;
+describe('Aggregate Check', function(){
+
+	let check;
+
+	beforeEach(function(){
 		check = new AggregateCheck(config, MockHealthChecks);
 	});
 
@@ -41,7 +41,7 @@ describe('Aggregate Check', function(){
 			setTimeout(function(){
 				expect(check.getStatus().ok).to.be.true;
 				done();
-			}, 1500);
+			});
 		});
 
 		it('Should be false if none of the checks if passing', function(done){
@@ -51,7 +51,7 @@ describe('Aggregate Check', function(){
 			setTimeout(function(){
 				expect(check.getStatus().ok).to.be.false;
 				done();
-			}, 1000);
+			});
 		});
 	})
 });

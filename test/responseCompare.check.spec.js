@@ -1,52 +1,51 @@
 'use strict';
-require('babel/register');
-var expect = require('chai').expect;
-var mockery = require('mockery');
-var sinon = require('sinon');
+
+const expect = require('chai').expect;
+const fetchMock = require('fetch-mock');
+const ResponseCompareCheck = require('../src/checks').responseCompare;
+const config = require('./fixtures/config/responseCompareFixture').checks[0];
 
 describe('Response Compare Check', function(){
 
-	var ResponseCompareCheck;
-	var check;
+	function setup (bodies) {
 
-	var response1 = 'blah';
-	var response2 = 'blah';
+		fetchMock.mock({
+			routes: [
+				{
+					name: 'compare',
+					matcher: '^http://url',
+					response: () => bodies.pop()
+				}
+			]
+		});
 
-	function MockResponse(body){
-		this.body = body;
+		return new ResponseCompareCheck(config);
 	}
 
-	MockResponse.prototype.text = function(){
-		return Promise.resolve(this.body);
-	};
-
-	var fetchMock = sinon.stub();
-	fetchMock.onCall(0).returns(new MockResponse(response1));
-	fetchMock.onCall(1).returns(new MockResponse(response2));
-	fetchMock.onCall(2).returns(new MockResponse(response1));
-	fetchMock.onCall(3).returns(new MockResponse(response2));
-
-
-	before(function(){
-		mockery.registerMock('node-fetch', fetchMock);
-		mockery.enable({warnOnUnregistered:false, useCleanCache:true});
-		var config = require('./fixtures/responseCompareFixture').checks[0];
-		ResponseCompareCheck = require('../src/checks').responseCompare;
-		check = new ResponseCompareCheck(config);
-	});
-
-	after(function(){
-		mockery.disable();
+	afterEach(function(){
+		fetchMock.restore();
 	});
 
 	describe('equal', function(){
 
 		it('Will pass if the 2 responses are the same', function(done){
+			const check = setup(['hip', 'hip']);
 			check.start();
 			setTimeout(function(){
+				expect(fetchMock.called('compare')).to.be.true;
 				expect(check.getStatus().ok).to.be.true;
 				done();
-			}, 1500);
+			});
+		});
+
+		it('Will fail if the 2 responses are different', function(done){
+			const check = setup(['hur', 'rah']);
+			check.start();
+			setTimeout(function(){
+				expect(fetchMock.called('compare')).to.be.true;
+				expect(check.getStatus().ok).to.be.false;
+				done();
+			});
 		});
 	})
 

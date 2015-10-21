@@ -1,13 +1,12 @@
 'use strict';
+
 const status = require('./status');
 const Check = require('./check');
-const ms = require('ms');
 
 class AggregateCheck extends Check {
 
 	constructor(options, parent){
 		super(options);
-		this.interval = options.interval;
 		this.watch = options.watch;
 		this.mode = options.mode;
 		this.parent = parent;
@@ -36,11 +35,8 @@ class AggregateCheck extends Check {
 	start(){
 		let watchRegex = new RegExp(`(${this.watch.join('|')})`, 'i');
 		this.obserables = this.parent.checks.filter(check => watchRegex.test(check.name));
-		this.int = setInterval(this.tick.bind(this), ms(this.interval || '60s'));
-	}
-
-	stop(){
-		clearInterval(this.int);
+		this.int = setInterval(this.tick.bind(this), this.interval);
+		this.tick();
 	}
 
 	tick(){
@@ -48,8 +44,7 @@ class AggregateCheck extends Check {
 		if(this.mode === AggregateCheck.modes.AT_LEAST_ONE){
 			this.status = results.length && results.some(r => r) ? status.PASSED : status.FAILED;
 		}
-
-		this.lastUpdated = new Date();
+		return Promise.resolve();
 	}
 }
 
