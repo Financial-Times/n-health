@@ -50,8 +50,9 @@ Compares current and historical graphite metrics to see if there is a spike
 
 * numerator: [required] Name of main graphite metric to count (may contain wildcards)
 * divisor: [optional] Name of graphite metric to divide by (may contain wildcards)
+* normalize: [optional] Boolean indicating whether to normalize to adjust for difference in size between sample and baseline timescales. Default is `true` if no divisor specified, `false` otherwise.
 * samplePeriod: [default: '10min'] Length of time to count metrics for a sample of current behaviour
 * baselinePeriod: [default: '7d'] Length of time to count metrics for to establish baseline behaviour
-* direction: [default: 'up'] Direction in ehich to look for spikes; 'up' = sharp increase in activity, 'down' = sharp decrease in activity
+* direction: [default: 'up'] Direction in which to look for spikes; 'up' = sharp increase in activity, 'down' = sharp decrease in activity
 * threshold: [default: 3] Amount of difference between current and baseline activity which registers as a spike e.g. 5 means current activity must be 5 times greater/less than the baseline activity
 

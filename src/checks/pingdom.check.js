@@ -28,13 +28,13 @@ class PingdomCheck extends Check{
 				return response.json();
 			})
 
-			.then(function(json) {
-				pingdomCheck.status = (json.check.status === 'up') ? status.PASSED : status.FAILED;
-				pingdomCheck.checkOutput = `Pingdom status: ${json.check.status}`;
+			.then(json => {
+				this.status = (json.check.status === 'up') ? status.PASSED : status.FAILED;
+				this.checkOutput = `Pingdom status: ${json.check.status}`;
 			})
-			.catch(function(err){
-				pingdomCheck.status = status.FAILED;
-				pingdomCheck.checkOutput = `Failed to get status: ${err.message}`;
+			.catch(err => {
+				this.status = status.FAILED;
+				this.checkOutput = `Failed to get status: ${err.message}`;
 			})
 	}
 
