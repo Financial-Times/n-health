@@ -14,27 +14,32 @@ class PingdomCheck extends Check{
 			'App-Key' : 'ldbchjvwdc65gbj8grn1xuemlxrq487i',
 			'Account-Email' : 'ftpingdom@ft.com'
 		};
+		this.checkOutput = `Pingdom check ${this.checkId} has not yet run`;
 	}
 
 	tick(){
-		let pingdomCheck = this;
-
 		return fetch(this.url, {
 			headers : this.headers
 		})
-			.then(function(response){
+			.then(response => {
 				if(!response.ok){
 					throw new Error('Pingdom API returned ' + response.status);
 				}
 
 				return response.json();
 			})
-			.then(function(json) {
-				pingdomCheck.status = (json.check.status === 'up') ? status.PASSED : status.FAILED;
+			.then(json =>  {
+				if (json.check.status === 'up') {
+					this.status = status.PASSED;
+					this.checkOutput = `Pingdom check ${this.checkId} ok`;
+				} else {
+					this.status = status.FAILED;
+					this.checkOutput = `Pingdom check ${this.checkId} not ok`;
+				}
 			})
-			.catch(function(err){
-				pingdomCheck.status = status.FAILED;
-				pingdomCheck.checkOutput = 'Failed to get status: ' + err.message;
+			.catch(err => {
+				this.status = status.FAILED;
+				this.checkOutput = `Failed to get status for pingdom check ${this.checkId}: ${err.message}`;
 			})
 	}
 

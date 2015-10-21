@@ -24,6 +24,7 @@ class GraphiteSpikeCheck extends Check {
 			this.sampleMs = ms(this.samplePeriod);
 			this.baselineMs = ms(this.baselinePeriod);
 		}
+		this.checkOutput = 'Graphite spike check has not yet run';
 	}
 
 	generateUrl(numerator, divisor, period) {
@@ -65,10 +66,13 @@ class GraphiteSpikeCheck extends Check {
 					ok = data.sample / data.baseline > 1 / this.threshold;
 				}
 				this.status = ok ? status.PASSED : status.FAILED;
+
+				this.checkOutput = ok ? 'No spike detected in graphite data' : 'Spike detected in graphite data';
 			})
 			.catch(err => {
 				console.error('Failed to get JSON', err);
 				this.status = status.FAILED;
+				this.checkOutput = 'Graphite spike check failed to fetch data: ' + err.message;
 			});
 	}
 

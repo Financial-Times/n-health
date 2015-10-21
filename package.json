@@ -36,7 +36,6 @@
   },
   "dependencies": {
     "babel": "^5.8.23",
-    "ms": "^0.7.1",
-    "promise.prototype.finally": "^1.0.1"
+    "ms": "^0.7.1"
   }
 }
