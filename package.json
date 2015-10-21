@@ -26,14 +26,13 @@
     "chai": "^3.3.0",
     "dotenv": "^1.2.0",
     "fetch-mock": "^2.1.0",
-    "fetchres": "^1.5.1",
     "isomorphic-fetch": "^2.1.1",
-    "mitm": "^1.2.0",
     "mocha": "^2.3.3",
     "next-build-tools": "^5.0.0",
     "sinon": "^1.17.1"
   },
   "dependencies": {
-    "ms": "^0.7.1"
+    "ms": "^0.7.1",
+    "fetchres": "^1.5.1"
   }
 }
