@@ -22,23 +22,19 @@ class PingdomCheck extends Check{
 		})
 			.then(response => {
 				if(!response.ok){
-					throw new Error('Pingdom API returned ' + response.status);
+					throw new Error(`Pingdom API returned ${response.status}`);
 				}
 
 				return response.json();
 			})
-			.then(json => {
-				if (json.check.status === 'up') {
-					this.status = status.PASSED;
-					this.checkOutput = `Pingdom check ${this.checkId} ok`;
-				} else {
-					this.status = status.FAILED;
-					this.checkOutput = `Pingdom check ${this.checkId} not ok`;
-				}
+
+			.then(function(json) {
+				pingdomCheck.status = (json.check.status === 'up') ? status.PASSED : status.FAILED;
+				pingdomCheck.checkOutput = `Pingdom status: ${json.check.status}`;
 			})
-			.catch(err => {
-				this.status = status.FAILED;
-				this.checkOutput = `Failed to get status for pingdom check ${this.checkId}: ${err.message}`;
+			.catch(function(err){
+				pingdomCheck.status = status.FAILED;
+				pingdomCheck.checkOutput = `Failed to get status: ${err.message}`;
 			})
 	}
 
