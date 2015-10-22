@@ -39,8 +39,8 @@ class GraphiteSpikeCheck extends Check {
 
 	normalize (data) {
 		if (this.shouldNormalize) {
-			data.sample = data.sample * this.baselineMs/this.sampleMs;
-			data.baseline = data.baseline * this.sampleMs/this.baselineMs;
+			data.sample = data.sample / this.sampleMs;
+			data.baseline = data.baseline / this.baselineMs;
 		}
 
 		return data;
