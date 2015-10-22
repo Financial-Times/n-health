@@ -122,7 +122,7 @@ describe('Graphite Spike Check', function(){
 
 
 	it('Should normalize by default when no divisor specified', function(done){
-		mockGraphite([1.5, 1]);
+		mockGraphite([0.75, 0.5]);
 		check = new Check(getCheckConfig({
 			samplePeriod: '1h',
 			baselinePeriod: '2h',
@@ -130,7 +130,7 @@ describe('Graphite Spike Check', function(){
 		}));
 		check.start();
 		setTimeout(() => {
-			// because the 1.5 should get converted to a 3 once normalized
+			// because the 0.75 should get converted to a 3 once normalized
 			expect(check.getStatus().ok).to.be.false;
 			done();
 		});
