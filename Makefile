@@ -5,6 +5,6 @@ verify:
 	nbt verify --skip-layout-checks | grep -v Warning
 
 unit-test:
-	mocha test/all.spec.js
+	export HOSTEDGRAPHITE_READ_APIKEY=test-graph-key; mocha test/all.spec.js
 
 test: unit-test verify
