@@ -16,6 +16,16 @@ class GraphiteSpikeCheck extends Check {
 
 		this.samplePeriod = options.samplePeriod || '10min';
 		this.baselinePeriod = options.baselinePeriod || '7d';
+
+		if (options.graphiteBaseUrl) {
+			this.graphiteBaseUrl = options.graphiteBaseUrl;
+		} else {
+			this.graphiteServiceId = options.graphiteServiceId || 'bbaf3ccf';
+			this.graphiteKey = options.graphiteKey || process.env.HOSTEDGRAPHITE_READ_APIKEY;
+			this.graphiteSalt = options.graphiteSalt || '1445340974.799'
+			this.graphiteBaseUrl = `https://www.hostedgraphite.com/${this.graphiteServiceId}/${this.graphiteKey}/graphite/render/?_salt=${this.graphiteSalt}&`;
+		}
+
 		this.sampleUrl = this.generateUrl(options.numerator, options.divisor, this.samplePeriod);
 		this.baselineUrl = this.generateUrl(options.numerator, options.divisor, this.baselinePeriod);
 
@@ -29,7 +39,7 @@ class GraphiteSpikeCheck extends Check {
 	}
 
 	generateUrl(numerator, divisor, period) {
-		const urlBase = `https://www.hostedgraphite.com/bbaf3ccf/${process.env.HOSTEDGRAPHITE_READ_APIKEY}/graphite/render/?_salt=1445340974.799&from=-${period}&format=json&target=`;
+		const urlBase = this.graphiteBaseUrl + `from=-${period}&format=json&target=`;
 		if (divisor) {
 			return urlBase + `divideSeries(summarize(sumSeries(${numerator}),"${period}","sum",true),summarize(sumSeries(${divisor}),"${period}","sum",true))`;
 		} else {

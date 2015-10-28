@@ -16,7 +16,7 @@ function mockGraphite (results) {
 		routes: [
 			{
 				name: 'graphite',
-				matcher: '^https://www.hostedgraphite.com/bbaf3ccf/',
+				matcher: '^https://www.hostedgraphite.com/',
 				response: () => {
 					return [
 						{datapoints: [[results.shift()]]}
@@ -35,6 +35,64 @@ describe('Graphite Spike Check', function(){
 		check.stop();
 		fetchMock.restore();
 	});
+
+
+	describe('service config', function () {
+			it('Should default to the next hosted graphite', function (done) {
+
+				mockGraphite([2, 1]);
+				check = new Check(getCheckConfig({
+					normalize: false
+				}));
+				check.start();
+				setTimeout(() => {
+					expect(fetchMock.calls('graphite')[0][0]).to.contain('https://www.hostedgraphite.com/bbaf3ccf/test-graph-key/graphite/render/?_salt=1445340974.799&');
+					done();
+				});
+			});
+
+			it('Should be possible to point to a different hosted graphite instance', function (done) {
+
+				mockGraphite([2, 1]);
+				check = new Check(getCheckConfig({
+					normalize: false,
+					graphiteServiceId: 12345,
+					graphiteKey: 'keykeykey',
+					graphiteSalt: 'saltysalt'
+				}));
+				check.start();
+				setTimeout(() => {
+					expect(fetchMock.calls('graphite')[0][0]).to.contain('https://www.hostedgraphite.com/12345/keykeykey/graphite/render/?_salt=saltysalt&');
+					done();
+				});
+			});
+
+			it('Should be possible to post to graphite hosted on an arbitrary domain', function (done) {
+
+				fetchMock.mock({
+					routes: [
+						{
+							name: 'graphite',
+							matcher: '^https://graphite.effitty.com/',
+							response: () => {
+								return [
+									{datapoints: [[1]]}
+								];
+							}
+						}
+					]
+				});
+				check = new Check(getCheckConfig({
+					normalize: false,
+					graphiteBaseUrl: 'https://graphite.effitty.com/?bloop&blip'
+				}));
+				check.start();
+				setTimeout(() => {
+					expect(fetchMock.calls('graphite')[0][0]).to.contain('https://graphite.effitty.com/?bloop&blip');
+					done();
+				});
+			});
+	})
 
 	it('Should be able to report a successful check of absolute values', function (done) {
 
