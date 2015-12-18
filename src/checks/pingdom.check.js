@@ -21,13 +21,16 @@ class PingdomCheck extends Check{
 			headers : this.headers
 		})
 			.then(response => {
-				if(!response.ok){
-					throw new Error(`Pingdom API returned ${response.status}`);
+					this.rawResponse = response;
+					return response.json();
+			})
+			.then(response => {
+				if(!this.rawResponse.ok){
+					throw new Error(`Pingdom API returned ${response.error.statuscode}: ${response.error.errormessage}`);
 				}
 
-				return response.json();
+				return response;
 			})
-
 			.then(json => {
 				this.status = (json.check.status === 'up') ? status.PASSED : status.FAILED;
 				this.checkOutput = `Pingdom status: ${json.check.status}`;

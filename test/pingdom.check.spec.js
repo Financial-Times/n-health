@@ -65,6 +65,16 @@ describe('Pingdom Check', function(){
 		});
 	});
 
+	it('should return error message if pingdom returns a 403 status', function(done) {
+		setup({
+				status: 403,
+				body: require('./fixtures/pingdom403Response.json')
+		});
+		check.start();
+		setTimeout(function(){
+			expect(check.getStatus().checkOutput).to.eql('Failed to get status: Pingdom API returned 403: Something went wrong! This string describes what happened.');
+			done();
+		});
+	});
+
 });
-
-
