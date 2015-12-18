@@ -1,0 +1,7 @@
+{
+  "error":{
+    "statuscode":403,
+    "statusdesc":"Forbidden",
+    "errormessage":"Something went wrong! This string describes what happened."
+  }
+}

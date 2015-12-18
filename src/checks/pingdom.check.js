@@ -20,15 +20,17 @@ class PingdomCheck extends Check{
 		return fetch(this.url, {
 			headers : this.headers
 		})
-			.then(response => response.json())
 			.then(response => {
-				if(!response.statuscode !== 200){
-					throw new Error(`Pingdom API returned ${response.statuscode}: ${response.errormessage}`);
+					this.rawResponse = response;
+					return response.json();
+			})
+			.then(response => {
+				if(!this.rawResponse.ok){
+					throw new Error(`Pingdom API returned ${response.error.statuscode}: ${response.error.errormessage}`);
 				}
 
 				return response;
 			})
-
 			.then(json => {
 				this.status = (json.check.status === 'up') ? status.PASSED : status.FAILED;
 				this.checkOutput = `Pingdom status: ${json.check.status}`;
