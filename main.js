@@ -29,7 +29,7 @@ module.exports.Check = Check;
 module.exports.status = status;
 
 module.exports.getCheck = conf => {
-	return new checks[conf.ype](conf);
+	return new checks[conf.type](conf);
 };
 
 module.exports.runCheck = conf => {
