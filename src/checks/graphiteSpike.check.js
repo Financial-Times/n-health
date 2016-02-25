@@ -16,6 +16,8 @@ class GraphiteSpikeCheck extends Check {
 
 		this.samplePeriod = options.samplePeriod || '10min';
 		this.baselinePeriod = options.baselinePeriod || '7d';
+		this.seriesFunction = options.seriesFunction || 'sumSeries';
+		this.summarizeFunction = options.summarizeFunction || 'sum';
 
 		if (options.graphiteBaseUrl) {
 			this.graphiteBaseUrl = options.graphiteBaseUrl;
@@ -41,9 +43,9 @@ class GraphiteSpikeCheck extends Check {
 	generateUrl(numerator, divisor, period) {
 		const urlBase = this.graphiteBaseUrl + `from=-${period}&format=json&target=`;
 		if (divisor) {
-			return urlBase + `divideSeries(summarize(sumSeries(${numerator}),"${period}","sum",true),summarize(sumSeries(${divisor}),"${period}","sum",true))`;
+			return urlBase + `divideSeries(summarize(${this.seriesFunction}(${numerator}),"${period}","${this.summarizeFunction}",true),summarize(${this.seriesFunction}(${divisor}),"${period}","${this.summarizeFunction}",true))`;
 		} else {
-			return urlBase + `summarize(sumSeries(${numerator}),"${period}","sum",true)`;
+			return urlBase + `summarize(${this.seriesFunction}(${numerator}),"${period}","${this.summarizeFunction}",true)`;
 		}
 	}
 
