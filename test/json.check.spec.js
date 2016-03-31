@@ -7,7 +7,8 @@ const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 
 describe('JSON Checker', function(){
 
-	let JsonCheck, mockFetch;
+	let JsonCheck;
+	let mockFetch;
 
 	function setup(status, body){
 		mockFetch = sinon.stub().returns(Promise.resolve({

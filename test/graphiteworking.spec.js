@@ -7,7 +7,9 @@ describe('Graphite Working Check', function(){
 
 	const fixture = require('./fixtures/config/graphiteWorkingFixture').checks[0];
 	
-	let GraphiteWorkingCheck, check, mockFetch;
+	let GraphiteWorkingCheck;
+	let check;
+	let mockFetch;
 
 	const goodResponse = [
 		{

@@ -7,7 +7,9 @@ const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 
 describe('Pingdom Check', function(){
 
-	let check, PingdomCheck, mockFetch;
+	let check;
+	let PingdomCheck;
+	let mockFetch;
 
 	function setup(status, body){
 		mockFetch = sinon.stub().returns(Promise.resolve({

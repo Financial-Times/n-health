@@ -8,7 +8,8 @@ const config = require('./fixtures/config/responseCompareFixture').checks[0];
 describe('Response Compare Check', function(){
 
 
-	let ResponseCompareCheck, mockFetch;
+	let ResponseCompareCheck;
+	let mockFetch;
 
 	function setup (bodies) {
 		mockFetch = sinon.stub();

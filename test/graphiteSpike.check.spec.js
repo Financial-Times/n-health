@@ -10,7 +10,8 @@ function getCheckConfig (conf) {
 	return Object.assign({}, fixture, conf || {});
 }
 
-let mockFetch, Check;
+let mockFetch;
+let Check;
 
 // Mocks a pair of calls to graphite for sample and baseline data
 function mockGraphite (results) {
