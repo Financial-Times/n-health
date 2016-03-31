@@ -29,10 +29,12 @@
     "isomorphic-fetch": "^2.1.1",
     "mocha": "^2.3.3",
     "next-build-tools": "^5.0.0",
+    "proxyquire": "^1.7.4",
     "sinon": "^1.17.1"
   },
   "dependencies": {
-    "ms": "^0.7.1",
-    "fetchres": "^1.5.1"
+    "@financial-times/n-logger": "^5.3.0",
+    "fetchres": "^1.5.1",
+    "ms": "^0.7.1"
   }
 }

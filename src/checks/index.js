@@ -5,5 +5,6 @@ module.exports = {
 	responseCompare : require('./responseCompare.check'),
 	json : require('./json.check'),
 	pingdom : require('./pingdom.check'),
-	graphiteSpike: require('./graphiteSpike.check')
+	graphiteSpike: require('./graphiteSpike.check'),
+	graphiteWorking: require('./graphiteWorking.check')
 };

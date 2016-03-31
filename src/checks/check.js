@@ -22,7 +22,7 @@ class Check {
 		this.status = status.PENDING;
 		this.lastUpdated = null;
 	}
-
+	
 	start(){
 		this.int = setInterval(this._tick.bind(this), this.interval);
 		this._tick();
@@ -34,6 +34,10 @@ class Check {
 			.then(() => {
 				this.lastUpdated = new Date();
 			});
+	}
+
+	tick (){
+		throw new Error('tick method not implemented');
 	}
 
 	stop(){

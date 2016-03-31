@@ -1,30 +1,28 @@
 'use strict';
 
 const expect = require('chai').expect;
-const fetchMock = require('fetch-mock');
-const Check = require('../src/checks/').graphiteSpike;
 const fixture = require('./fixtures/config/graphiteSpikeFixture').checks[0];
+const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
+const sinon = require('sinon');
+
 
 function getCheckConfig (conf) {
 	return Object.assign({}, fixture, conf || {});
 }
 
+let mockFetch, Check;
+
 // Mocks a pair of calls to graphite for sample and baseline data
 function mockGraphite (results) {
 
-	fetchMock.mock({
-		routes: [
-			{
-				name: 'graphite',
-				matcher: '^https://www.hostedgraphite.com/',
-				response: () => {
-					return [
-						{datapoints: [[results.shift()]]}
-					];
-				}
-			}
-		]
-	});
+	mockFetch = sinon.stub().returns(Promise.resolve({
+		status: 200,
+		ok: true,
+		json : () => Promise.resolve([{datapoints: [[results.shift()]]}])
+	}));
+
+
+	Check = proxyquire('../src/checks/graphiteSpike.check', {'node-fetch':mockFetch});
 }
 
 describe('Graphite Spike Check', function(){
@@ -33,7 +31,6 @@ describe('Graphite Spike Check', function(){
 
 	afterEach(function(){
 		check.stop();
-		fetchMock.restore();
 	});
 
 
@@ -46,7 +43,7 @@ describe('Graphite Spike Check', function(){
 				}));
 				check.start();
 				setTimeout(() => {
-					expect(fetchMock.calls('graphite')[0][0]).to.contain('https://www.hostedgraphite.com/bbaf3ccf/test-graph-key/graphite/render/?_salt=1445340974.799&');
+					expect(mockFetch.firstCall.args[0]).to.contain('https://www.hostedgraphite.com/bbaf3ccf/test-graph-key/graphite/render/?_salt=1445340974.799&');
 					done();
 				});
 			});
@@ -62,37 +59,31 @@ describe('Graphite Spike Check', function(){
 				}));
 				check.start();
 				setTimeout(() => {
-					expect(fetchMock.calls('graphite')[0][0]).to.contain('https://www.hostedgraphite.com/12345/keykeykey/graphite/render/?_salt=saltysalt&');
+					expect(mockFetch.firstCall.args[0]).to.contain('https://www.hostedgraphite.com/12345/keykeykey/graphite/render/?_salt=saltysalt&');
 					done();
 				});
 			});
 
 			it('Should be possible to post to graphite hosted on an arbitrary domain', function (done) {
 
-				fetchMock.mock({
-					routes: [
-						{
-							name: 'graphite',
-							matcher: '^https://graphite.effitty.com/',
-							response: () => {
-								return [
-									{datapoints: [[1]]}
-								];
-							}
-						}
-					]
-				});
+				mockFetch = sinon.stub().returns(Promise.resolve({
+					status: 200,
+					ok: true,
+					json : () => Promise.resolve([{datapoints: [[1]]}])
+				}));
+				Check = proxyquire('../src/checks/graphiteSpike.check', {'node-fetch':mockFetch});
 				check = new Check(getCheckConfig({
 					normalize: false,
 					graphiteBaseUrl: 'https://graphite.effitty.com/?bloop&blip'
 				}));
 				check.start();
 				setTimeout(() => {
-					expect(fetchMock.calls('graphite')[0][0]).to.contain('https://graphite.effitty.com/?bloop&blip');
+					sinon.assert.called(mockFetch);
+					expect(mockFetch.firstCall.args[0]).to.contain('https://graphite.effitty.com/?bloop&blip');
 					done();
 				});
 			});
-	})
+	});
 
 	it('Should be able to report a successful check of absolute values', function (done) {
 
@@ -102,8 +93,9 @@ describe('Graphite Spike Check', function(){
 		}));
 		check.start();
 		setTimeout(() => {
-			expect(fetchMock.calls('graphite')[0][0]).to.contain('from=-10min&format=json&target=summarize(sumSeries(metric.200),"10min","sum",true)');
-			expect(fetchMock.calls('graphite')[1][0]).to.contain('from=-7d&format=json&target=summarize(sumSeries(metric.200),"7d","sum",true)');
+
+			expect(mockFetch.firstCall.args[0]).to.contain('from=-10min&format=json&target=summarize(sumSeries(metric.200),"10min","sum",true)');
+			expect(mockFetch.secondCall.args[0]).to.contain('from=-7d&format=json&target=summarize(sumSeries(metric.200),"7d","sum",true)');
 			expect(check.getStatus().ok).to.be.true;
 			done();
 		});
@@ -117,8 +109,8 @@ describe('Graphite Spike Check', function(){
 		}));
 		check.start();
 		setTimeout(() => {
-			expect(fetchMock.calls('graphite')[0][0]).to.contain('from=-10min&format=json&target=divideSeries(summarize(sumSeries(metric.200),"10min","sum",true),summarize(sumSeries(metric.*),"10min","sum",true))');
-			expect(fetchMock.calls('graphite')[1][0]).to.contain('from=-7d&format=json&target=divideSeries(summarize(sumSeries(metric.200),"7d","sum",true),summarize(sumSeries(metric.*),"7d","sum",true))');
+			expect(mockFetch.firstCall.args[0]).to.contain('from=-10min&format=json&target=divideSeries(summarize(sumSeries(metric.200),"10min","sum",true),summarize(sumSeries(metric.*),"10min","sum",true))');
+			expect(mockFetch.secondCall.args[0]).to.contain('from=-7d&format=json&target=divideSeries(summarize(sumSeries(metric.200),"7d","sum",true),summarize(sumSeries(metric.*),"7d","sum",true))');
 			expect(check.getStatus().ok).to.be.true;
 			done();
 		});
@@ -172,8 +164,8 @@ describe('Graphite Spike Check', function(){
 		}));
 		check.start();
 		setTimeout(() => {
-			expect(fetchMock.calls('graphite')[0][0]).to.contain('from=-24h&format=json&target=divideSeries(summarize(sumSeries(metric.200),"24h","sum",true),summarize(sumSeries(metric.*),"24h","sum",true))');
-			expect(fetchMock.calls('graphite')[1][0]).to.contain('from=-2d&format=json&target=divideSeries(summarize(sumSeries(metric.200),"2d","sum",true),summarize(sumSeries(metric.*),"2d","sum",true))');
+			expect(mockFetch.firstCall.args[0]).to.contain('from=-24h&format=json&target=divideSeries(summarize(sumSeries(metric.200),"24h","sum",true),summarize(sumSeries(metric.*),"24h","sum",true))');
+			expect(mockFetch.secondCall.args[0]).to.contain('from=-2d&format=json&target=divideSeries(summarize(sumSeries(metric.200),"2d","sum",true),summarize(sumSeries(metric.*),"2d","sum",true))');
 			done();
 		});
 	});
