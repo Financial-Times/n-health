@@ -2,31 +2,26 @@
 
 const expect = require('chai').expect;
 const sinon = require('sinon');
-const fetchMock = require('fetch-mock');
 const config = require('./fixtures/config/jsonCheckFixture').checks[0];
-const JsonCheck = require('../src/checks').json;
+const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 
 describe('JSON Checker', function(){
 
+	let JsonCheck;
+	let mockFetch;
+
 	function setup(status, body){
-		fetchMock.mock({
-			routes: [
-				{
-					name: 'json',
-					matcher: 'http://pretendurl.com',
-					response: {
-						status: status,
-						body: body
-					}
-				}
-			]
-		});
+		mockFetch = sinon.stub().returns(Promise.resolve({
+			status: 200,
+			ok: status < 300,
+			json: () => Promise.resolve(body)
+		}));
+		JsonCheck = proxyquire('../src/checks/json.check', {'node-fetch':mockFetch});
 		sinon.spy(config, 'callback');
 		return new JsonCheck(config);
 	}
 
 	afterEach(function(){
-		fetchMock.restore();
 		config.callback.restore();
 	});
 
@@ -35,7 +30,7 @@ describe('JSON Checker', function(){
 		const check = setup(200, {propertyToCheck:true});
 		check.start();
 		setTimeout(function(){
-			expect(fetchMock.called('json')).to.be.true;
+			sinon.assert.called(mockFetch);
 			sinon.assert.called(config.callback);
 			done();
 		});
@@ -45,7 +40,7 @@ describe('JSON Checker', function(){
 		const check = setup(200, {propertyToCheck:true});
 		check.start();
 		setTimeout(function(){
-			expect(fetchMock.called('json')).to.be.true;
+			sinon.assert.called(mockFetch);
 			expect(check.getStatus().ok).to.be.true;
 			done();
 		});
@@ -55,7 +50,7 @@ describe('JSON Checker', function(){
 		const check = setup(200, {propertyToCheck:false});
 		check.start();
 		setTimeout(function(){
-			expect(fetchMock.called('json')).to.be.true;
+			sinon.assert.called(mockFetch);
 			expect(check.getStatus().ok).to.be.false;
 			done();
 		});

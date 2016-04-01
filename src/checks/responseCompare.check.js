@@ -1,6 +1,7 @@
 'use strict';
 const status = require('./status');
 const Check = require('./check');
+const fetch = require('node-fetch');
 
 function allEqual(responses){
 	for(let i = 1, l = responses.length; i < l; i++){
