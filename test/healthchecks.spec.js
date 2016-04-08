@@ -30,6 +30,7 @@ describe('Healthchecks', function(){
 	});
 
 	it('Should create new checks as described in the config', function(){
+
 		expect(healthchecks.checks[0]).to.be.an.instanceOf(PingdomCheck);
 	});
 

@@ -6,7 +6,7 @@ module.exports = {
 		{
 			type: 'graphiteWorking',
 			name: 'test1',
-			key: 'next.fastly.133g5BGAc00Hv4v8t0dMry.asia.requests',
+			key: 'fastly.f8585BOxnGQDMbnkJoM1e.all.requests',
 			severity: 2,
 			businessImpact: 'blah',
 			technicalSummary: 'god knows',

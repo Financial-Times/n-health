@@ -44,7 +44,7 @@ describe('Graphite Spike Check', function(){
 				}));
 				check.start();
 				setTimeout(() => {
-					expect(mockFetch.firstCall.args[0]).to.contain('https://www.hostedgraphite.com/bbaf3ccf/test-graph-key/graphite/render/?_salt=1445340974.799&');
+					expect(mockFetch.firstCall.args[0]).to.contain('/graphite/render/?_salt=1445340974.799&');
 					done();
 				});
 			});
@@ -55,12 +55,12 @@ describe('Graphite Spike Check', function(){
 				check = new Check(getCheckConfig({
 					normalize: false,
 					graphiteServiceId: 12345,
-					graphiteKey: 'keykeykey',
+					graphiteApiKey: 'keykeykey',
 					graphiteSalt: 'saltysalt'
 				}));
 				check.start();
 				setTimeout(() => {
-					expect(mockFetch.firstCall.args[0]).to.contain('https://www.hostedgraphite.com/12345/keykeykey/graphite/render/?_salt=saltysalt&');
+					expect(mockFetch.firstCall.args[0]).to.contain('/graphite/render/?_salt=saltysalt&');
 					done();
 				});
 			});

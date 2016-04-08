@@ -19,7 +19,15 @@ class GraphiteWorkingCheck extends Check {
 		super(options);
 		this.checkOutput = "This check has not yet run";
 		let host = options.host || 'https://www.hostedgraphite.com';
-		let pathPrefix = ('pathPrefix' in options) ? (options.pathPrefix || '') : '/bbaf3ccf/graphite';
+		this.graphiteApiKey = process.env.HOSTEDGRAPHITE_READ_APIKEY;
+		if(!this.graphiteApiKey){
+			throw new Error('please set HOSTEDGRAPHITE_READ_APIKEY env var');
+		}
+		this.serviceId = 'bbaf3ccf';
+		let pathPrefix = ('pathPrefix' in options) ?
+			(options.pathPrefix || '') :
+			`/${this.serviceId}/${this.graphiteApiKey}/graphite`;
+
 		this.key = options.key;
 		if(!this.key){
 			throw new Error('You must give a key');
@@ -68,7 +76,6 @@ class GraphiteWorkingCheck extends Check {
 				this.checkOutput = err.toString();
 			});
 	}
-
 }
 
 module.exports = GraphiteWorkingCheck;

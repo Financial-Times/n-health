@@ -79,7 +79,22 @@ describe('Graphite Working Check', function(){
 			expect(check.getStatus().ok).to.be.false;
 		});
 	});
-	
-	
-	
+
+	describe('Integration', function(){
+
+		before(() => {
+			GraphiteWorkingCheck = require('../src/checks/graphiteWorking.check');
+			check = new GraphiteWorkingCheck(fixture);
+
+		});
+
+		it('Can actually call graphite', () => {
+			check.start();
+			return waitFor(1000).then(() => {
+				console.log(check.getStatus());
+				expect(check.getStatus().ok).to.be.true;
+			});
+		});
+	})
+
 });
