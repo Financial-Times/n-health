@@ -6,7 +6,7 @@ install:
 verify:
 	nbt verify --skip-layout-checks
 
-unit-test:
-	export HOSTEDGRAPHITE_READ_APIKEY=test-graph-key; mocha
+test-unit:
+	export HOSTEDGRAPHITE_READ_APIKEY=test-graph-key; mocha -r loadvars.js
 
-test: unit-test verify
+test: verify test-unit
