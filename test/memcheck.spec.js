@@ -3,7 +3,7 @@ const expect = require('chai').expect;
 const sinon = require('sinon');
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 
-describe.only('Memory Usage Check', function(){
+describe('Memory Usage Check', function(){
 
 
 	function wait(ms){
