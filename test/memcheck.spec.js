@@ -5,39 +5,42 @@ const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 
 describe('Memory Usage Check', function(){
 
-
-	function wait(ms){
-		return Promise.resolve(r => setTimeout(r, ms));
-	}
-	
-	let memcheck;
 	let config = require('./fixtures/config/memcheckFixture').checks[0];
-	let serviceRegistry = require('./fixtures/serviceRegistryFixture.json');
 
+	const wait = ms => new Promise(r => setTimeout(r, ms));
 
-	let mockFetch = sinon.spy((url) => {
-		if(/next-registry\.ft\.com/.test(url)){
-			return {
-				status:200,
-				ok:true,
-				json: () => Promise.resolve(serviceRegistry)
-			}
+	let mockServiceRegistryAdaptor = {
+		start : sinon.spy(),
+		getData : sinon.stub.returns(new Map([
+			['ft-next-test-app', 'bronze'],
+			['ft-next-platinum-app', 'platinum']
+		]))
+	};
+
+	function setup(count){
+		let mockHerokuAdaptor = {
+			getR14Count: sinon.stub().returns(count || 0);
 		}
-	});
-	
-	before(() => {
 
-		let Memcheck = proxyquire('../src/checks/memory.check', {'node-fetch' : mockFetch});
-		memcheck = new Memcheck(config);
-	});
-	
+		let MemCheck = proxyquire(
+			'../src/checks/memory.check',
+			{
+				'../lib/serviceRegistryAdaptor':mockServiceRegistryAdaptor,
+				'../lib/herokuAdaptor':mockHerokuAdaptor
+			}
+		);
 
-	it('Should get a list of apps from the service registry', () => {
+		return new MemCheck(config);
+	}
+
+	it.only('Should get a list of apps from the service registry', () => {
+		let memcheck = setup(0);
 		memcheck.start();
-		return wait(100)
+		return wait(1000)
 			.then(() => {
-				sinon.assert.called(mockFetch);
-			})
+				sinon.assert.called(mockServiceRegistryAdaptor.start);
+				sinon.assert.called(mockServiceRegistryAdaptor.getData);
+			});
 	});
 
 	it('Should make an api call for each app on the given interval');
