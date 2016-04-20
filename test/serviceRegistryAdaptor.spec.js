@@ -12,7 +12,7 @@ describe('Service Registry Adaptor', function(){
 
 	let adaptor;
 	let serviceRegistryFixture = require('./fixtures/serviceRegistryFixture.json');
-	let mockResponse = {status:200, ok:true, json:() => serviceRegistryFixture};
+	let mockResponse = {status:200, ok:true, json:() => Promise.resolve(serviceRegistryFixture), text:() => Promise.resolve('')};
 	let mockFetch;
 
 	beforeEach(() => {
@@ -44,7 +44,7 @@ describe('Service Registry Adaptor', function(){
 		return adaptor.start(500)
 			.then(() => wait(1000))
 			.then(() => {
-				sinon.assert.calledTwice(mockFetch);
+				expect(mockFetch.callCount).to.be.greaterThan(1);
 			})
 	});
 });

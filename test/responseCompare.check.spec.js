@@ -32,6 +32,7 @@ describe('Response Compare Check', function(){
 			setImmediate(function(){
 				sinon.assert.called(mockFetch);
 				expect(check.getStatus().ok).to.be.true;
+				check.stop();
 				done();
 			});
 		});
@@ -42,6 +43,7 @@ describe('Response Compare Check', function(){
 			setImmediate(function(){
 				sinon.assert.called(mockFetch);
 				expect(check.getStatus().ok).to.be.false;
+				check.stop();
 				done();
 			});
 		});

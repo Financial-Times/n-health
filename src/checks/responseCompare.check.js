@@ -43,7 +43,7 @@ class ResponseCompareCheck extends Check {
 				}
 			})
 			.catch(err => {
-				console.error(err);
+				console.error(err.stack);
 				setTimeout(() => {throw err; }, 0);
 			});
 	}

@@ -6,5 +6,6 @@ module.exports = {
 	json : require('./json.check'),
 	pingdom : require('./pingdom.check'),
 	graphiteSpike: require('./graphiteSpike.check'),
-	graphiteWorking: require('./graphiteWorking.check')
+	graphiteWorking: require('./graphiteWorking.check'),
+	memory: require('./memory.check')
 };

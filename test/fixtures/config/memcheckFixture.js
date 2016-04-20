@@ -4,7 +4,7 @@ module.exports = {
 	description: '',
 	checks: [
 		{
-			type: 'memcheck',
+			type: 'memory',
 			name: 'test1',
 			severity: 3,
 			businessImpact: 'blah',
