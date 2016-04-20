@@ -7,10 +7,24 @@ const ms = require('ms');
 
 class Memcheck extends Check {
 
+	constructor(config){
+		super(config);
+		this.appsToCheck = config.apps || 'all';
+	}
 
 	start(){
 		return serviceRegistryAdaptor.start().then(() => {
-			this.apps = serviceRegistryAdaptor.getData();
+			let apps = serviceRegistryAdaptor.getData();
+			if(this.appsToCheck === 'all'){
+				this.apps = apps;
+			}else{
+				this.apps = new Map();
+				for(let app of apps){
+					if(this.appsToCheck.indexOf(app[0] > -1)){
+						this.apps.set(app[0], app[1]);
+					}
+				}
+			}
 			super.start();
 		});
 	}

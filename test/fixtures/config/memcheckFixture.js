@@ -7,6 +7,7 @@ module.exports = {
 			type: 'memory',
 			name: 'test1',
 			severity: 3,
+			apps: 'all',
 			businessImpact: 'blah',
 			technicalSummary: 'god knows',
 			panicGuide: 'Don\'t Panic',
