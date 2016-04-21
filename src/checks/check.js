@@ -36,10 +36,6 @@ class Check {
 			});
 	}
 
-	tick (){
-		throw new Error('tick method not implemented');
-	}
-
 	stop(){
 		clearInterval(this.int);
 	}
