@@ -1,6 +1,6 @@
 {
   "name": "n-health",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Makes it easy to add healthchecks to an app",
   "main": "main.js",
   "directories": {
