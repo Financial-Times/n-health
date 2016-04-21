@@ -2,13 +2,14 @@
 const ms = require('ms');
 const fetch = require('node-fetch');
 
-if(!process.env.HEROKU_AUTH_TOKEN){
-	throw new Error('HEROKU_AUTH_TOKEN env var required');
-}
-
 let url = '/dyno/errors?process_type=web&start_time=2016-04-18T09%3A30%3A00.000Z&end_time=2016-04-19T09%3A20%3A00.000Z&step=10m';
 
 function getErrorMetrics(app, duration){
+	if(!process.env.HEROKU_AUTH_TOKEN){
+		let err =  new Error('HEROKU_AUTH_TOKEN env var required');
+		return Promise.reject(err);
+	}
+	
 	let durationMs = ms(duration);
 	let endTime = new Date();
 	let startTime = new Date(endTime - durationMs);
