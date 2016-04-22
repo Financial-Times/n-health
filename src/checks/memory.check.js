@@ -10,6 +10,8 @@ class Memcheck extends Check {
 	constructor(config){
 		super(config);
 		this.appsToCheck = config.apps || 'all';
+		this.window = config.window || '10m';
+		this.threshold = config.threshold || 2;
 	}
 
 	start(){
@@ -32,13 +34,14 @@ class Memcheck extends Check {
 	tick(){
 		let failures = new Map();
 		let promises = Array.from(this.apps.keys()).map(app => {
-			return herokuAdaptor.getR14Count(app, '10m')
+			return herokuAdaptor.getR14Count(app, this.window)
 				.then(count => {
-					if(count > 0){
+					if(count > this.threshold){
 						failures.set(app, count);
 					}
+					
 					return count;
-				})
+				});
 		});
 
 		Promise.all(promises).then(() => {

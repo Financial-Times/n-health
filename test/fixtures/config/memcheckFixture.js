@@ -11,7 +11,9 @@ module.exports = {
 			businessImpact: 'blah',
 			technicalSummary: 'god knows',
 			panicGuide: 'Don\'t Panic',
-			interval: '10m'
+			interval: '1m',
+			window: '10m',
+			threshold: 1
 		}
 	]
 };
