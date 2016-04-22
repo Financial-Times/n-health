@@ -5,12 +5,13 @@ class HealthChecks {
 	constructor(config, healthchecks){
 		this.name = config.name;
 		this.description = config.description;
-		this.checks = config.checks.map(check => {
-			if(!healthchecks[check.type]){
-				throw new Error(`Can not find check type ${check.type}`);
-			}
-			return new healthchecks[check.type](check, this)
-		});
+		this.checks = config.checks
+			.filter(check => {
+				return check.type in healthchecks;
+			})
+			.map(check => {
+				return new healthchecks[check.type](check, this)
+			});
 	}
 
 	start(){
