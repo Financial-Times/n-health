@@ -1835,17 +1835,17 @@
         "nodes": [
           {
             "region": "EU",
-            "url": "http://ft-next-popular-api.herokuapp.com"
+            "url": "http://ft-next-popular-api-eu.herokuapp.com"
           }
         ],
         "repo": "https://github.com/Financial-Times/next-popular-api",
         "dashboard": "https://www.hostedgraphite.com/bbaf3ccf/grafana/#/dashboard/db/popular-api",
         "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-popular-api",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/production/ft-next-popular-api",
         "processes": {
           "web": {
             "size": "standard-1X",
-            "scale": 2
+            "scale": 1
           }
         },
         "checks": {
