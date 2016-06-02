@@ -3,18 +3,10 @@
 const expect = require('chai').expect;
 const path = require('path');
 const HealthChecks = require('../src/healthchecks');
-const fetchMock = require('fetch-mock');
 const startup = require('../src/startup');
 
 describe('Startup', function(){
 
-	before(function(){
-		fetchMock.mock({
-			greed: 'good'
-		});
-	});
-
-	after(() => fetchMock.restore());
 
 	it('Should read in the config dir and create new healthcheck objects', function(){
 		const result = startup(path.resolve(__dirname, 'fixtures/config/'));

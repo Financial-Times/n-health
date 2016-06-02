@@ -1,10 +1,11 @@
+include n.Makefile
+
 .PHONY: test
 
+test-unit:
+	export HOSTEDGRAPHITE_READ_APIKEY=test-graph-key; export HEROKU_AUTH_TOKEN=token; mocha
 
-verify:
-	nbt verify --skip-layout-checks
+test-int:
+	mocha int-tests/ -r loadvars.js
 
-unit-test:
-	export HOSTEDGRAPHITE_READ_APIKEY=test-graph-key; mocha test/all.spec.js
-
-test: unit-test verify
+test: verify test-unit

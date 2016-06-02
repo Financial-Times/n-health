@@ -30,10 +30,11 @@ describe('Healthchecks', function(){
 	});
 
 	it('Should create new checks as described in the config', function(){
+
 		expect(healthchecks.checks[0]).to.be.an.instanceOf(PingdomCheck);
 	});
 
-	it("Should report it's status correctly", function(){
+	it("Should report its status correctly", function(){
 		const status = healthchecks.getStatus();
 		expect(status.name).to.equal(fixture.name);
 		expect(status.description).to.equal(fixture.description);

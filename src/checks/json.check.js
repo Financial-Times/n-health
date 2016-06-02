@@ -1,6 +1,7 @@
 'use strict';
 const status = require('./status');
 const Check = require('./check');
+const fetch = require('node-fetch');
 
 class JsonCheck extends Check{
 

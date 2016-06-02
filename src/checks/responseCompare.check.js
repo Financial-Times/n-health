@@ -1,6 +1,7 @@
 'use strict';
 const status = require('./status');
 const Check = require('./check');
+const fetch = require('node-fetch');
 
 function allEqual(responses){
 	for(let i = 1, l = responses.length; i < l; i++){
@@ -42,7 +43,7 @@ class ResponseCompareCheck extends Check {
 				}
 			})
 			.catch(err => {
-				console.error(err);
+				console.error(err.stack);
 				setTimeout(() => {throw err; }, 0);
 			});
 	}
