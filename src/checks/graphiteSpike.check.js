@@ -89,7 +89,6 @@ class GraphiteSpikeCheck extends Check {
 					recovery = data.recovery / data.baseline > 1 / this.threshold;
 				}
 
-				console.log(ok, recovery)
 				this.status = (ok || recovery) ? status.PASSED : status.FAILED;
 
 				if (ok) {
