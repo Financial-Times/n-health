@@ -12,28 +12,26 @@ function badJSON(message, json){
 }
 
 class GraphiteWorkingCheck extends Check {
-	
-	
+
+
 
 	constructor(options){
 		super(options);
 		this.checkOutput = "This check has not yet run";
-		let host = options.host || 'https://www.hostedgraphite.com';
 		this.graphiteApiKey = process.env.HOSTEDGRAPHITE_READ_APIKEY;
 		if(!this.graphiteApiKey){
 			throw new Error('please set HOSTEDGRAPHITE_READ_APIKEY env var');
 		}
 		this.serviceId = 'bbaf3ccf';
-		let pathPrefix = ('pathPrefix' in options) ?
-			(options.pathPrefix || '') :
-			`/${this.serviceId}/${this.graphiteApiKey}/graphite`;
-
-		this.key = options.key;
-		if(!this.key){
+		const host = options.host || 'https://www.hostedgraphite.com';
+		const pathPrefix = options.pathPrefix || `/${this.serviceId}/${this.graphiteApiKey}/graphite`;
+		const key = options.key;
+		const time = options.time || '-15minutes';
+		if(!key){
 			throw new Error('You must give a key');
 		}
-		
-		this.url = encodeURI(`${host}${pathPrefix}/render/?_salt=1459345418.451&target=summarize(${this.key},"1h")&from=-1hours&format=json`);
+		this.key = key;
+		this.url = encodeURI(`${host}${pathPrefix}/render/?_salt=1459345418.451&target=${key}&from=${time}&format=json`);
 	}
 
 	tick(){
@@ -42,7 +40,7 @@ class GraphiteWorkingCheck extends Check {
 				if(!response.ok){
 					throw new Error('Bad Response: ' + response.status);
 				}
-				
+
 				return response.json();
 			})
 			.then(json => {
@@ -58,7 +56,7 @@ class GraphiteWorkingCheck extends Check {
 					badJSON('Expected at least one datapoint', json);
 				}
 
-				let count = json[0].datapoints[0][0];
+				let count = json[0].datapoints.reduce((total, current) => total + (current[0] || 0), 0);
 
 				log.info(`event=${logEventPrefix}_COUNT key=${this.key} count=${count}`);
 				if(count){
@@ -79,4 +77,3 @@ class GraphiteWorkingCheck extends Check {
 }
 
 module.exports = GraphiteWorkingCheck;
-
