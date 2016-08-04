@@ -10,6 +10,7 @@ class JsonCheck extends Check{
 		this.callback = options.callback;
 		this.url = options.url;
 		this.checkResultInternal = options.checkResult;
+		this.fetchOptions = options.fetchOptions;
 	}
 
 	get checkOutput(){
@@ -17,7 +18,7 @@ class JsonCheck extends Check{
 	}
 
 	tick(){
-		return fetch(this.url)
+		return fetch(this.url, this.fetchOptions)
 			.then(response => {
 				if(!response.ok){
 					throw new Error('BadResponse ' + response.status);
