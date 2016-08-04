@@ -37,6 +37,7 @@ Fetches from multiple urls and compares the responses. Useful to check that repl
 Calls a url, gets some json and runs a callback to check it's form
 
 * url: url to call and get the json
+* fetchOptions: Object to pass to fetch, see https://www.npmjs.com/package/node-fetch#options for more information.
 * callback: A function to run on the response.  Accepts the parsed json as an argument and should return true or false
 
 ### aggregate
