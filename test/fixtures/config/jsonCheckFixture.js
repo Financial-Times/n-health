@@ -19,6 +19,11 @@ module.exports = {
 			interval: '1s',
 			callback: function(json){
 				return json.propertyToCheck;
+			},
+			fetchOptions: {
+			    headers: {
+			        ApiKey: "ApiKey"
+			    }
 			}
 		}
 	]
