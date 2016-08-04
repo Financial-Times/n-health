@@ -30,7 +30,7 @@ describe('JSON Checker', function(){
 		const check = setup(200, {propertyToCheck:true});
 		check.start();
 		setTimeout(function(){
-			sinon.assert.called(mockFetch);
+			sinon.assert.calledWith(mockFetch, config.url, config.fetchOptions);
 			sinon.assert.called(config.callback);
 			done();
 		});
@@ -40,7 +40,7 @@ describe('JSON Checker', function(){
 		const check = setup(200, {propertyToCheck:true});
 		check.start();
 		setTimeout(function(){
-			sinon.assert.called(mockFetch);
+			sinon.assert.calledWith(mockFetch, config.url, config.fetchOptions);
 			expect(check.getStatus().ok).to.be.true;
 			done();
 		});
@@ -50,7 +50,7 @@ describe('JSON Checker', function(){
 		const check = setup(200, {propertyToCheck:false});
 		check.start();
 		setTimeout(function(){
-			sinon.assert.called(mockFetch);
+			sinon.assert.calledWith(mockFetch, config.url, config.fetchOptions);
 			expect(check.getStatus().ok).to.be.false;
 			done();
 		});
