@@ -34,7 +34,7 @@ Fetches from multiple urls and compares the responses. Useful to check that repl
 * comparison: Type of comparison to apply to the responses (Only "equal" so far
 
 ### json
-Calls a url, gets some json and runs a callback to check it's form
+Calls a url, gets some json and runs a callback to check its form
 
 * url: url to call and get the json
 * fetchOptions: Object to pass to fetch, see https://www.npmjs.com/package/node-fetch#options for more information.
