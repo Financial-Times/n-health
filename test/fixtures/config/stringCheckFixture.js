@@ -18,6 +18,11 @@ module.exports = {
 				PENDING: 'This check has not yet run'
 			},
 			interval: '1s',
+            fetchOptions: {
+                headers: {
+                    ApiKey: "ApiKey"
+                }
+            }
 		}
 	]
 };
