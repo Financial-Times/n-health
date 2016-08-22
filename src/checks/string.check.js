@@ -16,17 +16,17 @@ class StringCheck extends Check {
 			return 'this test has not yet run';
 		}
 
-        return `${this.url} is ${this.status === status.PASSED ? '' : 'not'} equal to ${this.expected}`;
+		return `${this.url} is ${this.status === status.PASSED ? '' : 'not'} equal to ${this.expected}`;
 	}
 
 	tick(){
 		return fetch(this.url)
-		    .then(response => {
-                if(!response.ok){
-                    throw new Error('BadResponse ' + response.status);
-                }
-		        return response.text()
-		    })
+			.then(response => {
+				if(!response.ok){
+					throw new Error('BadResponse ' + response.status);
+				}
+				return response.text()
+			})
 			.then(body => this.status = body === this.expected ? status.PASSED : status.FAILED)
 			.catch(err => {
 				console.error('Response was not OK', err);
@@ -36,4 +36,3 @@ class StringCheck extends Check {
 }
 
 module.exports = StringCheck;
-9
