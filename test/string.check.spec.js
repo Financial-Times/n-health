@@ -25,6 +25,7 @@ describe('String Checker', function(){
 		check.start();
 		setTimeout(function(){
 			sinon.assert.calledWith(mockFetch, config.url);
+			sinon.assert.calledWith(mockFetch, config.url, config.fetchOptions);
 			expect(check.getStatus().ok).to.be.true;
 			done();
 		});
@@ -35,6 +36,7 @@ describe('String Checker', function(){
 		check.start();
 		setTimeout(function(){
 			sinon.assert.calledWith(mockFetch, config.url);
+			sinon.assert.calledWith(mockFetch, config.url, config.fetchOptions);
 			expect(check.getStatus().ok).to.be.false;
 			done();
 		});
