@@ -1075,7 +1075,6 @@
       "^/signup",
       "^/signup$",
       "^/signup/api/subscription$",
-      "^/signup/api/payment-gateway-params/[a-zA-z]*/[A-Z]{3}$",
       "^/thank-you$",
       "^/payment-gateway-callback$"
     ],
