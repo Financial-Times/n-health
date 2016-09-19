@@ -16,7 +16,8 @@ describe('JSON Checker', function(){
 			ok: status < 300,
 			json: () => Promise.resolve(body)
 		}));
-		JsonCheck = proxyquire('../src/checks/json.check', {'node-fetch':mockFetch});
+		const FetchCheck = proxyquire('../src/checks/fetchcheck', {'node-fetch':mockFetch});
+		JsonCheck = proxyquire('../src/checks/json.check', {'./fetchcheck':FetchCheck});
 		sinon.spy(config, 'callback');
 		return new JsonCheck(config);
 	}
