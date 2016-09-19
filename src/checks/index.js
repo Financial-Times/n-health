@@ -7,5 +7,6 @@ module.exports = {
 	string : require('./string.check'),
 	pingdom : require('./pingdom.check'),
 	graphiteSpike: require('./graphiteSpike.check'),
+	graphiteThreshold: require('./graphiteThreshold.check'),
 	graphiteWorking: require('./graphiteWorking.check')
 };
