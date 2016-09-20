@@ -57,3 +57,12 @@ Compares current and historical graphite metrics to see if there is a spike
 * direction: [default: 'up'] Direction in which to look for spikes; 'up' = sharp increase in activity, 'down' = sharp decrease in activity
 * threshold: [default: 3] Amount of difference between current and baseline activity which registers as a spike e.g. 5 means current activity must be 5 times greater/less than the baseline activity
 
+### graphiteThreshold
+Checks whether the value of a graphite metric has crossed a threshold
+
+* metric: [required] Name of graphite metric to count (may contain wildcards)
+* samplePeriod: [default: '5min'] Length of time to count metrics for a sample of current behaviour
+* threshold: [required] Value to chec the metrics against
+* direction: [default: 'above'] Direction on which to trigger the healthcheck;
+	- 'above' = alert if value goes above the threshold
+	- 'below' = alert if value goes below the threshold
