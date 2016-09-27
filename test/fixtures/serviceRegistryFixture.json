@@ -1694,39 +1694,6 @@
     }
   },
   {
-    "name": "rtcl-email-api",
-    "systemCode": "next-rtcl-email",
-    "paths": [],
-    "desc": "API to send article links by email.",
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "isPrimary": true,
-        "nodes": [
-          {
-            "region": "eu",
-            "url": "https://ft-next-rtcl-email-api-eu.herokuapp.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-rtcl-email-api",
-        "dashboard": "https://dashboard.heroku.com/apps/ft-next-rtcl-email-api-eu/resources",
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-rtcl-email-api",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 1
-          }
-        },
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
     "name": "preview",
     "systemCode": "next-preview",
     "paths": [],
