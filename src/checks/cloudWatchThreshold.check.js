@@ -2,6 +2,7 @@
 
 const AWS = require('aws-sdk');
 const moment = require('moment');
+const log = require('@financial-times/n-logger').default;
 const status = require('./status');
 const Check = require('./check');
 
@@ -46,8 +47,8 @@ class CloudWatchThresholdCheck extends Check {
 				.promise()
 				.then(res => {
 					const value = res.Datapoints
-									.map(datum => datum[this.cloudWatchStatistic])
-									.reduce((a, b) => a + b, 0);
+								.map(datum => datum[this.cloudWatchStatistic])
+								.reduce((a, b) => a + b, 0);
 					let ok;
 
 					if (this.direction === 'above') {
@@ -60,7 +61,7 @@ class CloudWatchThresholdCheck extends Check {
 					this.checkOutput = ok ? 'No threshold change detected in CloudWatch data' : `CloudWatch data ${this.direction} required threshold`;
 				})
 				.catch(err => {
-					console.error('Failed to get CloudWatch data', err);
+					log.error('Failed to get CloudWatch data', err);
 					this.status = status.FAILED;
 					this.checkOutput = `Cloudwatch threshold check failed to fetch data: ${err.message}`;
 				});
