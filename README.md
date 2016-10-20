@@ -66,3 +66,17 @@ Checks whether the value of a graphite metric has crossed a threshold
 * direction: [default: 'above'] Direction on which to trigger the healthcheck;
 	- 'above' = alert if value goes above the threshold
 	- 'below' = alert if value goes below the threshold
+
+### cloudWatchThreshold
+Checks whether the value of a CloudWatch metric has crossed a threshold
+
+* cloudWatchRegion = [default 'eu-west-1'] AWS region the metrics are stored
+* cloudWatchMetricName = [required] Name of the CloudWatch metric to count
+* cloudWatchNamespace = [required] Namespace the metric resides in
+* cloudWatchStatistic = [default 'Sum'] Data aggregation type to return
+* cloudWatchDimensions = Optional array of metric data to query
+* samplePeriod: [default: 300] Length of time in seconds to count metrics for a sample of current behaviour
+* threshold: [required] Value to check the metrics against
+* direction: [default: 'above'] Direction on which to trigger the healthcheck;
+	- 'above' = alert if value goes above the threshold
+	- 'below' = alert if value goes below the threshold
