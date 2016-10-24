@@ -17,7 +17,7 @@ class CloudWatchThresholdCheck extends Check {
 		this.samplePeriod = parseInt(options.samplePeriod, 10) || 60 * 5;
 
 		this.cloudWatchRegion = options.cloudWatchRegion || 'eu-west-1';
-		this.cloudWatchMetricName = options.cloudWatchMetricsName;
+		this.cloudWatchMetricName = options.cloudWatchMetricName;
 		this.cloudWatchNamespace = options.cloudWatchNamespace;
 		this.cloudWatchStatistic = options.cloudWatchStatistic || 'Sum';
 		this.cloudWatchDimensions = options.cloudWatchDimensions || [];
