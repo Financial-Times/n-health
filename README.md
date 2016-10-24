@@ -80,3 +80,9 @@ Checks whether the value of a CloudWatch metric has crossed a threshold
 * direction: [default: 'above'] Direction on which to trigger the healthcheck;
 	- 'above' = alert if value goes above the threshold
 	- 'below' = alert if value goes below the threshold
+
+### cloudWatchAlarm
+Checks whether the state of a CloudWatch alarm is healthy
+
+* cloudWatchRegion = [default 'eu-west-1'] AWS region the metrics are stored
+* cloudWatchAlarmName = [required] Name of the CloudWatch alarm to check
