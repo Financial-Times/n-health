@@ -69,6 +69,8 @@ Checks whether the value of a graphite metric has crossed a threshold
 
 ### cloudWatchThreshold
 Checks whether the value of a CloudWatch metric has crossed a threshold
+_Note: this assumes that `AWS_ACCESS_KEY` & `AWS_SECRET_ACCESS_KEY` are implictly available as environment variables on process.env_
+
 
 * cloudWatchRegion = [default 'eu-west-1'] AWS region the metrics are stored
 * cloudWatchMetricName = [required] Name of the CloudWatch metric to count
@@ -83,6 +85,7 @@ Checks whether the value of a CloudWatch metric has crossed a threshold
 
 ### cloudWatchAlarm
 Checks whether the state of a CloudWatch alarm is healthy
+_Note: this assumes that `AWS_ACCESS_KEY` & `AWS_SECRET_ACCESS_KEY` are implictly available as environment variables on process.env_
 
 * cloudWatchRegion = [default 'eu-west-1'] AWS region the metrics are stored
 * cloudWatchAlarmName = [required] Name of the CloudWatch alarm to check
