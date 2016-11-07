@@ -61,8 +61,8 @@ Compares current and historical graphite metrics to see if there is a spike
 Checks whether the value of a graphite metric has crossed a threshold
 
 * metric: [required] Name of graphite metric to count (may contain wildcards)
-* samplePeriod: [default: '5min'] Length of time to count metrics for a sample of current behaviour
-* threshold: [required] Value to chec the metrics against
+* threshold: [required] Value to check the metrics against
+* samplePeriod: [default: '10min'] Length of time to count metrics for a sample of current behaviour
 * direction: [default: 'above'] Direction on which to trigger the healthcheck;
 	- 'above' = alert if value goes above the threshold
 	- 'below' = alert if value goes below the threshold
