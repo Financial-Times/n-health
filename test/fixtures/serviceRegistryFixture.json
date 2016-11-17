@@ -1,4 +1,83 @@
+
 [
+  {
+    "name": "health",
+    "systemCode": "next-health",
+    "paths": [],
+    "desc": "Next Health Checks",
+    "serves": [
+      "admin-page"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-health-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-health-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-health",
+        "dashboard": "https://dashboard.heroku.com/pipelines/736ee205-b510-40bc-b58f-7b97709559a8",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-health",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": [
+            1780023,
+            1780026
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "next-beacon-bot",
+    "systemCode": "next-beacon-bot",
+    "paths": [],
+    "desc": "Service for sending notifications of expiring feature flags",
+    "serves": [
+      "static"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "https://ft-next-bot.herokuapp.com/"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-beacon-bot",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-bot",
+        "configuration": "",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 1
+          },
+          "bot": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
   {
     "name": "concepts-api",
     "systemCode": "next-conceptsapi",
@@ -21,12 +100,815 @@
         },
         "repo": "https://github.com/Financial-Times/next-concepts-api",
         "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-concepts-api/resources",
-        "isPrimary": true,
         "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-concepts-api",
         "checks": {
           "availability": [
             1748747
           ]
+        }
+      }
+    }
+  },
+  {
+    "name": "markets-proxy-api",
+    "systemCode": "next-markets-api",
+    "desc": "Proxies the markets.ft.com API",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-markets-proxy-api.herokuapp.com"
+        ],
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "repo": "https://github.com/Financial-Times/next-markets-proxy-api",
+        "dashboard": "https://dashboard.heroku.com/apps/ft-next-markets-proxy-api/resources",
+        "configuration": "https://dashboard.heroku.com/apps/ft-next-markets-proxy-api",
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "radiator",
+    "systemCode": "next-radiator",
+    "desc": "Graphite, Pingdom and CMDB dashboard",
+    "paths": [],
+    "serves": [
+      "admin-page"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-graphite-dashboard.herokuapp.com"
+        ],
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "repo": "https://github.com/Financial-Times/next-graphite-dashboard",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-graphite-dashboard/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-graphite-dashboard",
+        "checks": {
+          "availability": [
+            1571169
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "myft-api",
+    "systemCode": "next-myft-api",
+    "desc": "API for storing and retrieving a users personalisation and usage activity",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-myft-api.herokuapp.com"
+        ],
+        "processes": {
+          "web": {
+            "size": "standard-2X",
+            "scale": 5
+          },
+          "sync": {
+            "size": "standard-1X",
+            "scale": 0
+          },
+          "history": {
+            "size": "standard-1X",
+            "scale": 4
+          },
+          "backup": {
+            "size": "standard-1X",
+            "scale": 1
+          },
+          "most-popular": {
+            "size": "standard-1X",
+            "scale": 1
+          },
+          "engagement": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "repo": "https://github.com/Financial-Times/next-myft-api",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-myft-api/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-myft-api",
+        "checks": {
+          "availability": []
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "personalised-feed-api",
+    "systemCode": "next-personalapi",
+    "desc": "Serves a personalised feed of content",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-personalised-feed-api.herokuapp.com"
+        ],
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 4
+          }
+        },
+        "repo": "https://github.com/Financial-Times/next-personalised-feed-api",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-personalised-feed-api/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-personalised-feed-api",
+        "checks": {
+          "availability": []
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "config-vars",
+    "systemCode": "next-config-vars",
+    "desc": "Central repositority for prod, test and dev environment variables",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-config-vars.herokuapp.com"
+        ],
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "repo": "https://github.com/Financial-Times/next-config-vars",
+        "dashboard": "https://dashboard.heroku.com/apps/ft-next-config-vars/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-config-vars",
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "service-registry",
+    "systemCode": "next-registry",
+    "desc": "Lists all the services in the Next stack",
+    "runbook": "https://sites.google.com/a/ft.com/ft-technology-service-transition/home/run-book-library/nextserviceregistrymatthewandrewsftcom20160526",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "platinum",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-service-registry-prod.s3-website-eu-west-1.amazonaws.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-service-registry-prod-us.s3-website-us-east-1.amazonaws.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-service-registry",
+        "dashboard": "https://console.aws.amazon.com/s3/home?region=us-west-2#&bucket=ft-next-service-registry-prod&prefix=",
+        "configuration": "",
+        "checks": {
+          "availability": [
+            1571159,
+            2304086,
+            2304087
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "next-geebee",
+    "systemCode": "next-geebee",
+    "desc": "Serves static assets via http2",
+    "runbook": "https://sites.google.com/a/ft.com/ft-technology-service-transition/home/run-book-library/nextgeebeerichardstillftcom20160601",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "platinum",
+    "versions": {
+      "1": {
+        "nodes": [
+          "https://next-geebee.ft.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-geebee",
+        "dashboard": "https://app.fastly.com/#stats/service/3GQMFG1fYBJojRtN2fWQMX",
+        "configuration": "https://app.fastly.com/#configure/service/3GQMFG1fYBJojRtN2fWQMX",
+        "checks": {
+          "availability": [
+            1615711,
+            1617633,
+            2304098,
+            2304100
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "content-notifier",
+    "systemCode": "next-notifier",
+    "desc": "Polls content API for new content and sends notifications",
+    "paths": [],
+    "serves": [
+      "admin-page"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-content-notifier.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-content-notifier",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-content-notifier/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-content-notifier",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 0
+          },
+          "articles": {
+            "size": "standard-1X",
+            "scale": 1
+          },
+          "subscribers": {
+            "size": "standard-1X",
+            "scale": 0
+          },
+          "notifications": {
+            "size": "standard-1X",
+            "scale": 0
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "myft-email-generator",
+    "systemCode": "next-myft-email",
+    "desc": "Creates and sends digest emails for myFT",
+    "paths": [],
+    "serves": [
+      "admin-page"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-myft-email-generator.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-content-notifier",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-myft-email-generator/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-myft-email-generator",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 0
+          },
+          "clock": {
+            "size": "performance-l",
+            "scale": 0
+          },
+          "createemail": {
+            "size": "standard-1X",
+            "scale": 0
+          }
+        },
+        "checks": {
+          "availability": [
+            1679562
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "brightcove-proxy-api",
+    "systemCode": "next-brightcove",
+    "desc": "Proxies requests for FT video's hosted on brightcove.com",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-brightcove-proxy-api.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-brightcove-proxy-api",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-brightcove-proxy-api/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-brightcove-proxy-api",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            1571170
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "ammit-api",
+    "systemCode": "next-ammit-api",
+    "desc": "API for segmenting users in to AB test buckets",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-ammit-api-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-ammit-api-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-ammit-api",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-ammit-api/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-ammit-api",
+        "processes": {
+          "web": {
+            "size": "performance-m",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            1571136,
+            2142728,
+            2142731
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "ammit-docs",
+    "systemCode": "next-ammit-docs",
+    "desc": "Documentation for the next AB service",
+    "paths": [],
+    "serves": [
+      "static"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-ammit-docs.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-ammit-docs",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-ammit-docs/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-ammit-docs",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "fastly",
+    "systemCode": "next-fastly",
+    "desc": "The CDN for FT.com.",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "runbook": "http://support.ft.com/next-fastly.html",
+    "tier": "platinum",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://www.ft.com"
+        ],
+        "repo": "https://github.com/Financial-Times/ft.com-cdn",
+        "dashboard": "",
+        "checks": {
+          "availability": [
+            1571768
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "router-v2",
+    "systemCode": "next-router-v2",
+    "desc": "The old microservice router (deprecated and only used for the Heroku addons).",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-hosted-graphite.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-router",
+        "dashboard": "",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-router-v002",
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "router",
+    "systemCode": "next-router",
+    "desc": "A microservice router.",
+    "runbook": "http://support.ft.com/next-router.html",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "platinum",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-router-v003.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-router-v003-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-router",
+        "dashboard": "",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-router-v003",
+        "processes": {
+          "web": {
+            "size": "performance-m",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            2303848,
+            2303841
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "session",
+    "systemCode": "next-session",
+    "desc": "Validates user sessions, and extracts information from the membership database.",
+    "runbook": "http://support.ft.com/next-session.html",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "platinum",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-session-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-session-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-session",
+        "dashboard": "https://dashboard.heroku.com/pipelines/a8527323-7e3a-4f67-8636-2117426f17ad",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-session",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 8
+          }
+        },
+        "checks": {
+          "availability": [
+            2303851,
+            2303854
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "preflight",
+    "systemCode": "next-preflight",
+    "desc": "Rolls up all the APIs that we call from the CDN layer into one call - session service, Access API, barriers API and AB API.",
+    "runbook": "http://support.ft.com/next-preflight.html",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "platinum",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-preflight-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-preflight-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-preflight",
+        "dashboard": "https://dashboard.heroku.com/pipelines/4e745372-f6b4-4014-a07c-ddaaf1f62d1b",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-preflight",
+        "processes": {
+          "web": {
+            "size": "performance-l",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            2303849,
+            2303840
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "toggler",
+    "systemCode": "next-toggler",
+    "paths": [],
+    "desc": "Toggling as a Service",
+    "serves": [
+      "admin-page"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-toggler.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-toggler",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-toggler/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-toggler",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            1571162
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "beacon-dashboard",
+    "systemCode": "next-beacondash",
+    "paths": [],
+    "desc": "Performance dashboard",
+    "serves": [
+      "admin-page"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-beacon-dashboard.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-beacon-dashboard",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-beacon-dashboard.herokuapp.com/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-beacon-dashboard",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            1571141
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "classification-api",
+    "systemCode": "next-cclasifapi",
+    "paths": [],
+    "desc": "Classifies FT content",
+    "serves": [
+      "api"
+    ],
+    "runbook": "http://support.ft.com/next-cclasifapi.html",
+    "tier": "platinum",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-classification-api-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-classification-api-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-classification-api",
+        "dashboard": "https://dashboard.heroku.com/apps/ft-next-classification-api/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-classification-api",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 8
+          }
+        },
+        "checks": {
+          "availability": [
+            2038721,
+            2142720
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "spoor-ingest",
+    "systemCode": "next-spooringest",
+    "paths": [],
+    "desc": "Spoor ingest data processing",
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-spoor-ingest.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-spoor-ingest",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-spoor-ingest/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-spoor-ingest",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          },
+          "client": {
+            "size": "standard-1X",
+            "scale": 10
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "propensity-api",
+    "systemCode": "next-propensity",
+    "desc": "Propensity API for targetted marketing",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-propensity-api.herokuapp.com"
+        ],
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "repo": "https://github.com/Financial-Times/next-propensity-api",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-propensity-api/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-propensity-api",
+        "checks": {
+          "availability": [
+            1803037
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "clippings-proxy",
+    "systemCode": "next-clippings",
+    "paths": [],
+    "desc": "Handles journeys for old clippings users",
+    "serves": [
+      "redirect"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-clippings-proxy.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-clippings-proxy",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-clippings-proxy/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-clippings-proxy",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": []
         }
       }
     }
@@ -57,262 +939,9 @@
         },
         "repo": "https://github.com/Financial-Times/spoor-consumer",
         "dashboard": "https://dashboard.heroku.com/apps/ft-next-spoor-consumer/resources",
-        "isPrimary": true,
         "configuration": "https://dashboard.heroku.com/apps/ft-next-spoor-consumer",
         "checks": {
           "availability": []
-        }
-      }
-    }
-  },
-  {
-    "name": "markets-proxy-api",
-    "systemCode": "next-markets-api",
-    "desc": "Proxies the markets.ft.com API",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-markets-proxy-api.herokuapp.com"
-        ],
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "repo": "https://github.com/Financial-Times/next-markets-proxy-api",
-        "dashboard": "https://dashboard.heroku.com/apps/ft-next-markets-proxy-api/resources",
-        "isPrimary": true,
-        "configuration": "https://dashboard.heroku.com/apps/ft-next-markets-proxy-api",
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
-    "name": "radiator",
-    "systemCode": "next-radiator",
-    "desc": "Graphite, Pingdom and CMDB dashboard",
-    "paths": [],
-    "serves": [
-      "admin-page"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-graphite-dashboard.herokuapp.com"
-        ],
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 1
-          }
-        },
-        "repo": "https://github.com/Financial-Times/next-graphite-dashboard",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-graphite-dashboard/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-graphite-dashboard",
-        "checks": {
-          "availability": [
-            1571169
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "myft-api",
-    "systemCode": "next-myft-api",
-    "desc": "API for storing and retrieving a users personalisation and usage activity",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-myft-api.herokuapp.com"
-        ],
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 4
-          },
-          "sync": {
-            "size": "standard-1X",
-            "scale": 1
-          },
-          "history": {
-            "size": "standard-1X",
-            "scale": 4
-          },
-          "backup": {
-            "size": "standard-1X",
-            "scale": 1
-          },
-          "most-popular": {
-            "size": "standard-1X",
-            "scale": 1
-          }
-        },
-        "repo": "https://github.com/Financial-Times/next-myft-api",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-myft-api/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-myft-api",
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
-    "name": "personalised-feed-api",
-    "systemCode": "next-personalapi",
-    "desc": "Serves a personalised feed of content",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-personalised-feed-api.herokuapp.com"
-        ],
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 4
-          }
-        },
-        "repo": "https://github.com/Financial-Times/next-personalised-feed-api",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-personalised-feed-api/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-personalised-feed-api",
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
-    "name": "config-vars",
-    "systemCode": "next-config-vars",
-    "desc": "Central repositority for prod, test and dev environment variables",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-config-vars.herokuapp.com"
-        ],
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 1
-          }
-        },
-        "repo": "https://github.com/Financial-Times/next-config-vars",
-        "dashboard": "https://dashboard.heroku.com/apps/ft-next-config-vars/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-config-vars",
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
-    "name": "service-registry",
-    "systemCode": "next-registry",
-    "desc": "Lists all the services in the Next stack",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "platinum",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "EU",
-            "url": "http://ft-next-service-registry-prod.s3-website-eu-west-1.amazonaws.com"
-          },
-          {
-            "region": "US",
-            "url": "http://ft-next-service-registry-prod-us.s3-website-us-east-1.amazonaws.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-service-registry",
-        "dashboard": "https://console.aws.amazon.com/s3/home?region=us-west-2#&bucket=ft-next-service-registry-prod&prefix=",
-        "isPrimary": true,
-        "configuration": "",
-        "checks": {
-          "availability": [
-            1571159
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "pagerduty",
-    "systemCode": "next-pagerduty",
-    "desc": "Wakes up Matts when things go wrong",
-    "paths": [],
-    "serves": [
-      "admin"
-    ],
-    "tier": "platinum",
-    "versions": {
-      "1": {
-        "nodes": [
-          "https://financialtimes.pagerduty.com"
-        ],
-        "repo": "https://pagerduty.com",
-        "dashboard": "https://status.pagerduty.com/",
-        "isPrimary": true,
-        "configuration": "https://pagerduty.com",
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
-    "name": "next-geebee",
-    "systemCode": "next-next-geebee",
-    "desc": "Serves static assets via http2",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "platinum",
-    "versions": {
-      "1": {
-        "nodes": [
-          "https://next-geebee.ft.com"
-        ],
-        "repo": "http://www.akamai.com/",
-        "dashboard": "https://cloudharmony.com/status-for-akamai",
-        "isPrimary": true,
-        "configuration": "http://www.akamai.com/",
-        "checks": {
-          "availability": [
-            "1615711",
-            "1617633"
-          ]
         }
       }
     }
@@ -325,6 +954,7 @@
     "serves": [
       "api"
     ],
+    "runbook": "https://sites.google.com/a/ft.com/ft-technology-service-transition/home/run-book-library/nextelasticsearchandinterfacematthewandrewsftcom20160425",
     "tier": "platinum",
     "versions": {
       "1": {
@@ -340,550 +970,44 @@
         ],
         "repo": "https://github.com/Financial-Times/next-es-interface",
         "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-harrier-eu/resources",
-        "isPrimary": true,
         "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-harrier-eu",
         "processes": {
           "web": {
             "size": "standard-1X",
             "scale": 2
           },
-          "v1Api": {
+          "notificationsPoller": {
             "size": "standard-1X",
             "scale": 1
           },
-          "v2Api": {
+          "oldestPoller": {
             "size": "standard-1X",
             "scale": 1
           },
-          "v3ContinuousUpdater": {
+          "latestPoller": {
             "size": "standard-1X",
             "scale": 1
           },
-          "podcastsV3": {
+          "podcastPoller": {
             "size": "standard-1X",
             "scale": 1
           },
-          "v3LatestNewsUpdater": {
-            "size": "standard-1X",
-            "scale": 1
-          }
-        },
-        "checks": {
-          "availability": [
-            1856168
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "content-notifier",
-    "systemCode": "next-notifier",
-    "desc": "Polls content API for new content and sends notifications",
-    "paths": [],
-    "serves": [
-      "admin-page"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-content-notifier.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-content-notifier",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-content-notifier/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-content-notifier",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          },
-          "articles": {
-            "size": "standard-1X",
-            "scale": 1
-          },
-          "subscribers": {
-            "size": "standard-1X",
-            "scale": 2
-          },
-          "notifications": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1586058
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "myft-email-generator",
-    "systemCode": "next-myft-email",
-    "desc": "Creates and sends digest emails for myFT",
-    "paths": [],
-    "serves": [
-      "admin-page"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-myft-email-generator.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-content-notifier",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-myft-email-generator/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-myft-email-generator",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          },
-          "clock": {
-            "size": "performance-m",
-            "scale": 1
-          },
-          "createemail": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1679562
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "brightcove-proxy-api",
-    "systemCode": "next-brightcove",
-    "desc": "Proxies requests for FT video's hosted on brightcove.com",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-brightcove-proxy-api.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-brightcove-proxy-api",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-brightcove-proxy-api/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-brightcove-proxy-api",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1571170
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "ab",
-    "systemCode": "next-ab",
-    "desc": "API for segmenting users in to AB test buckets",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-ab.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-ab",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-ab/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-ab",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 10
-          }
-        },
-        "checks": {
-          "availability": [
-            1571136
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "ammit-docs",
-    "systemCode": "next-ammit-docs",
-    "desc": "Documentation for the next AB service",
-    "paths": [],
-    "serves": [
-      "static"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-ammit-docs.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-ammit-docs",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-ammit-docs/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-ammit-docs",
-        "processes": {
-          "web": {
+          "pushUpdater": {
             "size": "standard-1X",
             "scale": 1
           }
         },
         "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
-    "name": "fastly",
-    "systemCode": "next-fastly",
-    "desc": "The CDN for Next.",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "platinum",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://next.ft.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-cdn",
-        "dashboard": "",
-        "isPrimary": true,
-        "checks": {
           "availability": [
-            1571768
+            1856168,
+            2303850,
+            2303855
           ]
         }
       }
-    }
-  },
-  {
-    "name": "router-v2",
-    "systemCode": "next-router-v2",
-    "desc": "The old microservice router (deprecated and only used for the Heroku addons).",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "EU",
-            "url": "http://ft-next-hosted-graphite.herokuapp.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-router",
-        "dashboard": "",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-router-v002",
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
-    "name": "router",
-    "systemCode": "next-router",
-    "desc": "A microservice router.",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "platinum",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "EU",
-            "url": "http://ft-next-router-v003.herokuapp.com"
-          },
-          {
-            "region": "US",
-            "url": "http://ft-next-router-v003-us.herokuapp.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-router",
-        "dashboard": "",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-router-v003",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 8
-          }
-        },
-        "checks": {
-          "availability": [
-            1571158,
-            1770884
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "session",
-    "systemCode": "next-session",
-    "desc": "Validates user sessions, and extracts information from the membership database.",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "platinum",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "eu",
-            "url": "http://ft-next-session-eu.herokuapp.com"
-          },
-          {
-            "region": "us",
-            "url": "http://ft-next-session-us.herokuapp.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-session",
-        "dashboard": "https://dashboard.heroku.com/pipelines/a8527323-7e3a-4f67-8636-2117426f17ad",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-session",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 8
-          }
-        },
-        "checks": {
-          "availability": [
-            1837945
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "preflight",
-    "systemCode": "next-preflight",
-    "desc": "Rolls up all the APIs that we call from the CDN layer into one call - session service, Access API, barriers API and AB API.",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "platinum",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "eu",
-            "url": "http://ft-next-preflight-eu.herokuapp.com"
-          },
-          {
-            "region": "us",
-            "url": "http://ft-next-preflight-us.herokuapp.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-preflight",
-        "dashboard": "https://dashboard.heroku.com/pipelines/4e745372-f6b4-4014-a07c-ddaaf1f62d1b",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-preflight",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 25
-          }
-        },
-        "checks": {
-          "availability": [
-            1838409,
-            1838411
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "stream-page",
-    "systemCode": "next-stream-page",
-    "paths": [
-      "^/(organisations|people)",
-      "^/news-feed",
-      "^/page",
-      "^/people",
-      "^/profile",
-      "^/related",
-      "^/search(?!-suggestions)",
-      "^/special-reports",
-      "^/stream-page",
-      "^/stream/(primarySectionId|genreId|brandId|peopleId|sectionsId|organisationsId|regionsId|topicsId|authorsId|subjectsId|specialReportsId|icbId)",
-      "^/top-rated"
-    ],
-    "desc": "A service that serves streams",
-    "tier": "bronze",
-    "serves": [
-      "user-page"
-    ],
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-stream-page.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-stream-page",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-stream-page/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-stream-page",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1675899,
-            1675894
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "myft-page",
-    "systemCode": "next-myft-page",
-    "paths": [
-      "^/myft-page",
-      "^/mypage",
-      "^/myft",
-      "^/__myft"
-    ],
-    "desc": "A service that serves personalised content",
-    "tier": "bronze",
-    "serves": [
-      "user-page"
-    ],
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-myft-page.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-myft-page",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-myft-page/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-myft-page",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 4
-          }
-        },
-        "checks": {
-          "availability": [
-            1817124
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "clippings-proxy",
-    "systemCode": "next-clippings",
-    "paths": [],
-    "desc": "Handles journeys for old clippings users",
-    "serves": [
-      "redirect"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "EU",
-            "url": "http://ft-next-clippings-proxy.herokuapp.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-clippings-proxy",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-clippings-proxy/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-clippings-proxy",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
-    "name": "article",
-    "systemCode": "next-article",
-    "paths": [
-      "^/article",
-      "^/articles",
-      "^/content/[a-z0-9]{24}",
-      "^/content/([a-f0-9]+)-([a-f0-9]+)-([a-f0-9]+)-([a-f0-9]+)-([a-f0-9]+)",
-      "^/embedded-components/[a-z]+/[a-f0-9-]+",
-      "^/more-on"
-    ],
-    "desc": "A service that serves articles",
-    "serves": [
-      "user-page"
-    ],
-    "tier": "platinum",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "eu",
-            "url": "http://ft-next-article-eu.herokuapp.com"
-          },
-          {
-            "region": "us",
-            "url": "http://ft-next-article-us.herokuapp.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-article",
-        "dashboard": "https://dashboard.heroku.com/pipelines/bab7096a-3981-4f7e-8637-6daff95bf5d0",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-article",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 8
-          }
-        },
-        "checks": {
-          "availability": [
-            1770474
-          ]
-        }
-      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
     }
   },
   {
@@ -894,22 +1018,22 @@
     "serves": [
       "static"
     ],
+    "runbook": "https://sites.google.com/a/ft.com/ft-technology-service-transition/home/run-book-library/apifeatureflagsmatthewandrewsftcom20160526",
     "tier": "platinum",
     "versions": {
       "1": {
         "nodes": [
           {
-            "region": "EU",
+            "region": "eu",
             "url": "http://ft-next-feature-flags-prod.s3-website-eu-west-1.amazonaws.com"
           },
           {
-            "region": "US",
+            "region": "us",
             "url": "http://ft-next-feature-flags-prod-us.s3-website-us-east-1.amazonaws.com"
           }
         ],
         "repo": "https://github.com/Financial-Times/next-feature-flags-api",
         "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-api-feature-flags/resources",
-        "isPrimary": true,
         "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-api-feature-flags",
         "processes": {
           "web": {
@@ -919,745 +1043,15 @@
         },
         "checks": {
           "availability": [
-            1571137
+            1773444,
+            1773442,
+            1773445
           ]
         }
       }
-    }
-  },
-  {
-    "name": "toggler",
-    "systemCode": "next-toggler",
-    "paths": [],
-    "desc": "Toggling as a Service",
-    "serves": [
-      "admin-page"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-toggler.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-toggler",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-toggler/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-toggler",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1571162
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "beacon-dashboard",
-    "systemCode": "next-beacondash",
-    "paths": [
-      "^/performance"
-    ],
-    "desc": "Performance dashboard",
-    "serves": [
-      "admin-page"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-beacon-dashboard.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-beacon-dashboard",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-beacon-dashboard.herokuapp.com/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-beacon-dashboard",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1571141
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "errors",
-    "systemCode": "next-errors",
-    "paths": [
-      "^/errors"
-    ],
-    "desc": "A service that serves error pages",
-    "tier": "platinum",
-    "serves": [
-      "user-page"
-    ],
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "EU",
-            "url": "http://ft-next-errors-eu.herokuapp.com"
-          },
-          {
-            "region": "US",
-            "url": "http://ft-next-errors-us.herokuapp.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-errors",
-        "dashboard": "https://dashboard.heroku.com/pipelines/3f75086b-efed-4573-a25c-f92db56a3bdf",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-errors",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1571146
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "product-selector",
-    "systemCode": "next-product-sel",
-    "paths": [
-      "^/product-selector",
-      "^/products",
-      "^/barriers"
-    ],
-    "desc": "Displays the product selector page",
-    "serves": [
-      "user-page"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-product-selector.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-product-selector",
-        "dashboard": "https://dashboard.heroku.com/apps/ft-next-product-selector/",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-product-selector",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1646022
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "signup",
-    "systemCode": "next-signup",
-    "paths": [
-      "^/signup",
-      "^/signup$",
-      "^/signup/api/subscription$",
-      "^/thank-you$",
-      "^/payment-gateway-callback$"
-    ],
-    "desc": "Displays the subscription page",
-    "serves": [
-      "user-page"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-signup.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-signup",
-        "dashboard": "https://dashboard.heroku.com/apps/ft-next-signup/",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-signup",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          },
-          "clock": {
-            "size": "standard-1X",
-            "scale": 1
-          },
-          "worker": {
-            "size": "standard-1X",
-            "scale": 1
-          }
-        },
-        "checks": {
-          "availability": [
-            2038538
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "classification-api",
-    "systemCode": "next-cclasifapi",
-    "paths": [],
-    "desc": "Classifies FT content",
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-classification-api.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-classification-api",
-        "dashboard": "https://dashboard.heroku.com/apps/ft-next-classification-api/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-classification-api",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            2038721,
-            1571165
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "front-page",
-    "systemCode": "next-front-page",
-    "paths": [
-      "^/front-page",
-      "^/robots.txt",
-      "^/(__)?home/fastft.json",
-      "^/$"
-    ],
-    "desc": "front page as a service",
-    "serves": [
-      "user-page"
-    ],
-    "tier": "platinum",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "eu",
-            "url": "http://ft-next-front-page-eu.herokuapp.com"
-          },
-          {
-            "region": "us",
-            "url": "http://ft-next-front-page-us.herokuapp.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-front-page",
-        "dashboard": "https://dashboard.heroku.com/pipelines/5d31735a-8fd2-4107-b456-1319ab834802",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-front-page",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1581695
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "opt-in-out",
-    "systemCode": "next-opt-in-out",
-    "paths": [
-      "^/__opt-in$",
-      "^/__opt-in/sharing/content/(.+)",
-      "^/opt-out$",
-      "^/__anon-opt-in",
-      "^/__m-dot-opt-in",
-      "^/opt-out-form",
-      "^/opt-in-out",
-      "^/opt-out-confirm$",
-      "^/opt-out-feedback$",
-      "^/user-feedback/opt-out$"
-    ],
-    "desc": "Opting in/out of next.ft.com",
-    "serves": [
-      "user-page",
-      "redirect"
-    ],
-    "tier": "platinum",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "EU",
-            "url": "http://ft-next-opt-in-out.herokuapp.com",
-            "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-opt-in-out"
-          },
-          {
-            "region": "US",
-            "url": "http://ft-next-opt-in-out-us.herokuapp.com",
-            "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-opt-in-out-us"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-opt-in-out",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-opt-in-out/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-opt-in-out",
-        "processes": {
-          "web": {
-            "size": "performance-m",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1770115,
-            1571155
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "feedback",
-    "systemCode": "next-feedback",
-    "paths": [
-      "^/nps-feedback$",
-      "^/feedback"
-    ],
-    "desc": "Next feedback app",
-    "serves": [
-      "user-page"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-feedback.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-feedback",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-feedback/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-feedback",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
-    "name": "opt-in-template",
-    "systemCode": "next-optintempl",
-    "paths": [
-      "^/__opt-template.js$",
-      "^/__opt-template-mdot.js$"
-    ],
-    "desc": "Opt-in link template as a service",
-    "serves": [
-      "static"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-opt-in-template.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-opt-in-template",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-opt-in-template/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-opt-in-template",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1571156
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "assets",
-    "systemCode": "next-assets",
-    "paths": [
-      "^/assets"
-    ],
-    "desc": "Serves static assets needed by multiple next applications",
-    "serves": [
-      "static"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-assets-prod.s3-website-eu-west-1.amazonaws.com"
-        ],
-        "dashboard": "http://status.aws.amazon.com",
-        "repo": "https://github.com/Financial-Times/next-assets",
-        "isPrimary": true,
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
-    "name": "hashed-assets",
-    "systemCode": "next-hashedasset",
-    "paths": [
-      "^/hashed-assets"
-    ],
-    "desc": "Serves hashed js/css/maps needed by next applications from S3",
-    "serves": [
-      "static"
-    ],
-    "tier": "platinum",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "EU",
-            "url": "http://ft-next-hashed-assets-prod.s3-website-eu-west-1.amazonaws.com"
-          },
-          {
-            "region": "US",
-            "url": "http://ft-next-hashed-assets-prod-us.s3-website-us-east-1.amazonaws.com"
-          }
-        ],
-        "dashboard": "http://status.aws.amazon.com",
-        "repo": "",
-        "isPrimary": true,
-        "checks": {
-          "availability": [
-            1843686
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "tme-search-api",
-    "systemCode": "next-tmesearch",
-    "paths": [
-      "^/search-suggestions"
-    ],
-    "desc": "tme search api, temporarily serving user facing search suggestions",
-    "serves": [
-      "user-page"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-tme-search-api.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-tme-search-api",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-tme-search-api/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-tme-search-api",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 3
-          }
-        },
-        "checks": {
-          "availability": [
-            1715911
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "login-logout",
-    "systemCode": "next-loginlogout",
-    "paths": [
-      "^/login",
-      "^/logout"
-    ],
-    "desc": "Logs users in and out",
-    "serves": [
-      "redirect"
-    ],
-    "tier": "platinum",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "eu",
-            "url": "http://ft-next-login-logout-eu.herokuapp.com"
-          },
-          {
-            "region": "us",
-            "url": "http://ft-next-login-logout-us.herokuapp.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-login-logout",
-        "dashboard": "https://dashboard.heroku.com/pipelines/a982bca5-e90d-45de-8d57-97c190c71bef",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-login-logou",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1839370,
-            1839373
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "spoor-ingest",
-    "systemCode": "next-spooringest",
-    "paths": [],
-    "desc": "Spoor ingest data processing",
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-spoor-ingest.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-spoor-ingest",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-spoor-ingest/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-spoor-ingest",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          },
-          "client": {
-            "size": "standard-1X",
-            "scale": 10
-          }
-        },
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
-    "name": "interactives",
-    "systemCode": "next-ig",
-    "desc": "Serve embedded interactives (iframes) and microsites",
-    "paths": [
-      "^/ig(?!/sites)",
-      "^/sites"
-    ],
-    "serves": [
-      "static"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://interactive.ftdata.co.uk"
-        ],
-        "isPrimary": true,
-        "dashboard": "http://git.svc.ft.com/projects/IG",
-        "repo": "http://git.svc.ft.com/projects/IG",
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
-    "name": "health",
-    "systemCode": "next-health",
-    "paths": [
-      "^/__health"
-    ],
-    "desc": "Next Health Checks",
-    "serves": [
-      "admin-page"
-    ],
-    "tier": "platinum",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": " EU",
-            "url": "http://ft-next-health-eu.herokuapp.com"
-          },
-          {
-            "region": " US",
-            "url": "http://ft-next-health-us.herokuapp.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-health",
-        "dashboard": "https://dashboard.heroku.com/pipelines/736ee205-b510-40bc-b58f-7b97709559a8",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-health",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1780023,
-            1780026
-          ],
-          "health": {
-            "1": [
-              1682335
-            ],
-            "2": [
-              1736198
-            ],
-            "3": [
-              1739218
-            ]
-          }
-        }
-      }
-    }
-  },
-  {
-    "name": "service-worker",
-    "systemCode": "next-sw",
-    "paths": [
-      "^/__sw.js$"
-    ],
-    "desc": "Global ServiceWorker file",
-    "serves": [
-      "static"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-service-worker-prod.s3-website-eu-west-1.amazonaws.com"
-        ],
-        "repo": "https://github.com/Financial-Times/n-service-worker",
-        "isPrimary": true,
-        "dashboard": "",
-        "checks": {
-          "availability": [
-            1736457
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "propensity-api",
-    "systemCode": "next-propensity",
-    "desc": "Propensity API for targetted marketing",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-propensity-api.herokuapp.com"
-        ],
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "repo": "https://github.com/Financial-Times/next-propensity-api",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-propensity-api/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-propensity-api",
-        "checks": {
-          "availability": [
-            1803037
-          ]
-        }
-      }
-    }
-  },
-  {
-    "name": "ads-api",
-    "systemCode": "next-ads-api",
-    "desc": "API to get targeting info for advertising on Next",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "eu",
-            "url": "http://ft-next-ads-api-eu.herokuapp.com"
-          },
-          {
-            "region": "us",
-            "url": "http://ft-next-ads-api-eu.herokuapp.com"
-          }
-        ],
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "repo": "https://github.com/Financial-Times/ads-api",
-        "dashboard": "https://dashboard.heroku.com/apps/ft-next-ads-api/resources",
-        "isPrimary": true,
-        "configuration": "https://dashboard.heroku.com/apps/ft-next-ads-api",
-        "checks": {
-          "availability": [
-            2085182
-          ]
-        }
-      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
     }
   },
   {
@@ -1671,7 +1065,6 @@
     "tier": "bronze",
     "versions": {
       "1": {
-        "isPrimary": true,
         "nodes": [
           {
             "region": "eu",
@@ -1738,7 +1131,6 @@
         ],
         "repo": "https://github.com/Financial-Times/next-falcon-redirect",
         "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-falcon-redirect/resources",
-        "isPrimary": true,
         "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-falcon-redirect",
         "processes": {
           "web": {
@@ -1767,18 +1159,49 @@
       "1": {
         "nodes": [
           {
-            "region": "EU",
+            "region": "eu",
             "url": "http://ft-next-flags-api-eu.herokuapp.com"
           }
         ],
         "repo": "https://github.com/Financial-Times/next-flags-api",
         "dashboard": "https://dashboard.heroku.com/pipelines/c7bd8f6b-7b8d-4163-81c1-51a9049c2518",
-        "isPrimary": true,
         "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-flags-api",
         "processes": {
           "web": {
             "size": "standard-1X",
             "scale": 2
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "flag-expiry-notifier",
+    "systemCode": "next-flag-expry",
+    "paths": [],
+    "desc": "Service for sending notifications of expiring feature flags",
+    "serves": [
+      "static"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "https://ft-next-flag-expiry-notifier.herokuapp.com/"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-flag-expiry-notifier",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-flag-expiry-notify/resources",
+        "configuration": "",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 0
           }
         },
         "checks": {
@@ -1800,13 +1223,12 @@
       "1": {
         "nodes": [
           {
-            "region": "EU",
+            "region": "eu",
             "url": "http://ft-next-popular-api-eu.herokuapp.com"
           }
         ],
         "repo": "https://github.com/Financial-Times/next-popular-api",
         "dashboard": "https://www.hostedgraphite.com/bbaf3ccf/grafana/#/dashboard/db/popular-api",
-        "isPrimary": true,
         "configuration": "https://ft-next-config-vars.herokuapp.com/production/ft-next-popular-api",
         "processes": {
           "web": {
@@ -1815,7 +1237,9 @@
           }
         },
         "checks": {
-          "availability": []
+          "availability": [
+            2158521
+          ]
         }
       }
     }
@@ -1833,18 +1257,17 @@
       "1": {
         "nodes": [
           {
-            "region": "EU",
+            "region": "eu",
             "url": "http://ft-next-flags-ui-eu.herokuapp.com"
           }
         ],
         "repo": "https://github.com/Financial-Times/next-flags-ui",
         "dashboard": "https://dashboard.heroku.com/pipelines/d1a7143a-f8a6-42fe-bbc5-3fa8cc0078b4",
-        "isPrimary": true,
         "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-flags-ui",
         "processes": {
           "web": {
             "size": "standard-1X",
-            "scale": 0
+            "scale": 1
           }
         },
         "checks": {
@@ -1854,83 +1277,53 @@
     }
   },
   {
-    "name": "graphql-api",
-    "systemCode": "next-graphql-api",
-    "desc": "GraphQL API to retrieve date for Next",
+    "name": "api",
+    "systemCode": "next-api",
+    "desc": "API for Next products",
     "paths": [],
     "serves": [
       "api"
     ],
+    "runbook": "http://support.ft.com/next-api.html",
     "tier": "platinum",
     "versions": {
       "1": {
         "nodes": [
           {
             "region": "eu",
-            "url": "http://ft-next-graphql-api-eu.herokuapp.com"
+            "url": "http://ft-next-api-eu.herokuapp.com"
           },
           {
             "region": "us",
-            "url": "http://ft-next-graphql-api-us.herokuapp.com"
+            "url": "http://ft-next-api-us.herokuapp.com"
           }
         ],
-        "repo": "https://github.com/Financial-Times/next-graphql-api",
-        "dashboard": "https://dashboard.heroku.com/pipelines/3b4ae718-88d9-4852-b028-629ffaaf3af7",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-graphql-api",
+        "repo": "https://github.com/Financial-Times/next-api",
+        "dashboard": "https://dashboard.heroku.com/pipelines/a9554544-68b2-416e-87e5-e46bbc60c9df",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/production/ft-next-api",
         "processes": {
           "web": {
-            "size": "standard-2X",
-            "scale": 2
+            "size": "standard-2x",
+            "scale": 8
           }
         },
         "checks": {
           "availability": [
-            1849745
+            2349600,
+            2332340,
+            2332331
           ]
         }
       }
-    }
-  },
-  {
-    "name": "em-dot-warn-page",
-    "systemCode": "next-em-dot-warn",
-    "paths": [],
-    "desc": "Warns people trying to opt out of Next",
-    "serves": [
-      "redirect"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "EU",
-            "url": "http://ft-next-em-dot-warn-page.herokuapp.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-em-dot-warn-page",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-em-dot-warn-page/resources",
-        "isPrimary": true,
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-em-dot-warn-page",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": []
-        }
-      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
     }
   },
   {
     "name": "beacon-v2",
     "systemCode": "next-beacon-v2",
-    "paths": [
-      "^/performance"
-    ],
+    "paths": [],
     "desc": "Second generation performance dashboard",
     "serves": [
       "admin-page"
@@ -1943,14 +1336,9 @@
         ],
         "repo": "https://github.com/Financial-Times/next-beacon-v2",
         "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-beacon-v2.herokuapp.com/resources",
-        "isPrimary": true,
         "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-beacon-v2",
         "processes": {
           "web": {
-            "size": "standard-1X",
-            "scale": 2
-          },
-          "bot": {
             "size": "standard-1X",
             "scale": 1
           }
@@ -1964,9 +1352,7 @@
   {
     "name": "rfv-api",
     "systemCode": "next-rfv-api",
-    "paths": [
-      "^/performance"
-    ],
+    "paths": [],
     "desc": "API to get RFV",
     "serves": [
       "admin-page"
@@ -1979,7 +1365,6 @@
         ],
         "repo": "http://git.svc.ft.com/projects/NEXT/repos/rfv-api",
         "dashboard": "https://dashboard.heroku.com/apps/ft-next-rfv-api/resources",
-        "isPrimary": true,
         "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-rfv-api",
         "processes": {
           "web": {
@@ -1991,14 +1376,15 @@
           "availability": []
         }
       }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
     }
   },
   {
     "name": "rfv-api-historic",
     "systemCode": "next-rfv-api-h",
-    "paths": [
-      "^/performance"
-    ],
+    "paths": [],
     "desc": "API to get RFV (historic version)",
     "serves": [
       "admin-page"
@@ -2011,7 +1397,6 @@
         ],
         "repo": "http://git.svc.ft.com/projects/NEXT/repos/rfv-api/compare/commits?sourceBranch=refs%2Fheads%2Fseptember",
         "dashboard": "https://dashboard.heroku.com/apps/ft-next-rfv-api-historic/resources",
-        "isPrimary": true,
         "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-rfv-api",
         "processes": {
           "web": {
@@ -2039,7 +1424,6 @@
         ],
         "repo": "https://github.com/Financial-Times/next-fastly-to-graphite",
         "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-fastly-to-graphite/resources",
-        "isPrimary": true,
         "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-fastly-to-graphite",
         "processes": {
           "next-prod-stats": {
@@ -2051,6 +1435,1463 @@
             "scale": 1
           },
           "falcon-stats": {
+            "size": "standard-1X",
+            "scale": 1
+          },
+          "next-api-stats": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "signup-proxy",
+    "systemCode": "next-singup-pxi",
+    "paths": [],
+    "desc": "Proxy server for the next-signup app to redirect zuora requests to heroku branch apps during CI",
+    "serves": [
+      "qa"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-signup-proxy.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-signup-proxy",
+        "dashboard": "https://dashboard.heroku.com/apps/ft-next-signup-proxy/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-signup-proxy",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "webhooks",
+    "systemCode": "next-webhooks",
+    "paths": [],
+    "desc": "Service for processing webhooks and sending them onwards",
+    "serves": [],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "https://ft-next-webhooks.herokuapp.com/"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-webhooks",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-webhooks",
+        "configuration": "",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "navigation-api",
+    "systemCode": "next-navigation-api",
+    "desc": "Returns json data for all navigation required by the site.",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-navigation-api-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-navigation-api-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-snavigation-api",
+        "dashboard": "https://dashboard.heroku.com/pipelines/a09e13e4-72f9-40ba-881e-d01ce03d420d",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-navigation",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            2222654,
+            2222652,
+            2222641
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "encryption-api",
+    "systemCode": "next-encryptionapi",
+    "desc": "An API for encrypting data",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-encryption-api.herokuapp.com"
+        ],
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "repo": "https://github.com/Financial-Times/next-encryption-api",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-encryption-api/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-encryption-api",
+        "checks": {
+          "availability": [
+            2224245
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "next-anon-user-team",
+      "email": "next.anon.team@ft.com"
+    }
+  },
+  {
+    "name": "barrier-guru",
+    "systemCode": "next-barrier-guru",
+    "paths": [],
+    "desc": "Barrier configuration and customisation service.",
+    "runbook": "https://sites.google.com/a/ft.com/ft-technology-service-transition/home/run-book-library/nextbarrierguruellispritchardftcom20160907",
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "https://ft-next-barrier-guru-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "https://ft-next-barrier-guru-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-barrier-guru",
+        "dashboard": "https://dashboard.heroku.com/pipelines/8c39cd07-ac75-4bde-9b99-eb8e615d8121",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-barrier-guru",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            2249759
+          ]
+        },
+        "notifications": {
+          "slack": "membership-next"
+        }
+      }
+    }
+  },
+  {
+    "name": "barrier-guru-at",
+    "systemCode": "next-barrier-guru-at",
+    "paths": [],
+    "desc": "Acceptance Tests for Barrier configuration and customisation service.",
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "https://ft-next-barrier-guru-at-eu.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-barrier-guru-at",
+        "dashboard": "https://dashboard.heroku.com/pipelines/876e69a7-349f-4b40-b203-d1b0e6fadb15",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-barrier-guru-at",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": [
+            2313341
+          ]
+        },
+        "notifications": {
+          "slack": "membership-next"
+        }
+      }
+    }
+  },
+  {
+    "name": "article-trace",
+    "systemCode": "next-article-trace",
+    "desc": "Investigates how long new content takes to get to the homepage.",
+    "paths": [],
+    "serves": [
+      "worker"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-article-trace-eu.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-navigation-api",
+        "dashboard": "https://dashboard.heroku.com/pipelines/cd950eb2-085e-402b-94a0-2f1235599ee8",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-article-trace",
+        "processes": {
+          "worker": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "signup-api",
+    "systemCode": "next-signupapi",
+    "desc": "API endpoints for the signup app",
+    "paths": [],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-signup-api.herokuapp.com"
+        ],
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "repo": "https://github.com/Financial-Times/next-signup-api",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-signup-api/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-signup-api",
+        "checks": {
+          "availability": [
+            2259806
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "next-anon-user-team",
+      "email": "next.anon.team@ft.com"
+    }
+  },
+  {
+    "name": "url-management-database",
+    "systemCode": "next-url-management-db",
+    "paths": [],
+    "desc": "Provides mappings for vanity URLs and redirects on Next FT.com",
+    "runbook": "https://sites.google.com/a/ft.com/ft-technology-service-transition/home/run-book-library/next-url-management",
+    "serves": [
+      "api"
+    ],
+    "tier": "platinum",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "https://console.aws.amazon.com/dynamodb/home?region=eu-west-1#tables:selected=urlmgmtapi_master"
+          },
+          {
+            "region": "us",
+            "url": "https://console.aws.amazon.com/dynamodb/home?region=us-east-1#tables:selected=urlmgmtapi_slave"
+          }
+        ],
+        "repo": "N/A: this is just a database",
+        "checks": {
+          "availability": []
+        },
+        "dashboard": "https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1#dashboards:name=urlmgmtapi_master-table"
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "purge",
+    "systemCode": "next-purge",
+    "desc": "Dynamic, event-driven CDN puring.",
+    "paths": [],
+    "serves": [
+      "worker"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-purge.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-purge",
+        "dashboard": "hhttps://dashboard.heroku.com/apps/ft-next-purge/",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-purge",
+        "processes": {
+          "worker": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "add-ons",
+    "systemCode": "next-add-ons",
+    "desc": "App for collecting together next-wide heroku add-ons",
+    "paths": [],
+    "serves": [],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-add-ons.herokuapp.com"
+          }
+        ],
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 0
+          }
+        },
+        "repo": "",
+        "dashboard": "https://dashboard-classic.heroku.com/apps/ft-next-add-ons/resources",
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "mission-control",
+    "systemCode": "next-mission-control",
+    "desc": "Allows control over the various apps in the ecosystem",
+    "paths": [],
+    "serves": [
+      "admin-panel"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "isPrimary": true,
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-m-control-eu.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-mission-control",
+        "dashboard": "https://dashboard.heroku.com/pipelines/1941c1f7-dfba-4068-9fa2-42e5d3888c88",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-mission-control",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "video-page",
+    "systemCode": "next-video-page",
+    "desc": "Video page",
+    "paths": [],
+    "serves": [
+      "user-page"
+    ],
+    "runbook": "",
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-video-page.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-video-page",
+        "dashboard": "",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/production/ft-next-video-page",
+        "processes": {
+          "web": {
+            "size": "standard-1x",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    },
+    "notifications": {
+      "slack": "videohub"
+    }
+  },
+  {
+    "name": "front-page",
+    "systemCode": "next-front-page",
+    "paths": [
+      "^/front-page",
+      "^/robots.txt",
+      "^/(__)?home/fastft.json",
+      "^/$"
+    ],
+    "runbook": "http://support.ft.com/next-front-page.html",
+    "desc": "front page as a service",
+    "serves": [
+      "user-page"
+    ],
+    "tier": "platinum",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-front-page-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-front-page-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-front-page",
+        "dashboard": "https://dashboard.heroku.com/pipelines/5d31735a-8fd2-4107-b456-1319ab834802",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-front-page",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 4
+          }
+        },
+        "checks": {
+          "availability": [
+            2303843,
+            2303847
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "article-email",
+    "systemCode": "next-articlemail",
+    "paths": [
+      "^/article-email"
+    ],
+    "desc": "A proxy for article to use the legacy email/gift systems",
+    "tier": "bronze",
+    "serves": [
+      "user-page"
+    ],
+    "versions": {
+      "1": {
+        "nodes": [
+          "https://a20her8id6.execute-api.eu-west-1.amazonaws.com/prod"
+        ],
+        "repo": "",
+        "dashboard": "",
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "article",
+    "systemCode": "next-article",
+    "paths": [
+      "^/article",
+      "^/articles",
+      "^/content/([a-f0-9]+)-([a-f0-9]+)-([a-f0-9]+)-([a-f0-9]+)-([a-f0-9]+)",
+      "^/embedded-components/[a-z]+/[a-f0-9-]+"
+    ],
+    "desc": "A service that serves articles",
+    "runbook": "http://support.ft.com/next-article.html",
+    "serves": [
+      "user-page"
+    ],
+    "tier": "platinum",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-article-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-article-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-article",
+        "dashboard": "https://dashboard.heroku.com/pipelines/bab7096a-3981-4f7e-8637-6daff95bf5d0",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-article",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 8
+          }
+        },
+        "checks": {
+          "availability": [
+            2303842,
+            2303846,
+            1770474
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "stream-page",
+    "systemCode": "next-stream-page",
+    "paths": [
+      "^/(organisations|people)",
+      "^/news-feed",
+      "^/search(?!-suggestions)",
+      "^/special-reports",
+      "^/stream-page",
+      "^/stream/(primarySectionId|genreId|brandId|peopleId|sectionsId|organisationsId|regionsId|topicsId|authorsId|subjectsId|specialReportsId|icbId)",
+      "^/stream/related-video"
+    ],
+    "desc": "A service that serves streams",
+    "tier": "bronze",
+    "serves": [
+      "user-page"
+    ],
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-stream-page-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-stream-page-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-stream-page",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-stream-page/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-stream-page",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 12
+          }
+        },
+        "checks": {
+          "availability": [
+            1675899,
+            1675894
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "myft-email",
+    "systemCode": "next-myft-email",
+    "paths": [
+      "^/myft/email"
+    ],
+    "desc": "A service that serves email content",
+    "tier": "bronze",
+    "serves": [
+      "user-page"
+    ],
+    "versions": {
+      "1": {
+        "nodes": [
+          "https://a421mqw1bj.execute-api.eu-west-1.amazonaws.com/prod"
+        ],
+        "repo": "https://github.com/Financial-Times/next-myft-email",
+        "dashboard": "",
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "myft-page",
+    "systemCode": "next-myft-page",
+    "paths": [
+      "^/myft-page",
+      "^/mypage",
+      "^/myft",
+      "^/__myft"
+    ],
+    "desc": "A service that serves personalised content",
+    "tier": "bronze",
+    "serves": [
+      "user-page"
+    ],
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-myft-page.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-myft-page",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-myft-page/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-myft-page",
+        "processes": {
+          "web": {
+            "size": "standard-2X",
+            "scale": 5
+          }
+        },
+        "checks": {
+          "availability": [
+            1817124
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "tour-page",
+    "systemCode": "next-tour-page",
+    "paths": [
+      "^/tour-page",
+      "^/tour"
+    ],
+    "desc": "Serves a full-page tour of the new FT",
+    "tier": "bronze",
+    "serves": [
+      "user-page"
+    ],
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-tour-page.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-tour-page",
+        "dashboard": "",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-tour-page",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "opt-in-out",
+    "systemCode": "next-opt-in-out",
+    "paths": [
+      "^/__opt-in$",
+      "^/__opt-in/sharing/content/(.+)",
+      "^/opt-out$",
+      "^/__anon-opt-in",
+      "^/__m-dot-opt-in",
+      "^/opt-out-form",
+      "^/opt-in-out",
+      "^/opt-out-confirm$",
+      "^/opt-out-feedback$",
+      "^/user-feedback/opt-out$"
+    ],
+    "runbook": "https://sites.google.com/a/ft.com/ft-technology-service-transition/home/run-book-library/nextoptinoutbillmynerftcom20160601",
+    "desc": "Opting in/out of next.ft.com",
+    "serves": [
+      "user-page",
+      "redirect"
+    ],
+    "tier": "platinum",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-opt-in-out.herokuapp.com",
+            "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-opt-in-out"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-opt-in-out-us.herokuapp.com",
+            "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-opt-in-out-us"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-opt-in-out",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-opt-in-out/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-opt-in-out",
+        "processes": {
+          "web": {
+            "size": "performance-m",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            1571155,
+            2303844,
+            2303859
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "errors",
+    "systemCode": "next-errors",
+    "paths": [
+      "^/errors",
+      "/__brew-coffee"
+    ],
+    "runbook": "http://support.ft.com/next-errors.html",
+    "desc": "A service that serves error pages",
+    "tier": "platinum",
+    "serves": [
+      "user-page"
+    ],
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-errors-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-errors-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-errors",
+        "dashboard": "https://dashboard.heroku.com/pipelines/3f75086b-efed-4573-a25c-f92db56a3bdf",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-errors",
+        "suppressFriendlyErrors": true,
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            2303853,
+            2303857
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "product",
+    "systemCode": "next-product",
+    "desc": "Displays the product selector page",
+    "paths": [
+      "^/product-selector",
+      "^/products",
+      "^/barriers",
+      "^/country"
+    ],
+    "serves": [
+      "user-page"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-product-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-product-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-product-selector",
+        "dashboard": "https://dashboard.heroku.com/pipelines/5adf06c5-608c-4807-a4f1-1c16f916e7b5",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/production/ft-next-product",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            2323329,
+            2323333
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "signup",
+    "systemCode": "next-signup",
+    "paths": [
+      "^/signup",
+      "^/signup$",
+      "^/signup/api/subscription$",
+      "^/signup/api/user/exists$",
+      "^/thank-you$",
+      "^/payment-gateway-callback$",
+      "^/crypto/encrypt$",
+      "^/crypto/decrypt$",
+      "^/upgrade"
+    ],
+    "desc": "Displays the subscription page",
+    "serves": [
+      "user-page"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-signup-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-signup-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-signup",
+        "dashboard": "https://dashboard.heroku.com/pipelines/4cedd067-21f9-4907-b1f9-d06da1da24de",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/production/ft-next-signup",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": [
+            2292430
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "next-anon-user-team",
+      "email": "next.anon.team@ft.com"
+    }
+  },
+  {
+    "name": "corp-signup",
+    "systemCode": "next-corp-signup",
+    "paths": [
+      "^/corp-signup",
+      "^/corp-signup$",
+      "^/corp-signup/api/user/exists$"
+    ],
+    "desc": "Corporate subscription and trial signup",
+    "serves": [
+      "user-page"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-corp-signup-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-corp-signup-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-corp-signup",
+        "dashboard": "https://dashboard.heroku.com/pipelines/b191f395-f2dd-4b4e-a44e-d5af4ae8d09c",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/production/ft-next-corp-signup",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    },
+    "notifications": {
+      "slack": "next-b2b",
+      "email": "nextb2b@ft.com"
+    }
+  },
+  {
+    "name": "feedback",
+    "systemCode": "next-feedback",
+    "paths": [
+      "^/nps-feedback$",
+      "^/feedback"
+    ],
+    "desc": "Next feedback app",
+    "serves": [
+      "user-page"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-feedback.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-feedback",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-feedback/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-feedback",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "opt-in-template",
+    "systemCode": "next-optintempl",
+    "paths": [
+      "^/__opt-template.js$",
+      "^/__opt-template-mdot.js$"
+    ],
+    "desc": "Opt-in link template as a service",
+    "serves": [
+      "static"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-opt-in-template.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-opt-in-template",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-opt-in-template/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-opt-in-template",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            1571156
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "assets",
+    "systemCode": "next-assets",
+    "paths": [
+      "^/assets"
+    ],
+    "desc": "Serves static assets needed by multiple next applications",
+    "serves": [
+      "static"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-assets-prod.s3-website-eu-west-1.amazonaws.com"
+        ],
+        "dashboard": "http://status.aws.amazon.com",
+        "repo": "https://github.com/Financial-Times/next-assets",
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "hashed-assets",
+    "systemCode": "next-hashedasset",
+    "paths": [
+      "^/hashed-assets"
+    ],
+    "runbook": "https://sites.google.com/a/ft.com/ft-technology-service-transition/home/run-book-library/nexthashedassetsmatthewandrewsftcom20160531",
+    "desc": "Serves hashed js/css/maps needed by next applications from S3",
+    "serves": [
+      "static"
+    ],
+    "tier": "platinum",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-hashed-assets-prod.s3-website-eu-west-1.amazonaws.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-hashed-assets-prod-us.s3-website-us-east-1.amazonaws.com"
+          }
+        ],
+        "dashboard": "http://status.aws.amazon.com",
+        "repo": "",
+        "checks": {
+          "availability": [
+            1843686,
+            2304093
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "n-ui",
+    "systemCode": "next-n-ui",
+    "paths": [
+      "^/n-ui"
+    ],
+    "desc": "Serves static assets from n-ui, notibly the shared js bundle",
+    "serves": [
+      "static"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-n-ui-prod.s3-website-eu-west-1.amazonaws.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-n-ui-prod-us.s3.amazonaws.com"
+          }
+        ],
+        "dashboard": "http://status.aws.amazon.com",
+        "repo": "https://github.com/Financial-Times/n-ui",
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "tme-search-api",
+    "systemCode": "next-tmesearch",
+    "paths": [
+      "^/search-suggestions"
+    ],
+    "desc": "delivers search suggestions combining curated and dynamic data from tag-facets-api",
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://ft-next-tme-search-api.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-tme-search-api",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-tme-search-api/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-tme-search-api",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 3
+          }
+        },
+        "checks": {
+          "availability": [
+            1715911
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "login-logout",
+    "systemCode": "next-loginlogout",
+    "paths": [
+      "^/login",
+      "^/logout"
+    ],
+    "desc": "Logs users in and out",
+    "runbook": "http://support.ft.com/next-loginlogout.html",
+    "serves": [
+      "redirect"
+    ],
+    "tier": "platinum",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-login-logout-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-login-logout-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-login-logout",
+        "dashboard": "https://dashboard.heroku.com/pipelines/a982bca5-e90d-45de-8d57-97c190c71bef",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-login-logou",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            2303852,
+            2303845
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "slack": "ft-next-dev"
+    }
+  },
+  {
+    "name": "interactives",
+    "systemCode": "next-ig",
+    "desc": "Serve embedded interactives (iframes) and microsites",
+    "paths": [
+      "^/ig(?!/sites)",
+      "^/sites"
+    ],
+    "serves": [
+      "static"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "http://interactive.ftdata.co.uk"
+        ],
+        "dashboard": "http://git.svc.ft.com/projects/IG",
+        "repo": "http://git.svc.ft.com/projects/IG",
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "service-worker",
+    "systemCode": "next-sw",
+    "paths": [
+      "^/__sw.js$"
+    ],
+    "desc": "Global ServiceWorker file",
+    "serves": [
+      "static"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-service-worker-prod.s3-website-eu-west-1.amazonaws.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-service-worker-prod-us.s3.amazonaws.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/n-service-worker",
+        "dashboard": "",
+        "checks": {
+          "availability": [
+            1736457,
+            2230329,
+            2230331
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "ads-api",
+    "systemCode": "next-ads-api",
+    "desc": "API to get targeting info for advertising on Next",
+    "paths": [
+      "^/__ads-api"
+    ],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-ads-api-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://ft-next-ads-api-eu.herokuapp.com"
+          }
+        ],
+        "processes": {
+          "web": {
+            "size": "performance-m",
+            "scale": 2
+          }
+        },
+        "repo": "https://github.com/Financial-Times/ads-api",
+        "dashboard": "https://dashboard.heroku.com/apps/ft-next-ads-api/resources",
+        "configuration": "https://dashboard.heroku.com/apps/ft-next-ads-api",
+        "checks": {
+          "availability": [
+            2085182
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "ads-reporter",
+    "systemCode": "next-adsreporter",
+    "paths": [
+      "^/broken-ad-reporter"
+    ],
+    "desc": "Endpoint for reporting broken Next adverts",
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          "https://ft-next-ads-reporter.herokuapp.com"
+        ],
+        "repo": "https://github.com/Financial-Times/next-ads-reporter",
+        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-ads-reporter/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-ads-reporter",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 1
+          }
+        },
+        "checks": {
+          "availability": [
+            1715911
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "sitemap-index",
+    "systemCode": "next-sitemap-index",
+    "desc": "Provide a sitemaps for SEO purposes",
+    "paths": [
+      "^/sitemaps/index.xml$"
+    ],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "https://bj5bq32vri.execute-api.eu-west-1.amazonaws.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-sitemaps",
+        "dashboard": "https://eu-west-1.console.aws.amazon.com/lambda/home?region=eu-west-1#/functions/nextsitemaps_index",
+        "configuration": "",
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "sitemaps",
+    "systemCode": "next-sitemaps",
+    "desc": "Provide sitemaps for SEO purposes",
+    "paths": [
+      "^/sitemaps/(?!index.xml).+"
+    ],
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://nextsitemaps.s3-website-eu-west-1.amazonaws.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-sitemaps",
+        "dashboard": "https://console.aws.amazon.com/s3/home?region=eu-west-1#&bucket=next-sitemaps&prefix=",
+        "configuration": "",
+        "checks": {
+          "availability": []
+        }
+      }
+    }
+  },
+  {
+    "name": "origami-image-service",
+    "systemCode": "next-origami-image-service",
+    "paths": [
+      "^/origami/service/image"
+    ],
+    "desc": "Optimises and resizes images",
+    "serves": [
+      "api"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://origami-image-service-eu.herokuapp.com"
+          },
+          {
+            "region": "us",
+            "url": "http://origami-image-service-us.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/origami-image-service",
+        "dashboard": "https://dashboard.heroku.com/pipelines/be91fac7-5b0e-40f5-abd1-b81b72ad1b97",
+        "suppressFriendlyErrors": true,
+        "skipPreflight": true,
+        "configuration": "",
+        "processes": {
+          "web": {
+            "size": "standard-1X",
+            "scale": 2
+          }
+        },
+        "checks": {
+          "availability": [
+            2301115,
+            2301117
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "static",
+    "systemCode": "next-static",
+    "paths": [
+      "^/static"
+    ],
+    "desc": "Serves static-like pages.",
+    "serves": [
+      "user-facing"
+    ],
+    "tier": "bronze",
+    "versions": {
+      "1": {
+        "isPrimary": true,
+        "nodes": [
+          {
+            "region": "eu",
+            "url": "http://ft-next-static-eu.herokuapp.com"
+          }
+        ],
+        "repo": "https://github.com/Financial-Times/next-static",
+        "dashboard": "https://dashboard.heroku.com/apps/ft-next-static/resources",
+        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-static",
+        "processes": {
+          "web": {
             "size": "standard-1X",
             "scale": 1
           }
@@ -2079,7 +2920,6 @@
         ],
         "repo": "https://github.com/Financial-Times/next-redirector",
         "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-redirector/resources",
-        "isPrimary": true,
         "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-redirector",
         "processes": {
           "web": {
