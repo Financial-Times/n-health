@@ -40,10 +40,6 @@ class GraphiteThresholdCheck extends Check {
 	tick(){
 
 		return fetch(this.sampleUrl)
-			.then(res => {
-				console.log(res.status, this.sampleUrl)
-				return res;
-			})
 			.then(fetchres.json)
 			.then(sample => {
 				const ok = sample.length === 0;
