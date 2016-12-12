@@ -13,8 +13,6 @@ function badJSON(message, json){
 
 class GraphiteWorkingCheck extends Check {
 
-
-
 	constructor(options){
 		super(options);
 		this.checkOutput = "This check has not yet run";
