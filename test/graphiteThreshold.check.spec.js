@@ -34,6 +34,18 @@ describe('Graphite Threshold Check', function(){
 
 	context('Upper threshold enforced', function () {
 
+		it('Should use maxSeries Graphite function to acquire metrics', function (done) {
+			mockGraphite([0]);
+			check = new Check(getCheckConfig({
+				threshold: 1
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(mockFetch.firstCall.args[0]).to.contain('from=-10min&target=maxSeries(metric.200)');
+				done();
+			});
+		});
+
 		it('Should be healthy if below upper threshold', function (done) {
 			mockGraphite([10]);
 			check = new Check(getCheckConfig({
@@ -41,7 +53,6 @@ describe('Graphite Threshold Check', function(){
 			}));
 			check.start();
 			setTimeout(() => {
-				expect(mockFetch.firstCall.args[0]).to.contain('from=-10min&target=maxSeries(metric.200)');
 				expect(check.getStatus().ok).to.be.true;
 				done();
 			});
@@ -75,22 +86,21 @@ describe('Graphite Threshold Check', function(){
 
 	context('Lower threshold enforced', function () {
 
-		it('Should be healthy if above lower threshold', function (done) {
-			mockGraphite([12]);
+		it('Should use minSeries Graphite function to acquire metrics', function (done) {
+			mockGraphite([0]);
 			check = new Check(getCheckConfig({
-				threshold: 11,
+				threshold: 1,
 				direction: 'below'
 			}));
 			check.start();
 			setTimeout(() => {
 				expect(mockFetch.firstCall.args[0]).to.contain('from=-10min&target=minSeries(metric.200)');
-				expect(check.getStatus().ok).to.be.true;
 				done();
 			});
 		});
 
-		it('Should be healthy if equal to lower threshold', function (done) {
-			mockGraphite([11]);
+		it('Should be healthy if above lower threshold', function (done) {
+			mockGraphite([12]);
 			check = new Check(getCheckConfig({
 				threshold: 11,
 				direction: 'below'
