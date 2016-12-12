@@ -44,13 +44,13 @@ class GraphiteThresholdCheck extends Check {
 			.then(sample => {
 				const datapoints = sample[0].datapoints;
 
-				const filteredDatapoints = datapoints.filter(value => {
+				const invalidDatapoints = datapoints.filter(value => {
 					return this.direction === 'above' ?
-						value[0] <= this.threshold :
-						value[0] >= this.threshold;
+						value[0] && value[0] > this.threshold :
+						value[0] && value[0] < this.threshold;
 				});
 
-				const ok = filteredDatapoints.length;
+				const ok = !invalidDatapoints.length;
 
 				this.status = ok ? status.PASSED : status.FAILED;
 				this.checkOutput = ok ? 'No spike detected in graphite data' : 'Spike detected in graphite data';
