@@ -6,7 +6,7 @@ const raven = require('@financial-times/n-raven');
 
 class Check {
 
-	constructor(opts){
+	constructor (opts) {
 		'name,severity,businessImpact,panicGuide,technicalSummary'
 			.split(',')
 			.forEach(prop => {
@@ -17,7 +17,8 @@ class Check {
 
 		if (this.start !== Check.prototype.start || this._tick !== Check.prototype._tick) {
 			throw new Error(`Do no override native start and _tick methods of n-health checks.
-They provide essential error handlers`)
+They provide essential error handlers. If complex setup is required, define
+an init method returning a Promise`)
 		}
 
 		this.name = opts.name;
@@ -29,10 +30,15 @@ They provide essential error handlers`)
 		this.status = status.PENDING;
 		this.lastUpdated = null;
 	}
-
-	start(){
-		this.int = setInterval(this._tick.bind(this), this.interval);
-		this._tick();
+	init () {
+		return Promise.resolve();
+	}
+	start () {
+		this.init()
+			.then(() => {
+				this.int = setInterval(this._tick.bind(this), this.interval);
+				this._tick();
+			})
 	}
 
 	_tick () {
@@ -50,11 +56,11 @@ They provide essential error handlers`)
 			});
 	}
 
-	stop(){
+	stop () {
 		clearInterval(this.int);
 	}
 
-	getStatus(){
+	getStatus () {
 		const output = {
 			name: this.name,
 			ok: this.status === status.PASSED,
