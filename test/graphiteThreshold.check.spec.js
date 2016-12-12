@@ -18,7 +18,7 @@ function mockGraphite (results) {
 	mockFetch = sinon.stub().returns(Promise.resolve({
 		status: 200,
 		ok: true,
-		json : () => Promise.resolve([{datapoints: [[results[0]]]}])
+		json : () => Promise.resolve([{datapoints: results}])
 	}));
 
 	Check = proxyquire('../src/checks/graphiteThreshold.check', {'node-fetch':mockFetch});
@@ -46,8 +46,8 @@ describe('Graphite Threshold Check', function(){
 			});
 		});
 
-		it('Should be healthy if below upper threshold', function (done) {
-			mockGraphite([10]);
+		it('Should be healthy if all datapoints below upper threshold', function (done) {
+			mockGraphite([[9],[10]]);
 			check = new Check(getCheckConfig({
 				threshold: 11
 			}));
@@ -58,8 +58,8 @@ describe('Graphite Threshold Check', function(){
 			});
 		});
 
-		it('Should be healthy if equal to upper threshold', function (done) {
-			mockGraphite([11]);
+		it('Should be healthy if any datapoints are equal to upper threshold', function (done) {
+			mockGraphite([[10],[11]]);
 			check = new Check(getCheckConfig({
 				threshold: 11
 			}));
@@ -70,8 +70,8 @@ describe('Graphite Threshold Check', function(){
 			});
 		});
 
-		it('should be unhealty if above upper threshold', done => {
-			mockGraphite([12]);
+		it('should be unhealthy if any datapoints are above upper threshold', done => {
+			mockGraphite([[10],[12]]);
 			check = new Check(getCheckConfig({
 				threshold: 11
 			}));
@@ -99,8 +99,8 @@ describe('Graphite Threshold Check', function(){
 			});
 		});
 
-		it('Should be healthy if above lower threshold', function (done) {
-			mockGraphite([12]);
+		it('Should be healthy if all datapoints are above lower threshold', function (done) {
+			mockGraphite([[12],[13]]);
 			check = new Check(getCheckConfig({
 				threshold: 11,
 				direction: 'below'
@@ -112,8 +112,21 @@ describe('Graphite Threshold Check', function(){
 			});
 		});
 
-		it('should be unhealty if below lower threshold', done => {
-			mockGraphite([10]);
+		it('Should be healthy if any datapoints are equal to lower threshold', function (done) {
+			mockGraphite([[11],[12]]);
+			check = new Check(getCheckConfig({
+				threshold: 11,
+				direction: 'below'
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.true;
+				done();
+			});
+		});
+
+		it('should be unhealthy if any datapoints are below lower threshold', done => {
+			mockGraphite([[10],[12]]);
 			check = new Check(getCheckConfig({
 				threshold: 11,
 				direction: 'below'
