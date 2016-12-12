@@ -1,10 +1,12 @@
 'use strict';
 const status = require('./status');
 const ms = require('ms');
+const logger = require('@financial-times/n-logger').default;
+const raven = require('@financial-times/n-raven');
 
 class Check {
 
-	constructor(opts){
+	constructor (opts) {
 		'name,severity,businessImpact,panicGuide,technicalSummary'
 			.split(',')
 			.forEach(prop => {
@@ -12,6 +14,12 @@ class Check {
 					throw new Error(`${prop} is required for every healthcheck`);
 				}
 			})
+
+		if (this.start !== Check.prototype.start || this._tick !== Check.prototype._tick) {
+			throw new Error(`Do no override native start and _tick methods of n-health checks.
+They provide essential error handlers. If complex setup is required, define
+an init method returning a Promise`)
+		}
 
 		this.name = opts.name;
 		this.severity = opts.severity;
@@ -22,25 +30,37 @@ class Check {
 		this.status = status.PENDING;
 		this.lastUpdated = null;
 	}
-
-	start(){
-		this.int = setInterval(this._tick.bind(this), this.interval);
-		this._tick();
+	init () {
+		return Promise.resolve();
+	}
+	start () {
+		this.init()
+			.then(() => {
+				this.int = setInterval(this._tick.bind(this), this.interval);
+				this._tick();
+			})
 	}
 
 	_tick () {
-		return this.tick()
-			.catch(() => {})
+
+		return Promise.resolve()
+			.then(() => this.tick())
+			.catch(err => {
+				logger.error(`event=FAILED_HEALTHCHECK_TICK name=${this.name}`, err)
+				raven.captureError(err);
+				this.status = status.ERRORED;
+				this.checkOutput = 'Healthcheck failed to execute';
+			})
 			.then(() => {
 				this.lastUpdated = new Date();
 			});
 	}
 
-	stop(){
+	stop () {
 		clearInterval(this.int);
 	}
 
-	getStatus(){
+	getStatus () {
 		const output = {
 			name: this.name,
 			ok: this.status === status.PASSED,
@@ -48,7 +68,9 @@ class Check {
 			businessImpact: this.businessImpact,
 			technicalSummary: this.technicalSummary,
 			panicGuide: this.panicGuide,
-			checkOutput: this.checkOutput
+			// When the tick errors we need to make sure we clear any checkOutputs set by clever getters and setters
+			// in child healthcheck classes
+			checkOutput: this.status === status.ERRORED ? 'Healthcheck failed to execute' : this.checkOutput
 		};
 		if (this.lastUpdated) {
 			output.lastUpdated = this.lastUpdated.toISOString();

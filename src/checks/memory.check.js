@@ -14,21 +14,21 @@ class Memcheck extends Check {
 		this.threshold = config.threshold || 2;
 	}
 
-	start(){
-		return serviceRegistryAdaptor.start().then(() => {
-			let apps = serviceRegistryAdaptor.getData();
-			if(this.appsToCheck === 'all'){
-				this.apps = apps;
-			}else{
-				this.apps = new Map();
-				for(let app of apps){
-					if(this.appsToCheck.indexOf(app[0] > -1)){
-						this.apps.set(app[0], app[1]);
+	init () {
+		return serviceRegistryAdaptor.start()
+			.then(() => {
+				let apps = serviceRegistryAdaptor.getData();
+				if (this.appsToCheck === 'all') {
+					this.apps = apps;
+				} else {
+					this.apps = new Map();
+					for(let app of apps){
+						if(this.appsToCheck.indexOf(app[0] > -1)){
+							this.apps.set(app[0], app[1]);
+						}
 					}
 				}
-			}
-			super.start();
-		});
+			});
 	}
 
 	tick(){
@@ -39,7 +39,7 @@ class Memcheck extends Check {
 					if(count > this.threshold){
 						failures.set(app, count);
 					}
-					
+
 					return count;
 				});
 		});

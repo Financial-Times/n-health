@@ -32,11 +32,10 @@ class AggregateCheck extends Check {
 		}
 	}
 
-	start(){
+	init () {
 		let watchRegex = new RegExp(`(${this.watch.join('|')})`, 'i');
 		this.obserables = this.parent.checks.filter(check => watchRegex.test(check.name));
-		this.int = setInterval(this.tick.bind(this), this.interval);
-		this.tick();
+		return Promise.resolve()
 	}
 
 	tick(){
