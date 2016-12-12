@@ -35,7 +35,7 @@ describe('Graphite Threshold Check', function(){
 	context('Upper threshold enforced', function () {
 
 		it('Should use maxSeries Graphite function to acquire metrics', function (done) {
-			mockGraphite([0]);
+			mockGraphite([[0]]);
 			check = new Check(getCheckConfig({
 				threshold: 1
 			}));
@@ -87,7 +87,7 @@ describe('Graphite Threshold Check', function(){
 	context('Lower threshold enforced', function () {
 
 		it('Should use minSeries Graphite function to acquire metrics', function (done) {
-			mockGraphite([0]);
+			mockGraphite([[0]]);
 			check = new Check(getCheckConfig({
 				threshold: 1,
 				direction: 'below'
@@ -141,7 +141,7 @@ describe('Graphite Threshold Check', function(){
 	});
 
 	it('Should be possible to configure sample period', function(done){
-		mockGraphite([0]);
+		mockGraphite([[0]]);
 		check = new Check(getCheckConfig({
 			samplePeriod: '24h'
 		}));
