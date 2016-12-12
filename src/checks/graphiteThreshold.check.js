@@ -33,8 +33,8 @@ class GraphiteThresholdCheck extends Check {
 
 	generateUrl(metric, period) {
 		const urlBase = this.graphiteBaseUrl + `format=json&from=-${period}&target=`;
-		const functionName = this.direction === 'above' ? 'maximumAbove' : 'minimumBelow';
-		return urlBase + `${functionName}(${metric},${this.threshold})`;
+		const functionName = this.direction === 'above' ? 'maxSeries' : 'minSeries';
+		return urlBase + `${functionName}(${metric})`;
 	}
 
 	tick(){
@@ -42,7 +42,16 @@ class GraphiteThresholdCheck extends Check {
 		return fetch(this.sampleUrl)
 			.then(fetchres.json)
 			.then(sample => {
-				const ok = sample.length === 0;
+				const datapoints = sample[0].datapoints;
+
+				const invalidDatapoints = datapoints.filter(value => {
+					return this.direction === 'above' ?
+						value[0] && value[0] > this.threshold :
+						value[0] && value[0] < this.threshold;
+				});
+
+				const ok = !invalidDatapoints.length;
+
 				this.status = ok ? status.PASSED : status.FAILED;
 				this.checkOutput = ok ? 'No spike detected in graphite data' : 'Spike detected in graphite data';
 			})
