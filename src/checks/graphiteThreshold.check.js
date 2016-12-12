@@ -37,12 +37,6 @@ class GraphiteThresholdCheck extends Check {
 		return urlBase + `${functionName}(${metric})`;
 	}
 
-	withinThreshold(value) {
-		return this.direction === 'above' ?
-			value[0] <= this.threshold :
-			value[0] >= this.threshold;
-	}
-
 	tick(){
 
 		return fetch(this.sampleUrl)
@@ -50,7 +44,11 @@ class GraphiteThresholdCheck extends Check {
 			.then(sample => {
 				const datapoints = sample[0].datapoints;
 
-				const filteredDatapoints = datapoints.filter(this.withinThreshold.bind(this));
+				const filteredDatapoints = datapoints.filter(value => {
+					return this.direction === 'above' ?
+						value[0] <= this.threshold :
+						value[0] >= this.threshold;
+				});
 
 				const ok = filteredDatapoints.length;
 
