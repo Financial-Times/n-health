@@ -18,7 +18,7 @@ function mockGraphite (results) {
 	mockFetch = sinon.stub().returns(Promise.resolve({
 		status: 200,
 		ok: true,
-		json : () => Promise.resolve([{datapoints: [[results.shift()]]}])
+		json : () => Promise.resolve([{datapoints: [[results[0]]]}])
 	}));
 
 	Check = proxyquire('../src/checks/graphiteThreshold.check', {'node-fetch':mockFetch});
