@@ -1,6 +1,8 @@
 'use strict';
 const status = require('./status');
 const ms = require('ms');
+const logger = require('@financial-times/n-logger').default;
+const raven = require('@financial-times/n-raven');
 
 class Check {
 
@@ -12,6 +14,11 @@ class Check {
 					throw new Error(`${prop} is required for every healthcheck`);
 				}
 			})
+
+		if (this.start !== Check.prototype.start || this._tick !== Check.prototype._tick) {
+			throw new Error(`Do no override native start and _tick methods of n-health checks.
+They provide essential error handlers`)
+		}
 
 		this.name = opts.name;
 		this.severity = opts.severity;
@@ -29,8 +36,15 @@ class Check {
 	}
 
 	_tick () {
-		return this.tick()
-			.catch(() => {})
+
+		return Promise.resolve()
+			.then(() => this.tick())
+			.catch(err => {
+				logger.error(`event=FAILED_HEALTHCHECK_TICK name=${this.name}`, err)
+				raven.captureError(err);
+				this.status = status.ERRORED;
+				this.checkOutput = 'Healthcheck failed to execute';
+			})
 			.then(() => {
 				this.lastUpdated = new Date();
 			});
@@ -48,7 +62,9 @@ class Check {
 			businessImpact: this.businessImpact,
 			technicalSummary: this.technicalSummary,
 			panicGuide: this.panicGuide,
-			checkOutput: this.checkOutput
+			// When the tick errors we need to make sure we clear any checkOutputs set by clever getters and setters
+			// in child healthcheck classes
+			checkOutput: this.status === status.ERRORED ? 'Healthcheck failed to execute' : this.checkOutput
 		};
 		if (this.lastUpdated) {
 			output.lastUpdated = this.lastUpdated.toISOString();
