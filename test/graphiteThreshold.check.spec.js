@@ -18,7 +18,7 @@ function mockGraphite (results) {
 	mockFetch = sinon.stub().returns(Promise.resolve({
 		status: 200,
 		ok: true,
-		json : () => Promise.resolve([{datapoints: results}])
+		json : () => Promise.resolve(results)
 	}));
 
 	Check = proxyquire('../src/checks/graphiteThreshold.check', {'node-fetch':mockFetch});
@@ -34,20 +34,11 @@ describe('Graphite Threshold Check', function(){
 
 	context('Upper threshold enforced', function () {
 
-		it('Should use maxSeries Graphite function to acquire metrics', function (done) {
-			mockGraphite([[0, 1234567890]]);
-			check = new Check(getCheckConfig({
-				threshold: 1
-			}));
-			check.start();
-			setTimeout(() => {
-				expect(mockFetch.firstCall.args[0]).to.contain('from=-10min&target=maxSeries(metric.200)');
-				done();
-			});
-		});
-
 		it('Should be healthy if all datapoints below upper threshold', function (done) {
-			mockGraphite([[9, 1234567890], [10, 1234567891]]);
+			mockGraphite([
+				{ datapoints: [[7, 1234567890], [8, 1234567891]] },
+				{ datapoints: [[9, 1234567892], [10, 1234567893]] }
+			]);
 			check = new Check(getCheckConfig({
 				threshold: 11
 			}));
@@ -59,7 +50,10 @@ describe('Graphite Threshold Check', function(){
 		});
 
 		it('Should be healthy if any datapoints are equal to upper threshold', function (done) {
-			mockGraphite([[10, 1234567890], [11, 1234567891]]);
+			mockGraphite([
+				{ datapoints: [[8, 1234567890], [9, 1234567891]] },
+				{ datapoints: [[10, 1234567892], [11, 1234567893]] }
+			]);
 			check = new Check(getCheckConfig({
 				threshold: 11
 			}));
@@ -71,7 +65,10 @@ describe('Graphite Threshold Check', function(){
 		});
 
 		it('should be unhealthy if any datapoints are above upper threshold', done => {
-			mockGraphite([[10, 1234567890], [12, 1234567891]]);
+			mockGraphite([
+				{ datapoints: [[8, 1234567890], [9, 1234567891]] },
+				{ datapoints: [[10, 1234567892], [12, 1234567893]] }
+			]);
 			check = new Check(getCheckConfig({
 				threshold: 11
 			}));
@@ -86,21 +83,11 @@ describe('Graphite Threshold Check', function(){
 
 	context('Lower threshold enforced', function () {
 
-		it('Should use minSeries Graphite function to acquire metrics', function (done) {
-			mockGraphite([[0, 1234567890]]);
-			check = new Check(getCheckConfig({
-				threshold: 1,
-				direction: 'below'
-			}));
-			check.start();
-			setTimeout(() => {
-				expect(mockFetch.firstCall.args[0]).to.contain('from=-10min&target=minSeries(metric.200)');
-				done();
-			});
-		});
-
 		it('Should be healthy if all datapoints are above lower threshold', function (done) {
-			mockGraphite([[12, 1234567890], [13, 1234567891]]);
+			mockGraphite([
+				{ datapoints: [[12, 1234567890], [13, 1234567891]] },
+				{ datapoints: [[14, 1234567892], [15, 1234567893]] }
+			]);
 			check = new Check(getCheckConfig({
 				threshold: 11,
 				direction: 'below'
@@ -113,7 +100,10 @@ describe('Graphite Threshold Check', function(){
 		});
 
 		it('Should be healthy if any datapoints are equal to lower threshold', function (done) {
-			mockGraphite([[11, 1234567890], [12, 1234567891]]);
+			mockGraphite([
+				{ datapoints: [[11, 1234567890], [12, 1234567891]] },
+				{ datapoints: [[13, 1234567892], [14, 1234567893]] }
+			]);
 			check = new Check(getCheckConfig({
 				threshold: 11,
 				direction: 'below'
@@ -126,7 +116,10 @@ describe('Graphite Threshold Check', function(){
 		});
 
 		it('should be unhealthy if any datapoints are below lower threshold', done => {
-			mockGraphite([[10, 1234567890], [12, 1234567891]]);
+			mockGraphite([
+				{ datapoints: [[10, 1234567890], [12, 1234567891]] },
+				{ datapoints: [[13, 1234567892], [14, 1234567893]] }
+			]);
 			check = new Check(getCheckConfig({
 				threshold: 11,
 				direction: 'below'
@@ -141,13 +134,13 @@ describe('Graphite Threshold Check', function(){
 	});
 
 	it('Should be possible to configure sample period', function(done){
-		mockGraphite([[0, 1234567890]]);
+		mockGraphite();
 		check = new Check(getCheckConfig({
 			samplePeriod: '24h'
 		}));
 		check.start();
 		setTimeout(() => {
-			expect(mockFetch.firstCall.args[0]).to.contain('from=-24h&target=maxSeries(metric.200)');
+			expect(mockFetch.firstCall.args[0]).to.contain('from=-24h&target=metric.200');
 			done();
 		});
 	});
