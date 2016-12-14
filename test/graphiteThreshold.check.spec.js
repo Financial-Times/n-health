@@ -18,7 +18,7 @@ function mockGraphite (results) {
 	mockFetch = sinon.stub().returns(Promise.resolve({
 		status: 200,
 		ok: true,
-		json : () => Promise.resolve([{datapoints: results}])
+		json : () => Promise.resolve(results)
 	}));
 
 	Check = proxyquire('../src/checks/graphiteThreshold.check', {'node-fetch':mockFetch});
@@ -35,7 +35,10 @@ describe('Graphite Threshold Check', function(){
 	context('Upper threshold enforced', function () {
 
 		it('Should be healthy if all datapoints below upper threshold', function (done) {
-			mockGraphite([[9, 1234567890], [10, 1234567891]]);
+			mockGraphite([
+				{ datapoints: [[10, 1234567890], [10, 1234567891]] },
+				{ datapoints: [[10, 1234567892], [10, 1234567893]] }
+			]);
 			check = new Check(getCheckConfig({
 				threshold: 11
 			}));
@@ -47,7 +50,10 @@ describe('Graphite Threshold Check', function(){
 		});
 
 		it('Should be healthy if any datapoints are equal to upper threshold', function (done) {
-			mockGraphite([[10, 1234567890], [11, 1234567891]]);
+			mockGraphite([
+				{ datapoints: [[11, 1234567890], [10, 1234567891]] },
+				{ datapoints: [[10, 1234567892], [10, 1234567893]] }
+			]);
 			check = new Check(getCheckConfig({
 				threshold: 11
 			}));
@@ -59,7 +65,10 @@ describe('Graphite Threshold Check', function(){
 		});
 
 		it('should be unhealthy if any datapoints are above upper threshold', done => {
-			mockGraphite([[10, 1234567890], [12, 1234567891]]);
+			mockGraphite([
+				{ datapoints: [[12, 1234567890], [10, 1234567891]] },
+				{ datapoints: [[10, 1234567892], [10, 1234567893]] }
+			]);
 			check = new Check(getCheckConfig({
 				threshold: 11
 			}));
@@ -75,7 +84,10 @@ describe('Graphite Threshold Check', function(){
 	context('Lower threshold enforced', function () {
 
 		it('Should be healthy if all datapoints are above lower threshold', function (done) {
-			mockGraphite([[12, 1234567890], [13, 1234567891]]);
+			mockGraphite([
+				{ datapoints: [[12, 1234567890], [12, 1234567891]] },
+				{ datapoints: [[12, 1234567892], [12, 1234567893]] }
+			]);
 			check = new Check(getCheckConfig({
 				threshold: 11,
 				direction: 'below'
@@ -88,7 +100,10 @@ describe('Graphite Threshold Check', function(){
 		});
 
 		it('Should be healthy if any datapoints are equal to lower threshold', function (done) {
-			mockGraphite([[11, 1234567890], [12, 1234567891]]);
+			mockGraphite([
+				{ datapoints: [[11, 1234567890], [12, 1234567891]] },
+				{ datapoints: [[12, 1234567892], [12, 1234567893]] }
+			]);
 			check = new Check(getCheckConfig({
 				threshold: 11,
 				direction: 'below'
@@ -101,7 +116,10 @@ describe('Graphite Threshold Check', function(){
 		});
 
 		it('should be unhealthy if any datapoints are below lower threshold', done => {
-			mockGraphite([[10, 1234567890], [12, 1234567891]]);
+			mockGraphite([
+				{ datapoints: [[10, 1234567890], [12, 1234567891]] },
+				{ datapoints: [[12, 1234567892], [12, 1234567893]] }
+			]);
 			check = new Check(getCheckConfig({
 				threshold: 11,
 				direction: 'below'
@@ -116,7 +134,9 @@ describe('Graphite Threshold Check', function(){
 	});
 
 	it('Should be possible to configure sample period', function(done){
-		mockGraphite([[0, 1234567890]]);
+		mockGraphite([
+			{ datapoints: [[0, 1234567890]] }
+		]);
 		check = new Check(getCheckConfig({
 			samplePeriod: '24h'
 		}));
