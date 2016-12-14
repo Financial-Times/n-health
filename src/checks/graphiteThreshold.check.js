@@ -40,20 +40,16 @@ class GraphiteThresholdCheck extends Check {
 		return fetch(this.sampleUrl)
 			.then(fetchres.json)
 			.then(sample => {
-				const invalidDatapoints = sample.map(result => {
-					return result.datapoints.filter(value => {
+				const failed = sample.some(result => {
+					return result.datapoints.some(value => {
 						return this.direction === 'above' ?
 							value[0] && value[0] > this.threshold :
 							value[0] && value[0] < this.threshold;
 					});
 				});
 
-				const invalidDatapointsFlattened = [].concat.apply([], invalidDatapoints);
-
-				const ok = !invalidDatapointsFlattened.length;
-
-				this.status = ok ? status.PASSED : status.FAILED;
-				this.checkOutput = ok ? 'No spike detected in graphite data' : 'Spike detected in graphite data';
+				this.status = failed ? status.FAILED : status.PASSED;
+				this.checkOutput = failed ? 'Spike detected in graphite data' : 'No spike detected in graphite data';
 			})
 			.catch(err => {
 				console.error('Failed to get JSON', err);
