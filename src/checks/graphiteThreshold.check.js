@@ -32,9 +32,7 @@ class GraphiteThresholdCheck extends Check {
 	}
 
 	generateUrl(metric, period) {
-		const urlBase = this.graphiteBaseUrl + `format=json&from=-${period}&target=`;
-		const functionName = this.direction === 'above' ? 'maxSeries' : 'minSeries';
-		return urlBase + `${functionName}(${metric})`;
+		return this.graphiteBaseUrl + `format=json&from=-${period}&target=` + metric;
 	}
 
 	tick(){
@@ -42,18 +40,16 @@ class GraphiteThresholdCheck extends Check {
 		return fetch(this.sampleUrl)
 			.then(fetchres.json)
 			.then(sample => {
-				const datapoints = sample[0].datapoints;
-
-				const invalidDatapoints = datapoints.filter(value => {
-					return this.direction === 'above' ?
-						value[0] && value[0] > this.threshold :
-						value[0] && value[0] < this.threshold;
+				const failed = sample.some(result => {
+					return result.datapoints.some(value => {
+						return this.direction === 'above' ?
+							value[0] && value[0] > this.threshold :
+							value[0] && value[0] < this.threshold;
+					});
 				});
 
-				const ok = !invalidDatapoints.length;
-
-				this.status = ok ? status.PASSED : status.FAILED;
-				this.checkOutput = ok ? 'No spike detected in graphite data' : 'Spike detected in graphite data';
+				this.status = failed ? status.FAILED : status.PASSED;
+				this.checkOutput = failed ? 'Spike detected in graphite data' : 'No spike detected in graphite data';
 			})
 			.catch(err => {
 				console.error('Failed to get JSON', err);
