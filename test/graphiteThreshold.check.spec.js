@@ -134,9 +134,7 @@ describe('Graphite Threshold Check', function(){
 	});
 
 	it('Should be possible to configure sample period', function(done){
-		mockGraphite([
-			{ datapoints: [[0, 1234567890]] }
-		]);
+		mockGraphite();
 		check = new Check(getCheckConfig({
 			samplePeriod: '24h'
 		}));
