@@ -34,18 +34,6 @@ describe('Graphite Threshold Check', function(){
 
 	context('Upper threshold enforced', function () {
 
-		it('Should use maxSeries Graphite function to acquire metrics', function (done) {
-			mockGraphite([[0, 1234567890]]);
-			check = new Check(getCheckConfig({
-				threshold: 1
-			}));
-			check.start();
-			setTimeout(() => {
-				expect(mockFetch.firstCall.args[0]).to.contain('from=-10min&target=maxSeries(metric.200)');
-				done();
-			});
-		});
-
 		it('Should be healthy if all datapoints below upper threshold', function (done) {
 			mockGraphite([[9, 1234567890], [10, 1234567891]]);
 			check = new Check(getCheckConfig({
@@ -85,19 +73,6 @@ describe('Graphite Threshold Check', function(){
 	});
 
 	context('Lower threshold enforced', function () {
-
-		it('Should use minSeries Graphite function to acquire metrics', function (done) {
-			mockGraphite([[0, 1234567890]]);
-			check = new Check(getCheckConfig({
-				threshold: 1,
-				direction: 'below'
-			}));
-			check.start();
-			setTimeout(() => {
-				expect(mockFetch.firstCall.args[0]).to.contain('from=-10min&target=minSeries(metric.200)');
-				done();
-			});
-		});
 
 		it('Should be healthy if all datapoints are above lower threshold', function (done) {
 			mockGraphite([[12, 1234567890], [13, 1234567891]]);
@@ -147,7 +122,7 @@ describe('Graphite Threshold Check', function(){
 		}));
 		check.start();
 		setTimeout(() => {
-			expect(mockFetch.firstCall.args[0]).to.contain('from=-24h&target=maxSeries(metric.200)');
+			expect(mockFetch.firstCall.args[0]).to.contain('from=-24h&target=metric.200');
 			done();
 		});
 	});
