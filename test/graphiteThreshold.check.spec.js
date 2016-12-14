@@ -36,8 +36,8 @@ describe('Graphite Threshold Check', function(){
 
 		it('Should be healthy if all datapoints below upper threshold', function (done) {
 			mockGraphite([
-				{ datapoints: [[10, 1234567890], [10, 1234567891]] },
-				{ datapoints: [[10, 1234567892], [10, 1234567893]] }
+				{ datapoints: [[7, 1234567890], [8, 1234567891]] },
+				{ datapoints: [[9, 1234567892], [10, 1234567893]] }
 			]);
 			check = new Check(getCheckConfig({
 				threshold: 11
@@ -51,8 +51,8 @@ describe('Graphite Threshold Check', function(){
 
 		it('Should be healthy if any datapoints are equal to upper threshold', function (done) {
 			mockGraphite([
-				{ datapoints: [[11, 1234567890], [10, 1234567891]] },
-				{ datapoints: [[10, 1234567892], [10, 1234567893]] }
+				{ datapoints: [[8, 1234567890], [9, 1234567891]] },
+				{ datapoints: [[10, 1234567892], [11, 1234567893]] }
 			]);
 			check = new Check(getCheckConfig({
 				threshold: 11
@@ -66,8 +66,8 @@ describe('Graphite Threshold Check', function(){
 
 		it('should be unhealthy if any datapoints are above upper threshold', done => {
 			mockGraphite([
-				{ datapoints: [[12, 1234567890], [10, 1234567891]] },
-				{ datapoints: [[10, 1234567892], [10, 1234567893]] }
+				{ datapoints: [[8, 1234567890], [9, 1234567891]] },
+				{ datapoints: [[10, 1234567892], [12, 1234567893]] }
 			]);
 			check = new Check(getCheckConfig({
 				threshold: 11
@@ -85,8 +85,8 @@ describe('Graphite Threshold Check', function(){
 
 		it('Should be healthy if all datapoints are above lower threshold', function (done) {
 			mockGraphite([
-				{ datapoints: [[12, 1234567890], [12, 1234567891]] },
-				{ datapoints: [[12, 1234567892], [12, 1234567893]] }
+				{ datapoints: [[12, 1234567890], [13, 1234567891]] },
+				{ datapoints: [[14, 1234567892], [15, 1234567893]] }
 			]);
 			check = new Check(getCheckConfig({
 				threshold: 11,
@@ -102,7 +102,7 @@ describe('Graphite Threshold Check', function(){
 		it('Should be healthy if any datapoints are equal to lower threshold', function (done) {
 			mockGraphite([
 				{ datapoints: [[11, 1234567890], [12, 1234567891]] },
-				{ datapoints: [[12, 1234567892], [12, 1234567893]] }
+				{ datapoints: [[13, 1234567892], [14, 1234567893]] }
 			]);
 			check = new Check(getCheckConfig({
 				threshold: 11,
@@ -118,7 +118,7 @@ describe('Graphite Threshold Check', function(){
 		it('should be unhealthy if any datapoints are below lower threshold', done => {
 			mockGraphite([
 				{ datapoints: [[10, 1234567890], [12, 1234567891]] },
-				{ datapoints: [[12, 1234567892], [12, 1234567893]] }
+				{ datapoints: [[13, 1234567892], [14, 1234567893]] }
 			]);
 			check = new Check(getCheckConfig({
 				threshold: 11,
