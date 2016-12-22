@@ -63,7 +63,6 @@ describe('Graphite Working Check', function(){
 			let url = mockFetch.lastCall.args[0];
 			expect(url).to.contain(fixture.key);
 			expect(url).to.contain('format=json');
-			expect(url).to.contain('_salt=');
 		});
 	});
 
