@@ -5,7 +5,7 @@ module.exports = {
 	checks : [
 		{
 			type: 'graphiteThreshold',
-			metric: 'metric.200',
+			metric: 'next.metric.200',
 			name: 'test',
 			severity: 2,
 			businessImpact: 'catastrophic',

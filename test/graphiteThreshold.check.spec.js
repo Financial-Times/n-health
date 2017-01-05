@@ -140,7 +140,7 @@ describe('Graphite Threshold Check', function(){
 		}));
 		check.start();
 		setTimeout(() => {
-			expect(mockFetch.firstCall.args[0]).to.contain('from=-24h&target=metric.200');
+			expect(mockFetch.firstCall.args[0]).to.contain('from=-24h&target=next.metric.200');
 			done();
 		});
 	});

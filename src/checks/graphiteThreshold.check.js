@@ -23,6 +23,10 @@ class GraphiteThresholdCheck extends Check {
 			throw new Error('You must set FT_GRAPHITE_KEY environment variable');
 		}
 
+		if (!options.metric || !options.metric.match(/next\./)) {
+			throw new Error(`You must prepend the metric (${options.metric}) with "next." - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
+		}
+
 		this.sampleUrl = this.generateUrl(options.metric, this.samplePeriod);
 
 		this.checkOutput = 'Graphite threshold check has not yet run';

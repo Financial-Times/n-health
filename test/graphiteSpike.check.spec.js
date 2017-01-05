@@ -59,8 +59,8 @@ describe('Graphite Spike Check', function(){
 		check.start();
 		setTimeout(() => {
 
-			expect(mockFetch.firstCall.args[0]).to.contain('from=-10min&format=json&target=summarize(sumSeries(metric.200),"10min","sum",true)');
-			expect(mockFetch.secondCall.args[0]).to.contain('from=-7d&format=json&target=summarize(sumSeries(metric.200),"7d","sum",true)');
+			expect(mockFetch.firstCall.args[0]).to.contain('from=-10min&format=json&target=summarize(sumSeries(next.metric.200),"10min","sum",true)');
+			expect(mockFetch.secondCall.args[0]).to.contain('from=-7d&format=json&target=summarize(sumSeries(next.metric.200),"7d","sum",true)');
 			expect(check.getStatus().ok).to.be.true;
 			done();
 		});
@@ -74,8 +74,8 @@ describe('Graphite Spike Check', function(){
 		}));
 		check.start();
 		setTimeout(() => {
-			expect(mockFetch.firstCall.args[0]).to.contain('from=-10min&format=json&target=divideSeries(summarize(sumSeries(metric.200),"10min","sum",true),summarize(sumSeries(metric.*),"10min","sum",true))');
-			expect(mockFetch.secondCall.args[0]).to.contain('from=-7d&format=json&target=divideSeries(summarize(sumSeries(metric.200),"7d","sum",true),summarize(sumSeries(metric.*),"7d","sum",true))');
+			expect(mockFetch.firstCall.args[0]).to.contain('from=-10min&format=json&target=divideSeries(summarize(sumSeries(next.metric.200),"10min","sum",true),summarize(sumSeries(metric.*),"10min","sum",true))');
+			expect(mockFetch.secondCall.args[0]).to.contain('from=-7d&format=json&target=divideSeries(summarize(sumSeries(next.metric.200),"7d","sum",true),summarize(sumSeries(metric.*),"7d","sum",true))');
 			expect(check.getStatus().ok).to.be.true;
 			done();
 		});
@@ -129,8 +129,8 @@ describe('Graphite Spike Check', function(){
 		}));
 		check.start();
 		setTimeout(() => {
-			expect(mockFetch.firstCall.args[0]).to.contain('from=-24h&format=json&target=divideSeries(summarize(sumSeries(metric.200),"24h","sum",true),summarize(sumSeries(metric.*),"24h","sum",true))');
-			expect(mockFetch.secondCall.args[0]).to.contain('from=-2d&format=json&target=divideSeries(summarize(sumSeries(metric.200),"2d","sum",true),summarize(sumSeries(metric.*),"2d","sum",true))');
+			expect(mockFetch.firstCall.args[0]).to.contain('from=-24h&format=json&target=divideSeries(summarize(sumSeries(next.metric.200),"24h","sum",true),summarize(sumSeries(metric.*),"24h","sum",true))');
+			expect(mockFetch.secondCall.args[0]).to.contain('from=-2d&format=json&target=divideSeries(summarize(sumSeries(next.metric.200),"2d","sum",true),summarize(sumSeries(metric.*),"2d","sum",true))');
 			done();
 		});
 	});
