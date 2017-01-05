@@ -15,6 +15,10 @@ class GraphiteWorkingCheck extends Check {
 
 	constructor(options){
 		super(options);
+		this.ftGraphiteKey = process.env.FT_GRAPHITE_KEY;
+		if (!this.ftGraphiteKey) {
+			throw new Error('You must set FT_GRAPHITE_KEY environment variable');
+		}
 		this.checkOutput = "This check has not yet run";
 		const key = options.key;
 		const time = options.time || '-15minutes';
@@ -26,7 +30,7 @@ class GraphiteWorkingCheck extends Check {
 	}
 
 	tick(){
-		return fetch(this.url, { headers: { key: process.env.FT_GRAPHITE_KEY } })
+		return fetch(this.url, { headers: { key: this.ftGraphiteKey } })
 			.then(response => {
 				if(!response.ok){
 					throw new Error('Bad Response: ' + response.status);
