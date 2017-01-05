@@ -31,6 +31,7 @@ class GraphiteSpikeCheck extends Check {
 
 		this.sampleUrl = this.generateUrl(options.numerator, options.divisor, this.samplePeriod);
 		this.baselineUrl = this.generateUrl(options.numerator, options.divisor, this.baselinePeriod);
+		this.recoveryUrl = this.generateUrl(options.numerator, options.divisor, '5min');
 
 		// If there's no divisor specified we probably need to normalize sample and baseline to account for the difference in size between their time ranges
 		this.shouldNormalize = typeof options.normalize !== 'undefined' ? options.normalize : !options.divisor;
@@ -65,26 +66,38 @@ class GraphiteSpikeCheck extends Check {
 			fetch(this.sampleUrl)
 				.then(fetchres.json),
 			fetch(this.baselineUrl)
+				.then(fetchres.json),
+			fetch(this.recoveryUrl)
 				.then(fetchres.json)
 		])
 			.then(jsons => {
-
 				return this.normalize({
 					sample: jsons[0][0] ? jsons[0][0].datapoints[0][0] : 0,
 					// baseline should not be allowed to be smaller than one as it is use as a divisor
-					baseline: jsons[1][0] ? jsons[1][0].datapoints[0][0] : 1
+					baseline: jsons[1][0] ? jsons[1][0].datapoints[0][0] : 1,
+					recovery: jsons[2][0] ? jsons[2][0].datapoints[0][0] : 0
 				});
 			})
 			.then(data => {
 				let ok;
+				let recovery;
 				if (this.direction === 'up') {
 					ok = data.sample / data.baseline < this.threshold;
+					recovery = data.recovery / data.baseline < this.threshold;
 				} else {
 					ok = data.sample / data.baseline > 1 / this.threshold;
+					recovery = data.recovery / data.baseline > 1 / this.threshold;
 				}
-				this.status = ok ? status.PASSED : status.FAILED;
 
-				this.checkOutput = ok ? 'No spike detected in graphite data' : 'Spike detected in graphite data';
+				this.status = (ok || recovery) ? status.PASSED : status.FAILED;
+
+				if (ok) {
+					this.checkOutput = 'No spike detected in graphite data';
+				} else if (recovery) {
+					this.checkOutput = 'Spike detected in graphite data, but seems to have recovered in the last 5 minutes';
+				} else {
+					this.checkOutput = 'Spike detected in graphite data';
+				}
 			})
 			.catch(err => {
 				console.error('Failed to get JSON', err);
