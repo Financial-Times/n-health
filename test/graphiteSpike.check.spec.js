@@ -36,7 +36,7 @@ describe('Graphite Spike Check', function(){
 
 
 	describe('service config', function () {
-			it('Should default to the next hosted graphite', function (done) {
+			it('Should default to the FT graphite', function (done) {
 
 				mockGraphite([2, 1]);
 				check = new Check(getCheckConfig({
@@ -44,23 +44,7 @@ describe('Graphite Spike Check', function(){
 				}));
 				check.start();
 				setTimeout(() => {
-					expect(mockFetch.firstCall.args[0]).to.contain('/graphite/render/?_salt=1445340974.799&');
-					done();
-				});
-			});
-
-			it('Should be possible to point to a different hosted graphite instance', function (done) {
-
-				mockGraphite([2, 1]);
-				check = new Check(getCheckConfig({
-					normalize: false,
-					graphiteServiceId: 12345,
-					graphiteApiKey: 'keykeykey',
-					graphiteSalt: 'saltysalt'
-				}));
-				check.start();
-				setTimeout(() => {
-					expect(mockFetch.firstCall.args[0]).to.contain('/graphite/render/?_salt=saltysalt&');
+					expect(mockFetch.firstCall.args[0]).to.contain('graphite-api.ft.com/render/?from');
 					done();
 				});
 			});

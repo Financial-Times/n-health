@@ -16,24 +16,29 @@ class GraphiteWorkingCheck extends Check {
 	constructor(options){
 		super(options);
 		this.checkOutput = "This check has not yet run";
-		this.graphiteApiKey = process.env.HOSTEDGRAPHITE_READ_APIKEY;
+		this.graphiteApiKey = process.env.GRAPHITE_READ_APIKEY;
 		if(!this.graphiteApiKey){
-			throw new Error('please set HOSTEDGRAPHITE_READ_APIKEY env var');
+			throw new Error('please set GRAPHITE_READ_APIKEY env var');
 		}
 		this.serviceId = 'bbaf3ccf';
-		const host = options.host || 'https://www.hostedgraphite.com';
-		const pathPrefix = options.pathPrefix || `/${this.serviceId}/${this.graphiteApiKey}/graphite`;
+		const host = options.host || 'https://graphite-api.ft.com';
+		const pathPrefix = options.pathPrefix || '';
 		const key = options.key;
 		const time = options.time || '-15minutes';
 		if(!key){
 			throw new Error('You must give a key');
 		}
 		this.key = key;
-		this.url = encodeURI(`${host}${pathPrefix}/render/?_salt=1459345418.451&target=${key}&from=${time}&format=json`);
+		this.url = encodeURI(`${host}${pathPrefix}/render/?target=${key}&from=${time}&format=json`);
 	}
 
 	tick(){
-		return fetch(this.url)
+
+		const headers = {
+			key: this.graphiteApiKey
+		};
+
+		return fetch(this.url, { headers: headers })
 			.then(response => {
 				if(!response.ok){
 					throw new Error('Bad Response: ' + response.status);
