@@ -363,45 +363,6 @@
     }
   },
   {
-    "name": "myft-email-generator",
-    "systemCode": "next-myft-email",
-    "desc": "Creates and sends digest emails for myFT",
-    "paths": [],
-    "serves": [
-      "admin-page"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-myft-email-generator.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-content-notifier",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-myft-email-generator/resources",
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-myft-email-generator",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 0
-          },
-          "clock": {
-            "size": "performance-l",
-            "scale": 0
-          },
-          "createemail": {
-            "size": "standard-1X",
-            "scale": 0
-          }
-        },
-        "checks": {
-          "availability": [
-            1679562
-          ]
-        }
-      }
-    }
-  },
-  {
     "name": "brightcove-proxy-api",
     "systemCode": "next-brightcove",
     "desc": "Proxies requests for FT video's hosted on brightcove.com",
