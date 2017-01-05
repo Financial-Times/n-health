@@ -17,14 +17,8 @@ class GraphiteThresholdCheck extends Check {
 
 		this.samplePeriod = options.samplePeriod || '10min';
 
-		if (options.graphiteBaseUrl) {
-			this.graphiteBaseUrl = options.graphiteBaseUrl;
-		} else {
-			this.graphiteServiceId = options.graphiteServiceId || 'bbaf3ccf';
-			this.graphiteApiKey = options.graphiteApiKey || process.env.HOSTEDGRAPHITE_READ_APIKEY;
-			this.graphiteSalt = options.graphiteSalt || '1445340974.799'
-			this.graphiteBaseUrl = `https://www.hostedgraphite.com/${this.graphiteServiceId}/${this.graphiteApiKey}/graphite/render/?_salt=${this.graphiteSalt}&`;
-		}
+		this.ftGraphiteBaseUrl = 'https://graphite-api.ft.com/render/?';
+		this.ftGraphiteKey = process.env.FT_GRAPHITE_KEY;
 
 		this.sampleUrl = this.generateUrl(options.metric, this.samplePeriod);
 
@@ -37,7 +31,7 @@ class GraphiteThresholdCheck extends Check {
 
 	tick(){
 
-		return fetch(this.sampleUrl)
+		return fetch(this.sampleUrl, { headers: { key: this.ftGraphiteKey } })
 			.then(fetchres.json)
 			.then(sample => {
 				const failed = sample.some(result => {
