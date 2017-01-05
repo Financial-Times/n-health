@@ -79,37 +79,6 @@
     }
   },
   {
-    "name": "concepts-api",
-    "systemCode": "next-conceptsapi",
-    "desc": "Concept and theme aggregation",
-    "paths": [],
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-concepts-api.herokuapp.com"
-        ],
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "repo": "https://github.com/Financial-Times/next-concepts-api",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-concepts-api/resources",
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-concepts-api",
-        "checks": {
-          "availability": [
-            1748747
-          ]
-        }
-      }
-    }
-  },
-  {
     "name": "markets-proxy-api",
     "systemCode": "next-markets-api",
     "desc": "Proxies the markets.ft.com API",
