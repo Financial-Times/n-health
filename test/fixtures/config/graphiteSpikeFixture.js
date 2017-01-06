@@ -5,7 +5,7 @@ module.exports = {
 	checks : [
 		{
 			type: 'graphiteSpike',
-			numerator: 'metric.200',
+			numerator: 'next.metric.200',
 			name: 'test',
 			severity: 2,
 			businessImpact: 'catastrophic',

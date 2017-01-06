@@ -20,13 +20,14 @@ class GraphiteSpikeCheck extends Check {
 		this.seriesFunction = options.seriesFunction || 'sumSeries';
 		this.summarizeFunction = options.summarizeFunction || 'sum';
 
-		if (options.graphiteBaseUrl) {
-			this.graphiteBaseUrl = options.graphiteBaseUrl;
-		} else {
-			this.graphiteServiceId = options.graphiteServiceId || 'bbaf3ccf';
-			this.graphiteApiKey = options.graphiteApiKey || process.env.HOSTEDGRAPHITE_READ_APIKEY;
-			this.graphiteSalt = options.graphiteSalt || '1445340974.799'
-			this.graphiteBaseUrl = `https://www.hostedgraphite.com/${this.graphiteServiceId}/${this.graphiteApiKey}/graphite/render/?_salt=${this.graphiteSalt}&`;
+		this.ftGraphiteBaseUrl = 'https://graphite-api.ft.com/render/?';
+		this.ftGraphiteKey = process.env.FT_GRAPHITE_KEY;
+		if (!this.ftGraphiteKey) {
+			throw new Error('You must set FT_GRAPHITE_KEY environment variable');
+		}
+
+		if (!options.numerator || !options.numerator.match(/next\./)) {
+			throw new Error(`You must prepend the numerator (${options.numerator}) with "next." - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
 		}
 
 		this.sampleUrl = this.generateUrl(options.numerator, options.divisor, this.samplePeriod);
@@ -42,7 +43,7 @@ class GraphiteSpikeCheck extends Check {
 	}
 
 	generateUrl(numerator, divisor, period) {
-		const urlBase = this.graphiteBaseUrl + `from=-${period}&format=json&target=`;
+		const urlBase = this.ftGraphiteBaseUrl + `from=-${period}&format=json&target=`;
 		if (divisor) {
 			return urlBase + `divideSeries(summarize(${this.seriesFunction}(${numerator}),"${period}","${this.summarizeFunction}",true),summarize(${this.seriesFunction}(${divisor}),"${period}","${this.summarizeFunction}",true))`;
 		} else {
@@ -62,9 +63,9 @@ class GraphiteSpikeCheck extends Check {
 	tick(){
 
 		return Promise.all([
-			fetch(this.sampleUrl)
+			fetch(this.sampleUrl, { headers: { key: this.ftGraphiteKey } })
 				.then(fetchres.json),
-			fetch(this.baselineUrl)
+			fetch(this.baselineUrl, { headers: { key: this.ftGraphiteKey } })
 				.then(fetchres.json)
 		])
 			.then(jsons => {
