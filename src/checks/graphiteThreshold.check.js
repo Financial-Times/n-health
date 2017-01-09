@@ -33,7 +33,7 @@ class GraphiteThresholdCheck extends Check {
 	}
 
 	generateUrl(metric, period) {
-		return this.graphiteBaseUrl + `format=json&from=-${period}&target=` + metric;
+		return this.ftGraphiteBaseUrl + `format=json&from=-${period}&target=` + metric;
 	}
 
 	tick(){
