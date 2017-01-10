@@ -1,10 +1,13 @@
 'use strict';
 
+const logger = require('@financial-times/n-logger').default;
 const status = require('./status');
 const Check = require('./check');
 const fetch = require('node-fetch');
 const fetchres = require('fetchres');
 const ms = require('ms');
+
+const logEventPrefix = 'GRAPHITE_THRESHOLD_CHECK';
 
 // Detects when the value of a metric climbs above/below a threshold value
 
@@ -53,7 +56,7 @@ class GraphiteThresholdCheck extends Check {
 				this.checkOutput = failed ? 'Spike detected in graphite data' : 'No spike detected in graphite data';
 			})
 			.catch(err => {
-				console.error('Failed to get JSON', err);
+				logger.error(`event=${logEventPrefix}_ERROR message=${err.message} stack="${err.stack.replace(/\n/g, '; ')}" url=${this.sampleUrl}`);
 				this.status = status.FAILED;
 				this.checkOutput = 'Graphite spike check failed to fetch data: ' + err.message;
 			});

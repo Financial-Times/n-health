@@ -1,10 +1,13 @@
 'use strict';
 
+const logger = require('@financial-times/n-logger').default;
 const status = require('./status');
 const Check = require('./check');
 const fetch = require('node-fetch');
 const fetchres = require('fetchres');
 const ms = require('ms');
+
+const logEventPrefix = 'GRAPHITE_SPIKE_CHECK';
 
 /** Detects spikes/troughs in a given metric compared to baseline historical data */
 
@@ -88,7 +91,7 @@ class GraphiteSpikeCheck extends Check {
 				this.checkOutput = ok ? 'No spike detected in graphite data' : 'Spike detected in graphite data';
 			})
 			.catch(err => {
-				console.error('Failed to get JSON', err);
+				logger.error(`event=${logEventPrefix}_ERROR message=${err.message} stack="${err.stack.replace(/\n/g, '; ')}" url=${this.sampleUrl}`);
 				this.status = status.FAILED;
 				this.checkOutput = 'Graphite spike check failed to fetch data: ' + err.message;
 			});
