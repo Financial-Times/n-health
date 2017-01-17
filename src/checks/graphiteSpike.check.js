@@ -91,7 +91,7 @@ class GraphiteSpikeCheck extends Check {
 				this.checkOutput = ok ? 'No spike detected in graphite data' : 'Spike detected in graphite data';
 			})
 			.catch(err => {
-				logger.error(`event=${logEventPrefix}_ERROR message=${err.message} stack="${err.stack.replace(/\n/g, '; ')}" url=${this.sampleUrl}`);
+				logger.error(`event=${logEventPrefix}_ERROR message=${err.message} stack="${err.stack ? err.stack.replace(/\n/g, '; ') : 'No stack'}" url=${this.sampleUrl}`);
 				this.status = status.FAILED;
 				this.checkOutput = 'Graphite spike check failed to fetch data: ' + err.message;
 			});
