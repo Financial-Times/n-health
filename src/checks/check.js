@@ -46,7 +46,7 @@ an init method returning a Promise`)
 		return Promise.resolve()
 			.then(() => this.tick())
 			.catch(err => {
-				logger.error(`event=FAILED_HEALTHCHECK_TICK name=${this.name}`, err)
+				logger.error({ event: 'FAILED_HEALTHCHECK_TICK', name: this.name }, err)
 				raven.captureError(err);
 				this.status = status.ERRORED;
 				this.checkOutput = 'Healthcheck failed to execute';
