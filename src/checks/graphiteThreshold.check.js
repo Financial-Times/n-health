@@ -56,7 +56,7 @@ class GraphiteThresholdCheck extends Check {
 				this.checkOutput = failed ? 'Spike detected in graphite data' : 'No spike detected in graphite data';
 			})
 			.catch(err => {
-				logger.error(`event=${logEventPrefix}_ERROR message=${err.message} stack="${err.stack.replace(/\n/g, '; ')}" url=${this.sampleUrl}`);
+				logger.error({ event: `${logEventPrefix}_ERROR`, url: this.sampleUrl }, err);
 				this.status = status.FAILED;
 				this.checkOutput = 'Graphite spike check failed to fetch data: ' + err.message;
 			});
