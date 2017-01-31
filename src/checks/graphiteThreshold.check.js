@@ -29,6 +29,7 @@ class GraphiteThresholdCheck extends Check {
 		if (!options.metric || !options.metric.match(/next\./)) {
 			throw new Error(`You must prepend the metric (${options.metric}) with "next." - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
 		}
+		this.metric = options.metric;
 
 		this.sampleUrl = this.generateUrl(options.metric, this.samplePeriod);
 
@@ -53,12 +54,16 @@ class GraphiteThresholdCheck extends Check {
 				});
 
 				this.status = failed ? status.FAILED : status.PASSED;
-				this.checkOutput = failed ? 'Spike detected in graphite data' : 'No spike detected in graphite data';
+
+				// The metric crossed a threshold
+				this.checkOutput = failed ?
+					`In the last ${this.samplePeriod}, ${this.metric} has moved ${this.direction} the threshold value of ${this.threshold}.` :
+					`No threshold error detected in graphite data for ${this.metric}.`;
 			})
 			.catch(err => {
 				logger.error({ event: `${logEventPrefix}_ERROR`, url: this.sampleUrl }, err);
 				this.status = status.FAILED;
-				this.checkOutput = 'Graphite spike check failed to fetch data: ' + err.message;
+				this.checkOutput = 'Graphite threshold check failed to fetch data: ' + err.message;
 			});
 	}
 
