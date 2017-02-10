@@ -19,6 +19,8 @@ class ResponseCompareCheck extends Check {
 		super(options);
 		this.comparison = options.comparison;
 		this.urls = options.urls;
+		this.headers = options.headers || {};
+		this.normalizeResponse = options.normalizeResponse || (resp => resp);
 	}
 
 	get checkOutput(){
@@ -33,9 +35,9 @@ class ResponseCompareCheck extends Check {
 	}
 
 	tick(){
-		return Promise.all(this.urls.map(url => fetch(url)))
+		return Promise.all(this.urls.map(url => fetch(url, { headers: this.headers })))
 			.then(responses => {
-				return Promise.all(responses.map(r => r.text()));
+				return Promise.all(responses.map(r => r.text().then(this.normalizeResponse)));
 			})
 			.then(responses => {
 				if(this.comparison === ResponseCompareCheck.comparisons.EQUAL){
