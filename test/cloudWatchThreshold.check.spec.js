@@ -123,4 +123,15 @@ describe('CloudWatch Threshold Check', () => {
 		});
 	});
 
+	it('should have the metric value in the check output', (done) => {
+		check = new Check(getCheckConfig({
+			threshold: 6000
+		}));
+		check.start();
+		setTimeout(() => {
+			expect(check.getStatus().checkOutput).to.match(/Current value: [\d.]+/);
+			done();
+		});
+	});
+
 });
