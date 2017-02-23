@@ -58,7 +58,7 @@ class CloudWatchThresholdCheck extends Check {
 					}
 
 					this.status = ok ? status.PASSED : status.FAILED;
-					this.checkOutput = ok ? 'No threshold change detected in CloudWatch data' : `CloudWatch data ${this.direction} required threshold`;
+					this.checkOutput = ok ? `No threshold change detected in CloudWatch data. Current value: ${value}` : `CloudWatch data ${this.direction} required threshold. Current value: ${value}`;
 				})
 				.catch(err => {
 					log.error('Failed to get CloudWatch data', err);
