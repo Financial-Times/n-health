@@ -2,15 +2,29 @@
 
 const expect = require('chai').expect;
 const configFixture = require('./fixtures/config/cloudWatchThresholdFixture');
-const dataFixture = require('./fixtures/cloudWatchThresholdResponse');
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const sinon = require('sinon');
+const fs = require('fs');
 
 function getCheckConfig (conf) {
 	return Object.assign({}, configFixture.checks[0], conf || {});
 }
 
-const cloudWatchMock = sinon.stub().returns({ promise: () => Promise.resolve(dataFixture) });
+function loadFixture(fixture) {
+    var fixtureData = fs.readFileSync(fixture + '.json');
+    return JSON.parse(fixtureData, function(key, val) {
+        if (key === 'Timestamp') {
+            return new Date(val);
+        }
+        return val;
+    });
+}
+
+const dataFixture = loadFixture('./test/fixtures/cloudWatchThresholdResponse');
+const cloudWatchDatapointMock = sinon.stub().returns({ promise: () => Promise.resolve(dataFixture) });
+
+let cloudWatchMock;
+
 const awsMock = {
 	CloudWatch: function() {
 		this.getMetricStatistics = cloudWatchMock
@@ -24,13 +38,14 @@ describe('CloudWatch Threshold Check', () => {
 	let check;
 
 	afterEach(() => {
-		cloudWatchMock.reset();
+		cloudWatchDatapointMock.reset();
 		check.stop();
 	});
 
 	it('Should be healthy if not above threshold', done => {
+		cloudWatchMock = cloudWatchDatapointMock;
 		check = new Check(getCheckConfig({
-			threshold: 6000
+			threshold: 100
 		}));
 		check.start();
 		setTimeout(() => {
@@ -40,8 +55,9 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('should be unhealty if below threshold', done => {
+		cloudWatchMock = cloudWatchDatapointMock;
 		check = new Check(getCheckConfig({
-			threshold: 4000
+			threshold: 40
 		}));
 		check.start();
 		setTimeout(() => {
@@ -51,8 +67,9 @@ describe('CloudWatch Threshold Check', () => {
 	})
 
 	it('Should be healthy if not below threshold', (done) => {
+		cloudWatchMock = cloudWatchDatapointMock;
 		check = new Check(getCheckConfig({
-			threshold: 4000,
+			threshold: 40,
 			direction: 'below'
 		}));
 		check.start();
@@ -63,8 +80,9 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('should be unhealty if above threshold', done => {
+		cloudWatchMock = cloudWatchDatapointMock;
 		check = new Check(getCheckConfig({
-			threshold: 6000,
+			threshold: 100,
 			direction: 'below'
 		}));
 		check.start();
@@ -75,6 +93,7 @@ describe('CloudWatch Threshold Check', () => {
 	})
 
 	it('Should be possible to configure sample period', (done) => {
+		cloudWatchMock = cloudWatchDatapointMock;
 		check = new Check(getCheckConfig({
 			samplePeriod: 60 * 10
 		}));
@@ -88,6 +107,7 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('Should be send sample period as ISO timestamp to CloudWatch API', (done) => {
+		cloudWatchMock = cloudWatchDatapointMock;
 		check = new Check(getCheckConfig({
 			samplePeriod: 60 * 10
 		}));
@@ -104,6 +124,7 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('Should be possible to configure metric dimensions', (done) => {
+		cloudWatchMock = cloudWatchDatapointMock;
 		check = new Check(getCheckConfig({
 			cloudWatchDimensions: [
 				{
@@ -124,9 +145,8 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('should have the metric value in the check output', (done) => {
-		check = new Check(getCheckConfig({
-			threshold: 6000
-		}));
+		cloudWatchMock = cloudWatchDatapointMock;
+		check = new Check(getCheckConfig());
 		check.start();
 		setTimeout(() => {
 			expect(check.getStatus().checkOutput).to.match(/Current value: [\d.]+/);
