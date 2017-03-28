@@ -54,7 +54,7 @@ describe('CloudWatch Threshold Check', () => {
 		});
 	});
 
-	it('should be unhealty if below threshold', done => {
+	it('should be unhealthy if below threshold', done => {
 		cloudWatchMock = cloudWatchDatapointMock;
 		check = new Check(getCheckConfig({
 			threshold: 40
@@ -79,7 +79,7 @@ describe('CloudWatch Threshold Check', () => {
 		});
 	});
 
-	it('should be unhealty if above threshold', done => {
+	it('should be unhealthy if above threshold', done => {
 		cloudWatchMock = cloudWatchDatapointMock;
 		check = new Check(getCheckConfig({
 			threshold: 100,
@@ -178,7 +178,7 @@ describe('CloudWatch Threshold Check', () => {
 		});
 	});
 
-	it('should use a 300 second window for a 300 second period', (done) => {
+	it('should use a 450 second window for a 300 second period', (done) => {
 		cloudWatchMock = cloudWatchDatapointMock;
 		check = new Check(getCheckConfig({
 			samplePeriod: 300
@@ -187,7 +187,7 @@ describe('CloudWatch Threshold Check', () => {
 		setTimeout(() => {
 			let args = cloudWatchMock.firstCall.args[0];
 			let timeWindow = new Date(args.EndTime) - new Date(args.StartTime);
-			expect(timeWindow).to.equal(300 * 1000);
+			expect(timeWindow).to.equal(450 * 1000);
 			done();
 		});
 	});
