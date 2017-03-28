@@ -28,12 +28,9 @@ class CloudWatchThresholdCheck extends Check {
 	}
 
 	generateParams() {
-		// use a larger window when gathering stats with a 60s period, because
-		// CloudWatch can take its time with populating new datapoints.
-		let timeWindow = this.samplePeriod;
-		if(timeWindow === 60) {
-			timeWindow = 90;
-		}
+		// use a larger window when gathering stats, because CloudWatch
+		// can take its sweet time with populating new datapoints.
+		let timeWindow = this.samplePeriod * 1.5;
 		return  {
 			EndTime: moment().toISOString(),
 			StartTime: moment().subtract(timeWindow, 'seconds').toISOString(),
