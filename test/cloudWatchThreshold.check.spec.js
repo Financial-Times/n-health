@@ -154,4 +154,14 @@ describe('CloudWatch Threshold Check', () => {
 		});
 	});
 
+	it('should use the latest datapoint if >1 datapoint is returned', (done) => {
+		cloudWatchMock = cloudWatchDatapointMock;
+		check = new Check(getCheckConfig());
+		check.start();
+		setTimeout(() => {
+			expect(check.getStatus().checkOutput).to.match(/Current value: 99$/);
+			done();
+		});
+	});
+
 });

@@ -46,9 +46,8 @@ class CloudWatchThresholdCheck extends Check {
 				.getMetricStatistics(params)
 				.promise()
 				.then(res => {
-					const value = res.Datapoints
-								.map(datum => datum[this.cloudWatchStatistic])
-								.reduce((a, b) => a + b, 0);
+					res.Datapoints.sort((a, b) => b['Timestamp'] - a['Timestamp']);
+					const value = res.Datapoints[0][this.cloudWatchStatistic];
 					let ok;
 
 					if (this.direction === 'above') {
