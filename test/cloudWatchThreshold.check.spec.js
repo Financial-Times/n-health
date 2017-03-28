@@ -54,7 +54,7 @@ describe('CloudWatch Threshold Check', () => {
 		});
 	});
 
-	it('should be unhealty if below threshold', done => {
+	it('should be unhealthy if below threshold', done => {
 		cloudWatchMock = cloudWatchDatapointMock;
 		check = new Check(getCheckConfig({
 			threshold: 40
@@ -79,7 +79,7 @@ describe('CloudWatch Threshold Check', () => {
 		});
 	});
 
-	it('should be unhealty if above threshold', done => {
+	it('should be unhealthy if above threshold', done => {
 		cloudWatchMock = cloudWatchDatapointMock;
 		check = new Check(getCheckConfig({
 			threshold: 100,
