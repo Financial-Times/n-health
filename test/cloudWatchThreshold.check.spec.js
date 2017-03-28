@@ -164,4 +164,31 @@ describe('CloudWatch Threshold Check', () => {
 		});
 	});
 
+	it('should use a 90 second window for a 60 second period', (done) => {
+		cloudWatchMock = cloudWatchDatapointMock;
+		check = new Check(getCheckConfig({
+			samplePeriod: 60
+		}));
+		check.start();
+		setTimeout(() => {
+			let args = cloudWatchMock.firstCall.args[0];
+			let timeWindow = new Date(args.EndTime) - new Date(args.StartTime);
+			expect(timeWindow).to.equal(90 * 1000);
+			done();
+		});
+	});
+
+	it('should use a 300 second window for a 300 second period', (done) => {
+		cloudWatchMock = cloudWatchDatapointMock;
+		check = new Check(getCheckConfig({
+			samplePeriod: 300
+		}));
+		check.start();
+		setTimeout(() => {
+			let args = cloudWatchMock.firstCall.args[0];
+			let timeWindow = new Date(args.EndTime) - new Date(args.StartTime);
+			expect(timeWindow).to.equal(300 * 1000);
+			done();
+		});
+	});
 });
