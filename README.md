@@ -1,4 +1,4 @@
-# n-health
+# n-health [![CircleCI](https://circleci.com/gh/Financial-Times/n-health.svg?style=svg)](https://circleci.com/gh/Financial-Times/n-health)
 
 Makes it easy to add a variety of healthchecks to an app.
 
