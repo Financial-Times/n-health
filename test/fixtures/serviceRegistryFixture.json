@@ -1556,43 +1556,6 @@
     }
   },
   {
-    "name": "barrier-guru-at",
-    "systemCode": "next-barrier-guru-at",
-    "paths": [],
-    "desc": "Acceptance Tests for Barrier configuration and customisation service.",
-    "serves": [
-      "api"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          {
-            "region": "eu",
-            "url": "https://ft-next-barrier-guru-at-eu.herokuapp.com"
-          }
-        ],
-        "repo": "https://github.com/Financial-Times/next-barrier-guru-at",
-        "dashboard": "https://dashboard.heroku.com/pipelines/876e69a7-349f-4b40-b203-d1b0e6fadb15",
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-barrier-guru-at",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 1
-          }
-        },
-        "checks": {
-          "availability": [
-            2313341
-          ]
-        },
-        "notifications": {
-          "slack": "membership-next"
-        }
-      }
-    }
-  },
-  {
     "name": "article-trace",
     "systemCode": "next-article-trace",
     "desc": "Investigates how long new content takes to get to the homepage.",
