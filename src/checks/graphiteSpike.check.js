@@ -29,7 +29,11 @@ class GraphiteSpikeCheck extends Check {
 			throw new Error('You must set FT_GRAPHITE_KEY environment variable');
 		}
 
-		if (!options.numerator || !options.numerator.match(/next\./)) {
+		if (!options.numerator) {
+			throw new Error(`You must pass in a numerator for this check - e.g., "next.heroku.article.*.express.start"`);
+		}
+		
+		if (!/^next\./.test(options.numerator)) {
 			throw new Error(`You must prepend the numerator (${options.numerator}) with "next." - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
 		}
 
