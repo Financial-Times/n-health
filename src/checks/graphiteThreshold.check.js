@@ -30,7 +30,7 @@ class GraphiteThresholdCheck extends Check {
 			throw new Error(`You must pass in a metric for the "${options.name}" check - e.g., "next.heroku.article.*.express.start"`);
 		}
 
-		if (!/^next\./.test(options.metric)) {
+		if (!/next\./.test(options.metric)) {
 			throw new Error(`You must prepend the metric (${options.metric}) with "next." for the "${options.name}" check - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
 		}
 		this.metric = options.metric;

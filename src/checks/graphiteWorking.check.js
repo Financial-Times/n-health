@@ -25,7 +25,7 @@ class GraphiteWorkingCheck extends Check {
 			throw new Error(`You must pass in a key for the "${options.name}" check - e.g., "next.heroku.article.*.express.start"`);
 		}
 
-		if (!/^next\./.test(options.key)) {
+		if (!/next\./.test(options.key)) {
 			throw new Error(`You must prepend the key (${options.key}) with "next." for the "${options.name}" check - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
 		}
 
