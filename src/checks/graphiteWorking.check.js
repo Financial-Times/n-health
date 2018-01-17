@@ -22,11 +22,11 @@ class GraphiteWorkingCheck extends Check {
 		}
 
 		if (!options.key) {
-			throw new Error(`You must pass in a key for this check - e.g., "next.heroku.article.*.express.start"`);
+			throw new Error(`You must pass in a key for the "${options.name}" check - e.g., "next.heroku.article.*.express.start"`);
 		}
 
 		if (!/^next\./.test(options.key)) {
-			throw new Error(`You must prepend the key (${options.key}) with "next." - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
+			throw new Error(`You must prepend the key (${options.key}) with "next." for the "${options.name}" check - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
 		}
 
 		const key = options.key;

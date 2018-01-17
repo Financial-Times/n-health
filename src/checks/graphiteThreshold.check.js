@@ -25,13 +25,13 @@ class GraphiteThresholdCheck extends Check {
 		if (!this.ftGraphiteKey) {
 			throw new Error('You must set FT_GRAPHITE_KEY environment variable');
 		}
-
+		
 		if (!options.metric) {
-			throw new Error(`You must pass in a metric for this check - e.g., "next.heroku.article.*.express.start"`);
+			throw new Error(`You must pass in a metric for the "${options.name}" check - e.g., "next.heroku.article.*.express.start"`);
 		}
 
 		if (!/^next\./.test(options.metric)) {
-			throw new Error(`You must prepend the metric (${options.metric}) with "next." - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
+			throw new Error(`You must prepend the metric (${options.metric}) with "next." for the "${options.name}" check - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
 		}
 		this.metric = options.metric;
 
