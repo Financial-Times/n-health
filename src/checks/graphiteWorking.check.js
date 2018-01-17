@@ -21,16 +21,18 @@ class GraphiteWorkingCheck extends Check {
 			throw new Error('You must set FT_GRAPHITE_KEY environment variable');
 		}
 
-		if (!options.key || !options.key.match(/next\./)) {
-			throw new Error(`You must prepend the key (${options.key}) with "next." - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
+		if (!options.key) {
+			throw new Error(`You must pass in a key for the "${options.name}" check - e.g., "next.heroku.article.*.express.start"`);
 		}
 
-		this.checkOutput = "This check has not yet run";
+		if (!/^next\./.test(options.key)) {
+			throw new Error(`You must prepend the key (${options.key}) with "next." for the "${options.name}" check - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
+		}
+
 		const key = options.key;
 		const time = options.time || '-15minutes';
-		if(!key){
-			throw new Error('You must give a key');
-		}
+		
+		this.checkOutput = "This check has not yet run";
 		this.key = key;
 		this.url = encodeURI(`https://graphite-api.ft.com/render/?target=${key}&from=${time}&format=json`);
 	}
