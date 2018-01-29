@@ -14,6 +14,7 @@ To Add more health checks create a new file in the `config` directory.  It shoul
 * name, severity, businessImpact, technicalSummary and panicGuide are all required. See the [specification](https://docs.google.com/document/edit?id=1ftlkDj1SUXvKvKJGvoMoF1GnSUInCNPnNGomqTpJaFk) for details
 * interval: time between checks in milliseconds or any string compatible with [ms](https://www.npmjs.com/package/ms) [default: 1minute]
 * type: The type of check (see below)
+* officeHoursOnly: [default: false] For queries that will probably fail out of hours (e.g. Internet Explorer usage, B2B stuff), set this to true and the check will pass on weekends and outside office hours. Use sparingly.
 
 ## Healthcheck types and options
 
@@ -91,3 +92,17 @@ _Note: this assumes that `AWS_ACCESS_KEY` & `AWS_SECRET_ACCESS_KEY` are implictl
 
 * cloudWatchRegion = [default 'eu-west-1'] AWS region the metrics are stored
 * cloudWatchAlarmName = [required] Name of the CloudWatch alarm to check
+
+### keenThreshold
+Checks whether the result of a keen query for a metric has crossed a threshold
+
+_Note: this assumes that `KEEN_READ_KEY` & `KEEN_PROJECT_ID` are implicitly available as environment variables on process.env_
+
+* query: [required] Query to run to get a count, in the format of [keen-query](https://github.com/Financial-Times/keen-query).
+* threshold: [required] Value to check the metric against
+* timeframe: [default: 'this_60_minutes'] timeframe to run keen query against.
+* direction: [default: 'below'] Direction on which to trigger the healthcheck;
+	- 'above' = alert if value goes above the threshold
+	- 'below' = alert if value goes below the threshold
+
+_Warning_: Keen sometimes has a lag before ingesting, particularly during high traffic periods. It's recommended to have a minimum timeframe of 60 minutes, if not more.
