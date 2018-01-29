@@ -10,5 +10,6 @@ module.exports = {
 	graphiteThreshold: require('./graphiteThreshold.check'),
 	graphiteWorking: require('./graphiteWorking.check'),
 	cloudWatchAlarm: require('./cloudWatchAlarm.check'),
-	cloudWatchThreshold: require('./cloudWatchThreshold.check')
+	cloudWatchThreshold: require('./cloudWatchThreshold.check'),
+	keenThreshold: require('./keenThreshold.check')
 };
