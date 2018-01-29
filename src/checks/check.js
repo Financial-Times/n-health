@@ -4,6 +4,13 @@ const ms = require('ms');
 const logger = require('@financial-times/n-logger').default;
 const raven = require('@financial-times/n-raven');
 
+const isOfficeHoursNow = () => {
+	const date = new Date();
+	const hour = date.getHours();
+	const day = date.getDay();
+	return (day !== 0 && day !== 6) && (hour > 8 && hour < 18); //exclude saturday, sunday and out of office hours
+};
+
 class Check {
 
 	constructor (opts) {
@@ -25,6 +32,7 @@ an init method returning a Promise`)
 		this.severity = opts.severity;
 		this.businessImpact = opts.businessImpact;
 		this.technicalSummary = opts.technicalSummary;
+		this.officeHoursOnly = opts.officeHoursOnly;
 		this.interval = typeof opts.interval === 'string' ? ms(opts.interval) : (opts.interval || 60000);
 		this.panicGuide = opts.panicGuide;
 		this.status = status.PENDING;
@@ -72,7 +80,11 @@ an init method returning a Promise`)
 			// in child healthcheck classes
 			checkOutput: this.status === status.ERRORED ? 'Healthcheck failed to execute' : this.checkOutput
 		};
-		if (this.lastUpdated) {
+
+		if (this.officeHoursOnly && !isOfficeHoursNow()) {
+			output.ok = true;
+			output.checkOutput = 'This check is not set to run outside of office hours';
+		} else if (this.lastUpdated) {
 			output.lastUpdated = this.lastUpdated.toISOString();
 			let shouldHaveRun = Date.now() - (this.interval + 1000);
 			if(this.lastUpdated.getTime() < shouldHaveRun){
