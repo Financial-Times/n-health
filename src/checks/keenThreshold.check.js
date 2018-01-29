@@ -13,7 +13,6 @@ const logEventPrefix = 'KEEN_THRESHOLD_CHECK';
 class KeenThresholdCheck extends Check {
 
 	constructor(options){
-
 		super(options);
 		this.threshold = options.threshold;
 		this.direction = options.direction || 'below';
@@ -43,7 +42,6 @@ class KeenThresholdCheck extends Check {
 	}
 
 	tick() {
-
 		return KeenQuery.build(this.query)
 			.filter('user.subscriptions.isStaff!=true')
 			.filter('user.geo.isFinancialTimesOffice!=true')
@@ -57,7 +55,7 @@ class KeenThresholdCheck extends Check {
 						data && data > this.threshold :
 						data && data < this.threshold;
 						this.status = failed ? status.FAILED : status.PASSED;
-						this.checkOutput = `Got ${data} ${this.timeframe.split('_').join(' ').replace('this', 'in the last')}, which is ${this.direction} the threshold of ${this.threshold}
+						this.checkOutput = `Got ${data} ${this.timeframe.split('_').join(' ').replace('this', 'in the last')}, expected not to be ${this.direction} the threshold of ${this.threshold}
 
 			${this.query}
 						`;
