@@ -37,6 +37,8 @@ class KeenThresholdCheck extends Check {
 
 
 		this.query = options.query;
+		//Default to 10 minute interval for keen checks so we don't overwhelm it
+		this.interval = options.interval || 10 * 60 * 1000;
 
 		this.checkOutput = 'Keen threshold check has not yet run';
 	}
