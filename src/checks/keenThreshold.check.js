@@ -28,7 +28,12 @@ class KeenThresholdCheck extends Check {
 		KeenQuery.setConfig({
 			KEEN_PROJECT_ID: this.keenProjectId,
 			KEEN_READ_KEY: this.keenReadKey,
-			KEEN_HOST: 'https://keen-proxy.ft.com/3.0'
+			KEEN_HOST: 'https://keen-proxy.ft.com/3.0',
+			fetchOptions: {
+				headers: {
+					'Cache-Strategy': 'max-age=5m, stale-while-revalidate=1m'
+				}
+			}
 		});
 
 		if (!options.query) {
