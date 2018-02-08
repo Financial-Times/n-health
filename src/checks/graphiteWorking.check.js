@@ -73,7 +73,7 @@ class GraphiteWorkingCheck extends Check {
 
 			})
 			.catch(err => {
-				logger.error({ event: `${logEventPrefix}_ERROR`, url: this.url }, err);
+				log.error({ event: `${logEventPrefix}_ERROR`, url: this.url }, err);
 				this.status = status.FAILED;
 				this.checkOutput = err.toString();
 			});
