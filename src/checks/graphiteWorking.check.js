@@ -7,9 +7,10 @@ const log = require('@financial-times/n-logger').default;
 
 const logEventPrefix = 'GRAPHITE_WORKING_CHECK';
 
-function badJSON(message, json){
-	log.error(`event=${logEventPrefix}_BAD_JSON json=${JSON.stringify(json)}`);
-	throw new Error(message);
+function badJSON(message, json) {
+	const err = new Error(message);
+	log.error({ event: `${logEventPrefix}_BAD_JSON` }, err);
+	throw err;
 }
 
 class GraphiteWorkingCheck extends Check {
@@ -61,7 +62,7 @@ class GraphiteWorkingCheck extends Check {
 
 				let count = json[0].datapoints.reduce((total, current) => total + (current[0] || 0), 0);
 
-				log.info(`event=${logEventPrefix}_COUNT key=${this.key} count=${count}`);
+				log.info({ event: `${logEventPrefix}_COUNT`, key: this.key, count });
 				if(count){
 					this.status = status.PASSED;
 					this.checkOutput =`${this.key} has received ${count} metrics in the last hour`;
