@@ -1046,37 +1046,6 @@
     }
   },
   {
-    "name": "falcon-redirect",
-    "systemCode": "next-falconredir",
-    "paths": [],
-    "desc": "Redirecting as a service",
-    "serves": [
-      "redirect"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-falcon-redirect.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-falcon-redirect",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-falcon-redirect/resources",
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-falcon-redirect",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": [
-            1776853
-          ]
-        }
-      }
-    }
-  },
-  {
     "name": "flags-api",
     "systemCode": "next-flags-write",
     "paths": [],
