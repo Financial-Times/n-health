@@ -71,7 +71,7 @@ class KeenThresholdCheck extends Check {
 			})
 			.catch(err => {
 				logger.error({ event: `${logEventPrefix}_ERROR`, url: this.query }, err);
-				this.status = status.FAILED;
+				this.status = status.PASSED;
 				this.checkOutput = 'Keen threshold check failed to fetch data: ' + err.message;
 			});
 	}
