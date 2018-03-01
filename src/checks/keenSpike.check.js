@@ -92,8 +92,8 @@ class KeenSpikeCheck extends Check {
 
           this.checkOutput = (
             ok
-              ? `No spike dectected. ${sampleData} in the last ${this.timeframe} days is not ${this.threshold * 100}% ${this.direction} ${baselineData} found in the same period ${this.baselinePeriod} days ago.`
-              : `Spike dectected.${sampleData} in the last ${this.timeframe} days is ${this.threshold * 100}% ${this.direction} ${baselineData} found in the same period, ${this.baselinePeriod} days ago.`
+              ? `No spike detected. ${sampleData} in the last ${this.timeframe} days is not more than ${this.threshold * 100}% ${this.direction} ${baselineData} found in the same period ${this.baselinePeriod} days ago.`
+              : `Spike detected.${sampleData} in the last ${this.timeframe} days is more than ${this.threshold * 100}% ${this.direction} ${baselineData} found in the same period, ${this.baselinePeriod} days ago.`
           ) + `\n${this.query}`;
 
       }
