@@ -61,7 +61,7 @@ class KeenSpikeCheck extends Check {
 		const baselineQuery = () => {
 			let startDate = new Date();
 			let endDate = new Date();
-			startDate.setDate(startDate.getDate() - this.baselinePeriod + this.timeframe);
+			startDate.setDate(startDate.getDate() - this.baselinePeriod - this.timeframe);
 			endDate.setDate(endDate.getDate() - this.baselinePeriod);
 
 			return KeenQuery.build(this.query)
