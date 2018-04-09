@@ -40,8 +40,8 @@ class KeenSpikeCheck extends Check {
 		}
 
 		this.query = options.query;
-		//Default to 10 minute interval for keen checks so we don't overwhelm it
-		this.interval = options.interval || 10 * 60 * 1000;
+		//Default to 1 hour interval for keen checks so we don't overwhelm it
+		this.interval = options.interval || 60 * 60 * 1000;
 
 		this.status = status.PASSED;
 		this.checkOutput = 'Keen threshold check has not yet run';
