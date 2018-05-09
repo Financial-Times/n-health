@@ -2260,38 +2260,6 @@
     }
   },
   {
-    "name": "feedback",
-    "systemCode": "next-feedback",
-    "paths": [
-      "^/nps-feedback$",
-      "^/feedback"
-    ],
-    "desc": "Next feedback app",
-    "serves": [
-      "user-page"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-feedback.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-feedback",
-        "dashboard": "https://dashboard.heroku.com/orgs/financial-times/apps/ft-next-feedback/resources",
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-feedback",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 2
-          }
-        },
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
     "name": "opt-in-template",
     "systemCode": "next-optintempl",
     "paths": [
