@@ -23,11 +23,6 @@ Will poll the pingdom API to get the status of a specific check
 
 * checkId: The id of the check in pingdom
 
-### nightwatch
-Will get the results of an automated test from Saucelabs.
-
-* session: The session name in Saucelabs for the tests
-
 ### responseCompare
 Fetches from multiple urls and compares the responses. Useful to check that replication is working
 
