@@ -4,7 +4,6 @@ module.exports = {
 		'23077025-960d-11e6-afcc-07964ee4b5be', // test/fixtures/cloudWatchThresholdResponse.json
 		'f8585BOxnGQDMbnkJoM1e', // test/fixtures/config/graphiteWorkingFixture.js
 		'sendnotificationwhendown', // test/fixtures/pingdomDownResponse.json + test/fixtures/pingdomUpResponse.json
-		'01e01de3c6ca456b87da5278bc6c6e36', // test/fixtures/sauceLabsFailedResponse.json + test/fixtures/sauceLabsPassedResponse.json
 		'736ee205-b510-40bc-b58f-7b97709559a8', // test/fixtures/serviceRegistryFixture.json
 		'configure/service/3GQMFG1fYBJojRtN2fWQMX', // test/fixtures/serviceRegistryFixture.json
 		'a8527323-7e3a-4f67-8636-2117426f17ad', // test/fixtures/serviceRegistryFixture.json
