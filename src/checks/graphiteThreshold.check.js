@@ -52,8 +52,8 @@ class GraphiteThresholdCheck extends Check {
 				const failed = sample.some(result => {
 					return result.datapoints.some(value => {
 						return this.direction === 'above' ?
-							value[0] && value[0] > this.threshold :
-							value[0] && value[0] < this.threshold;
+							Number(value[0]) > this.threshold :
+							Number(value[0]) < this.threshold;
 					});
 				});
 
