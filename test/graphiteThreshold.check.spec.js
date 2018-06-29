@@ -117,8 +117,9 @@ describe('Graphite Threshold Check', function(){
 
 		it('should be unhealthy if any datapoints are below lower threshold', done => {
 			mockGraphite([
-				{ datapoints: [[10, 1234567890], [12, 1234567891]] },
-				{ datapoints: [[13, 1234567892], [14, 1234567893]] }
+				{ target: 'next.heroku.cpu.min', datapoints: [[10, 1234567890], [12, 1234567891]] },
+				{ target: 'next.heroku.disk.min', datapoints: [[10, 1234567890], [12, 1234567891]] },
+				{ target: 'next.heroku.memory.min', datapoints: [[13, 1234567892], [14, 1234567893]] }
 			]);
 			check = new Check(getCheckConfig({
 				threshold: 11,
@@ -127,6 +128,7 @@ describe('Graphite Threshold Check', function(){
 			check.start();
 			setTimeout(() => {
 				expect(check.getStatus().ok).to.be.false;
+				expect(check.getStatus().checkOutput).to.equal('In the last 10min, the following metric(s) have moved below the threshold value of 11: \tnext.heroku.cpu.min\tnext.heroku.disk.min');
 				done();
 			});
 		});
@@ -134,7 +136,7 @@ describe('Graphite Threshold Check', function(){
 	});
 
 	it('Should be possible to configure sample period', function(done){
-		mockGraphite();
+		mockGraphite([{ datapoints: [] }]);
 		check = new Check(getCheckConfig({
 			samplePeriod: '24h'
 		}));

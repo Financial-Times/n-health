@@ -48,20 +48,24 @@ class GraphiteThresholdCheck extends Check {
 
 		return fetch(this.sampleUrl, { headers: { key: this.ftGraphiteKey } })
 			.then(fetchres.json)
-			.then(sample => {
-				const failed = sample.some(result => {
-					return result.datapoints.some(value => {
+			.then(results => {
+				const simplifiedResults = results.map(result => {
+					const isFailing = result.datapoints.some(value => {
 						return this.direction === 'above' ?
 							Number(value[0]) > this.threshold :
 							Number(value[0]) < this.threshold;
 					});
+					return { target: result.target, isFailing };
 				});
+
+				const failed = simplifiedResults.some(result => result.isFailing);
+				const failingMetrics = simplifiedResults.filter(result => result.isFailing).map(result => result.target);
 
 				this.status = failed ? status.FAILED : status.PASSED;
 
 				// The metric crossed a threshold
 				this.checkOutput = failed ?
-					`In the last ${this.samplePeriod}, ${this.metric} has moved ${this.direction} the threshold value of ${this.threshold}.` :
+					`In the last ${this.samplePeriod}, the following metric(s) have moved ${this.direction} the threshold value of ${this.threshold}: \t${failingMetrics.join('\t')}` :
 					`No threshold error detected in graphite data for ${this.metric}.`;
 			})
 			.catch(err => {
