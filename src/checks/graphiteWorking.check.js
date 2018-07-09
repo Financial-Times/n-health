@@ -1,5 +1,3 @@
-'use strict';
-
 const status = require('./status');
 const Check = require('./check');
 const fetch = require('node-fetch');
@@ -15,30 +13,29 @@ function badJSON(message, json) {
 
 class GraphiteWorkingCheck extends Check {
 
-	constructor(options){
+	constructor (options) {
+		options.technicalSummary = options.technicalSummary || 'There has been no metric data for a sustained period of time';
+		options.panicGuide = options.panicGuide || 'Check this is up and running. Check this has been able to send metrics to Graphite (see Heroku and Splunk logs). Check Graphite has not been dropping metric data.';
+
 		super(options);
+
 		this.ftGraphiteKey = process.env.FT_GRAPHITE_KEY;
 		if (!this.ftGraphiteKey) {
 			throw new Error('You must set FT_GRAPHITE_KEY environment variable');
 		}
 
-		if (!options.key) {
-			throw new Error(`You must pass in a key for the "${options.name}" check - e.g., "next.heroku.article.*.express.start"`);
+		this.metric = options.metric || options.key;
+		if (!this.metric) {
+			throw new Error(`You must pass in a metric for the "${options.name}" check - e.g., "next.heroku.article.*.express.start"`);
 		}
 
-		if (!/next\./.test(options.key)) {
-			throw new Error(`You must prepend the key (${options.key}) with "next." for the "${options.name}" check - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
-		}
+		const fromTime = '-5minutes';
+		this.url = encodeURI(`https://graphite-api.ft.com/render/?target=${this.metric}&from=${fromTime}&format=json`);
 
-		const key = options.key;
-		const time = options.time || '-15minutes';
-		
 		this.checkOutput = "This check has not yet run";
-		this.key = key;
-		this.url = encodeURI(`https://graphite-api.ft.com/render/?target=${key}&from=${time}&format=json`);
 	}
 
-	tick(){
+	tick () {
 		return fetch(this.url, { headers: { key: this.ftGraphiteKey } })
 			.then(response => {
 				if(!response.ok){
@@ -60,17 +57,22 @@ class GraphiteWorkingCheck extends Check {
 					badJSON('Expected at least one datapoint', json);
 				}
 
-				let count = json[0].datapoints.reduce((total, current) => total + (current[0] || 0), 0);
+				const simplifiedResults = json.map(result => {
+					const nullsForHowLong = result.datapoints.reduce((xs, x) => x[0] === null ? xs + 1 : 0, 0);
+					const simplifiedResult = { target: result.target, nullsForHowLong };
+					log.info({ event: `${logEventPrefix}_NULLS_FOR_HOW_LONG` }, simplifiedResult);
+					return simplifiedResult;
+				});
 
-				log.info({ event: `${logEventPrefix}_COUNT`, key: this.key, count });
-				if(count){
+				const failedResults = simplifiedResults.filter(r => r.nullsForHowLong > 2);
+
+				if (failedResults.length === 0) {
 					this.status = status.PASSED;
-					this.checkOutput =`${this.key} has received ${count} metrics in the last hour`;
-				}else{
+					this.checkOutput =`${this.metric} has data`;
+				} else {
 					this.status = status.FAILED;
-					this.checkOutput = `${this.key} has not receieved any metrics on the last hour`;
+					this.checkOutput = failedResults.map(r => `${r.target} has been null for ${r.nullsForHowLong} minutes.`).join(' ');
 				}
-
 			})
 			.catch(err => {
 				log.error({ event: `${logEventPrefix}_ERROR`, url: this.url }, err);

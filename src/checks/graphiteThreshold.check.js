@@ -51,9 +51,15 @@ class GraphiteThresholdCheck extends Check {
 			.then(results => {
 				const simplifiedResults = results.map(result => {
 					const isFailing = result.datapoints.some(value => {
-						return this.direction === 'above' ?
-							Number(value[0]) > this.threshold :
-							Number(value[0]) < this.threshold;
+						if (typeof value[0] === null) {
+							// metric data is unavailable, we don't fail this threshold check if metric data is unavailable
+							// if you want a failing check for when metric data is unavailable, use graphiteWorking
+							return false;
+						} else {
+							return this.direction === 'above' ?
+								Number(value[0]) > this.threshold :
+								Number(value[0]) < this.threshold;
+						}
 					});
 					return { target: result.target, isFailing };
 				});
@@ -65,7 +71,7 @@ class GraphiteThresholdCheck extends Check {
 
 				// The metric crossed a threshold
 				this.checkOutput = failed ?
-					`In the last ${this.samplePeriod}, the following metric(s) have moved ${this.direction} the threshold value of ${this.threshold}: \t${failingMetrics.join('\t')}` :
+					`In the last ${this.samplePeriod}, the following metric(s) have moved ${this.direction} the threshold value of ${this.threshold}: ${failingMetrics.join(' ')}` :
 					`No threshold error detected in graphite data for ${this.metric}.`;
 			})
 			.catch(err => {
