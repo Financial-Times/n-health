@@ -30,8 +30,8 @@ describe('Graphite Working Check', function(){
 			"target": "summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, \"1h\", \"sum\", true)",
 			"datapoints": [
 				[ null, 1459333140 ],
-				[ null, 1459333200 ],
-				[ null, 1459333260 ],
+				[ 1, 1459333200 ],
+				[ 1, 1459333260 ],
 				[ null, 1459333320 ],
 				[ null, 1459333380 ],
 				[ null, 1459333420 ],
@@ -61,7 +61,7 @@ describe('Graphite Working Check', function(){
 		return waitFor(10).then(() => {
 			sinon.assert.called(mockFetch);
 			let url = mockFetch.lastCall.args[0];
-			expect(url).to.contain(fixture.key);
+			expect(url).to.contain(fixture.metric);
 			expect(url).to.contain('format=json');
 		});
 	});
@@ -70,6 +70,7 @@ describe('Graphite Working Check', function(){
 		setup(goodResponse);
 		check.start();
 		return waitFor(10).then(() => {
+			expect(check.getStatus().checkOutput).to.equal('next.fastly.f8585BOxnGQDMbnkJoM1e.all.requests has data');
 			expect(check.getStatus().ok).to.be.true;
 		});
 	});
@@ -79,6 +80,7 @@ describe('Graphite Working Check', function(){
 		check.start();
 		return waitFor(10).then(() => {
 			expect(check.getStatus().ok).to.be.false;
+			expect(check.getStatus().checkOutput).to.equal('summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, "1h", "sum", true) has been null for 3 minutes.');
 		});
 	});
 
@@ -94,7 +96,6 @@ describe('Graphite Working Check', function(){
 		it('Can actually call graphite', () => {
 			check.start();
 			return waitFor(1000).then(() => {
-				console.log(check.getStatus());
 				expect(check.getStatus().ok).to.be.true;
 			});
 		});

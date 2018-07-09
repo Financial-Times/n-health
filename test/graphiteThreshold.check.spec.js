@@ -128,7 +128,7 @@ describe('Graphite Threshold Check', function(){
 			check.start();
 			setTimeout(() => {
 				expect(check.getStatus().ok).to.be.false;
-				expect(check.getStatus().checkOutput).to.equal('In the last 10min, the following metric(s) have moved below the threshold value of 11: \tnext.heroku.cpu.min\tnext.heroku.disk.min');
+				expect(check.getStatus().checkOutput).to.equal('In the last 10min, the following metric(s) have moved below the threshold value of 11: next.heroku.cpu.min next.heroku.disk.min');
 				done();
 			});
 		});

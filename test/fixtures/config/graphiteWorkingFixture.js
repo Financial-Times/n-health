@@ -1,4 +1,3 @@
-'use strict';
 module.exports = {
 	name: 'graphite check fixture',
 	description: '',
@@ -6,12 +5,9 @@ module.exports = {
 		{
 			type: 'graphiteWorking',
 			name: 'test1',
-			key: 'next.fastly.f8585BOxnGQDMbnkJoM1e.all.requests',
+			metric: 'next.fastly.f8585BOxnGQDMbnkJoM1e.all.requests',
 			severity: 2,
-			businessImpact: 'blah',
-			technicalSummary: 'god knows',
-			panicGuide: 'Don\'t Panic',
-			interval: '1s'
+			businessImpact: 'loss of millions in pounds'
 		}
 	]
 };
