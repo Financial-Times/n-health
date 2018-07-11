@@ -12,13 +12,13 @@ const logEventPrefix = 'GRAPHITE_SUM_THRESHOLD_CHECK';
 
 class GraphiteSumThresholdCheck extends Check {
 
-	constructor(options){
+	constructor (options) {
 		super(options);
 		this.threshold = options.threshold;
 		this.direction = options.direction || 'above';
 		this.from = options.from || '10min';
 		this.ftGraphiteBaseUrl = 'https://graphite-api.ft.com/render/?';
-        this.ftGraphiteKey = process.env.FT_GRAPHITE_KEY;
+        	this.ftGraphiteKey = process.env.FT_GRAPHITE_KEY;
 
 
 		if (!this.ftGraphiteKey) {
@@ -38,7 +38,7 @@ class GraphiteSumThresholdCheck extends Check {
 		this.checkOutput = 'Graphite threshold check has not yet run';
 	}
 
-	tick(){
+	tick () {
 
 		return fetch(this.sampleUrl, { headers: { key: this.ftGraphiteKey } })
 			.then(fetchres.json)
