@@ -29,7 +29,7 @@ class GraphiteWorkingCheck extends Check {
 			throw new Error(`You must pass in a metric for the "${options.name}" check - e.g., "next.heroku.article.*.express.start"`);
 		}
 
-		const fromTime = '-5minutes';
+		const fromTime = options.time || '-15minutes';
 		this.url = encodeURI(`https://graphite-api.ft.com/render/?target=${this.metric}&from=${fromTime}&format=json`);
 
 		this.checkOutput = "This check has not yet run";
