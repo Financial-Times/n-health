@@ -8,7 +8,6 @@ module.exports = {
 	pingdom : require('./pingdom.check'),
 	graphiteSpike: require('./graphiteSpike.check'),
 	graphiteThreshold: require('./graphiteThreshold.check'),
-	graphiteSumThreshold: require('./graphiteSumThreshold.check'),
 	graphiteWorking: require('./graphiteWorking.check'),
 	cloudWatchAlarm: require('./cloudWatchAlarm.check'),
 	cloudWatchThreshold: require('./cloudWatchThreshold.check'),
