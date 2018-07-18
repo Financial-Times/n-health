@@ -51,7 +51,7 @@ class GraphiteThresholdCheck extends Check {
 			.then(results => {
 				const simplifiedResults = results.map(result => {
 					const isFailing = result.datapoints.some(value => {
-						if (typeof value[0] === null) {
+						if (value[0] === null) {
 							// metric data is unavailable, we don't fail this threshold check if metric data is unavailable
 							// if you want a failing check for when metric data is unavailable, use graphiteWorking
 							return false;
