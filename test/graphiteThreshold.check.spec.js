@@ -133,6 +133,32 @@ describe('Graphite Threshold Check', function(){
 			});
 		});
 
+		it('should be healthy if any non-null datapoint is below lower threshold', done => {
+			mockGraphite([
+				{
+					target: "next.heroku.es-interface.pushUpdater_1_EU.push_event_received",
+					datapoints: [
+						[ 2, 1531921740 ],
+						[ 3, 1531921800 ],
+						[ 2, 1531921860 ],
+						[ null, 1531921920 ],
+						[ null, 1531921980 ]
+					]
+				}
+			]);
+			check = new Check(getCheckConfig({
+				threshold: 1,
+				direction: 'below',
+				samplePeriod: '5min'
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.true;
+				expect(check.getStatus().checkOutput).to.equal('No threshold error detected in graphite data for next.metric.200.');
+				done();
+			});
+		});
+
 	});
 
 	it('Should be possible to configure sample period', function(done){
