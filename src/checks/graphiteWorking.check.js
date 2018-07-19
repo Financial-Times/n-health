@@ -58,6 +58,7 @@ class GraphiteWorkingCheck extends Check {
 				}
 
 				const simplifiedResults = json.map(result => {
+					// This sums the number of nulls at the tail of the list of metrics.
 					const nullsForHowLong = result.datapoints.reduce((xs, x) => x[0] === null ? xs + 1 : 0, 0);
 					const simplifiedResult = { target: result.target, nullsForHowLong };
 					log.info({ event: `${logEventPrefix}_NULLS_FOR_HOW_LONG` }, simplifiedResult);

@@ -63,6 +63,14 @@ Checks whether the value of a graphite metric has crossed a threshold
 	- 'above' = alert if value goes above the threshold
 	- 'below' = alert if value goes below the threshold
 
+### graphiteWorking
+
+Checks if the value of a graphite metric has received data recently.
+
+* metric: [required] Name of graphite metric to count (may contain wildcards)
+	- Use `summarize` if the metric receives data infrequently, e.g. `summarize(next.heroku.next-article.some-infrequent-periodic-metric, '30mins', 'sum', true)`
+* time: [default: '-5minutes'] Length of time to count metrics
+
 ### cloudWatchThreshold
 Checks whether the value of a CloudWatch metric has crossed a threshold
 
