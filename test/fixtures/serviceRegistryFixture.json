@@ -1030,7 +1030,7 @@
         "nodes": [
           "http://ft-next-preview-eu.herokuapp.com"
         ],
-        "repo": "https://github.com/Financial-Times/next-content-preview",
+        "repo": "https://github.com/Financial-Times/next-preview",
         "dashboard": "https://dashboard.heroku.com/apps/ft-next-preview-eu/resources",
         "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-preview",
         "processes": {
