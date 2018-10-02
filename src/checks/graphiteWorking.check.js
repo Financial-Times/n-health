@@ -30,7 +30,7 @@ class GraphiteWorkingCheck extends Check {
 		}
 
 		const fromTime = options.time || '-5minutes';
-		this.url = encodeURI(`https://graphite-api.ft.com/render/?target=${this.metric}&from=${fromTime}&format=json`);
+		this.url = encodeURI(`https://graphitev2-api.ft.com/render/?target=${this.metric}&from=${fromTime}&format=json`);
 
 		this.checkOutput = "This check has not yet run";
 	}
