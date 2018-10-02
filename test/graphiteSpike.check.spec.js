@@ -44,7 +44,7 @@ describe('Graphite Spike Check', function(){
 				}));
 				check.start();
 				setTimeout(() => {
-					expect(mockFetch.firstCall.args[0]).to.match(/^https:\/\/graphite-api.ft.com\/render\/\?/);
+					expect(mockFetch.firstCall.args[0]).to.match(/^https:\/\/graphitev2-api.ft.com\/render\/\?/);
 					done();
 				});
 			});

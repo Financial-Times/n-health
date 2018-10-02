@@ -23,7 +23,7 @@ class GraphiteSpikeCheck extends Check {
 		this.seriesFunction = options.seriesFunction || 'sumSeries';
 		this.summarizeFunction = options.summarizeFunction || 'sum';
 
-		this.ftGraphiteBaseUrl = 'https://graphite-api.ft.com/render/?';
+		this.ftGraphiteBaseUrl = 'https://graphitev2-api.ft.com/render/?';
 		this.ftGraphiteKey = process.env.FT_GRAPHITE_KEY;
 		if (!this.ftGraphiteKey) {
 			throw new Error('You must set FT_GRAPHITE_KEY environment variable');
