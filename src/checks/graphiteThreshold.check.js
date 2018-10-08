@@ -38,6 +38,9 @@ class GraphiteThresholdCheck extends Check {
 		this.sampleUrl = this.generateUrl(options.metric, this.samplePeriod);
 
 		this.checkOutput = 'Graphite threshold check has not yet run';
+		
+		// We lower the severity if we're getting bad responses from Graphite.
+		this.originalSeverity = this.severity;
 	}
 
 	generateUrl(metric, period) {
@@ -68,6 +71,7 @@ class GraphiteThresholdCheck extends Check {
 				const failingMetrics = simplifiedResults.filter(result => result.isFailing).map(result => result.target);
 
 				this.status = failed ? status.FAILED : status.PASSED;
+				this.severity = this.originalSeverity;
 
 				// The metric crossed a threshold
 				this.checkOutput = failed ?
@@ -78,6 +82,7 @@ class GraphiteThresholdCheck extends Check {
 				logger.error({ event: `${logEventPrefix}_ERROR`, url: this.sampleUrl }, err);
 				this.status = status.FAILED;
 				this.checkOutput = 'Graphite threshold check failed to fetch data: ' + err.message;
+				this.severity = 3;
 			});
 	}
 
