@@ -95,32 +95,3 @@ _Note: this assumes that `AWS_ACCESS_KEY` & `AWS_SECRET_ACCESS_KEY` are implictl
 
 * cloudWatchRegion = [default 'eu-west-1'] AWS region the metrics are stored
 * cloudWatchAlarmName = [required] Name of the CloudWatch alarm to check
-
-### keenThreshold
-Checks whether the result of a keen query for a metric has crossed a threshold
-
-_Note: this assumes that `KEEN_READ_KEY` & `KEEN_PROJECT_ID` are implicitly available as environment variables on process.env_
-
-* query: [required] Query to run to get a count, in the format of [keen-query](https://github.com/Financial-Times/keen-query).
-* threshold: [required] Value to check the metric against
-* timeframe: [default: 'this_60_minutes'] timeframe to run keen query against.
-* direction: [default: 'below'] Direction on which to trigger the healthcheck;
-	- 'above' = alert if value goes above the threshold
-	- 'below' = alert if value goes below the threshold
-
-_Warning_: Keen sometimes has a lag before ingesting, particularly during high traffic periods. It's recommended to have a minimum timeframe of 60 minutes, if not more.
-
-### keenSpike
-Checks current keen data for a spike of a defined percentage above/below historical keen data from the same period, a defined number of days ago.
-
-_Note: this assumes that `KEEN_READ_KEY` & `KEEN_PROJECT_ID` are implicitly available as environment variables on process.env_
-
-* query: [required] Query to run to get a count, in the format of [keen-query](https://github.com/Financial-Times/keen-query).
-* threshold: [default: 0.2] Percentage value to check the metric against e.g. 0.2 checks if current data is more than 20% above/below historical data.
-* timeframe: [default: '2'] Number of days to run sample and baseline keen queries against.
-* baselinePeriod: [default: '7'] Number of days ago to run baseline keen query e.g. if timeframe is '2', the default baselinePeriod will be 7-9 days ago.
-* direction: [default: 'below'] Direction on which to trigger the healthcheck;
-	- 'above' = alert if value goes above the threshold
-	- 'below' = alert if value goes below the threshold
-
-_Warning_: Keen sometimes has a lag before ingesting, particularly during high traffic periods. It's recommended to have a minimum timeframe of 60 minutes, if not more.
