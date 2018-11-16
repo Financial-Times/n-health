@@ -95,7 +95,8 @@ class GraphiteSpikeCheck extends Check {
 			})
 			.catch(err => {
 				logger.error({ event: `${logEventPrefix}_ERROR`, url: this.sampleUrl }, err);
-				this.status = status.FAILED;
+				this.status = status.ERRORED;
+				this.severity = 3;
 				this.checkOutput = 'Graphite spike check failed to fetch data: ' + err.message;
 			});
 	}

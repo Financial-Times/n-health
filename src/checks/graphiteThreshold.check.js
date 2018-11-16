@@ -76,7 +76,8 @@ class GraphiteThresholdCheck extends Check {
 			})
 			.catch(err => {
 				logger.error({ event: `${logEventPrefix}_ERROR`, url: this.sampleUrl }, err);
-				this.status = status.FAILED;
+				this.severity = 3;
+				this.status = status.ERRORED;
 				this.checkOutput = 'Graphite threshold check failed to fetch data: ' + err.message;
 			});
 	}
