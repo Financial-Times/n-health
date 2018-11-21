@@ -58,21 +58,31 @@ class GraphiteWorkingCheck extends Check {
 				}
 
 				const simplifiedResults = json.map(result => {
-					// This sums the number of nulls at the tail of the list of metrics.
-					const nullsForHowLong = result.datapoints.reduce((xs, x) => x[0] === null ? xs + 1 : 0, 0);
-					const simplifiedResult = { target: result.target, nullsForHowLong };
+
+					let nullsForHowManySeconds;
+
+					if (result.datapoints.every(datapoint => datapoint[0] === null)) {
+						nullsForHowManySeconds = Infinity;
+					} else {
+						// This sums the number of seconds since the last non-null result at the tail of the list of metrics.
+                        nullsForHowManySeconds = result.datapoints
+                            .map((datapoint, index, array) => [datapoint[0], index > 0 ? datapoint[1] - array[index - 1][1]  : 0])
+                            .reduce((xs, datapoint) => datapoint[0] === null ? xs + datapoint[1] : 0, 0);
+                    }
+
+					const simplifiedResult = { target: result.target, nullsForHowManySeconds };
 					log.info({ event: `${logEventPrefix}_NULLS_FOR_HOW_LONG` }, simplifiedResult);
 					return simplifiedResult;
 				});
 
-				const failedResults = simplifiedResults.filter(r => r.nullsForHowLong > 2);
+				const failedResults = simplifiedResults.filter(r => r.nullsForHowManySeconds >= 180);
 
 				if (failedResults.length === 0) {
 					this.status = status.PASSED;
 					this.checkOutput =`${this.metric} has data`;
 				} else {
 					this.status = status.FAILED;
-					this.checkOutput = failedResults.map(r => `${r.target} has been null for ${r.nullsForHowLong} minutes.`).join(' ');
+					this.checkOutput = failedResults.map(r => `${r.target} has been null for ${Math.round(r.nullsForHowManySeconds / 60)} minutes.`).join(' ');
 				}
 			})
 			.catch(err => {

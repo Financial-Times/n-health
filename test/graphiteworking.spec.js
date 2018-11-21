@@ -25,7 +25,7 @@ describe('Graphite Working Check', function(){
 		}
 	];
 
-	const badResponse = [
+	const recentlyBadResponse = [
 		{
 			"target": "summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, \"1h\", \"sum\", true)",
 			"datapoints": [
@@ -34,10 +34,24 @@ describe('Graphite Working Check', function(){
 				[ 1, 1459333260 ],
 				[ null, 1459333320 ],
 				[ null, 1459333380 ],
-				[ null, 1459333420 ],
+				[ null, 1459333440 ],
 			]
 		}
 	];
+
+    const completelyBadResponse = [
+        {
+            "target": "summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, \"1h\", \"sum\", true)",
+            "datapoints": [
+                [ null, 1459333140 ],
+                [ null, 1459333200 ],
+                [ null, 1459333260 ],
+                [ null, 1459333320 ],
+                [ null, 1459333380 ],
+                [ null, 1459333440 ],
+            ]
+        }
+    ];
 
 	function waitFor(time){
 		return new Promise(resolve => setTimeout(resolve, time));
@@ -75,14 +89,23 @@ describe('Graphite Working Check', function(){
 		});
 	});
 
-	it('Should fail if there is no data', () => {
-		setup(badResponse);
+	it('Should fail if there is has been 2 or more minutes of missing data', () => {
+		setup(recentlyBadResponse);
 		check.start();
 		return waitFor(10).then(() => {
 			expect(check.getStatus().ok).to.be.false;
 			expect(check.getStatus().checkOutput).to.equal('summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, "1h", "sum", true) has been null for 3 minutes.');
 		});
 	});
+
+    it('Should fail if there is no data', () => {
+        setup(completelyBadResponse);
+        check.start();
+        return waitFor(10).then(() => {
+            expect(check.getStatus().ok).to.be.false;
+            expect(check.getStatus().checkOutput).to.equal('summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, "1h", "sum", true) has been null for Infinity minutes.');
+        });
+    });
 
 	//todo get the graphite api key into the CI config - doesn't seem possible right now...
 	describe.skip('Integration', function(){
