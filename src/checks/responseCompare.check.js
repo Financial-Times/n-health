@@ -34,25 +34,28 @@ class ResponseCompareCheck extends Check {
 		}
 	}
 
-	tick(){
-		return Promise.all(this.urls.map(url => fetch(url, { headers: this.headers })))
-			.then(responses => {
-				return Promise.all(responses.map(r => r.text().then(this.normalizeResponse)));
-			})
-			.then(responses => {
-				if(this.comparison === ResponseCompareCheck.comparisons.EQUAL){
-					this.status = allEqual(responses) ? status.PASSED : status.FAILED;
-				}
-			})
-			.catch(err => {
-				console.error(err.stack);
-				setTimeout(() => {throw err; }, 0);
-			});
+	async tick(){
+		try {
+			const responses = await Promise.all(
+				this.urls.map(
+					url => fetch(url, { headers: this.headers }).then(
+						r => r.text().then(this.normalizeResponse)
+					)
+				)
+			)
+
+			if(this.comparison === ResponseCompareCheck.comparisons.EQUAL){
+				this.status = allEqual(responses) ? status.PASSED : status.FAILED;
+			}
+		} catch(err) {
+			console.error('Response was not OK', err);
+			this.status = status.FAILED;
+		}
 	}
 }
 
 ResponseCompareCheck.comparisons = {
-	EQUAL : 'equal'
+	EQUAL: 'equal'
 };
 
 module.exports = ResponseCompareCheck;

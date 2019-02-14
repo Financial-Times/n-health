@@ -2,6 +2,7 @@
 const status = require('./status');
 const Check = require('./check');
 const fetch = require('node-fetch');
+const fetchres = require('fetchres');
 
 class StringCheck extends Check {
 
@@ -20,19 +21,14 @@ class StringCheck extends Check {
 		return `${this.url} is ${this.status === status.PASSED ? '' : 'not'} equal to ${this.expected}`;
 	}
 
-	tick(){
-		return fetch(this.url, this.fetchOptions)
-			.then(response => {
-				if(!response.ok){
-					throw new Error('BadResponse ' + response.status);
-				}
-				return response.text()
-			})
-			.then(body => this.status = body === this.expected ? status.PASSED : status.FAILED)
-			.catch(err => {
-				console.error('Response was not OK', err);
-				this.status = status.FAILED;
-			});
+	async tick(){
+		try {
+			const body = await fetch(this.url, this.fetchOptions).then(fetchres.text);
+			this.status = body === this.expected ? status.PASSED : status.FAILED;
+		} catch(err) {
+			console.error('Response was not OK', err);
+			this.status = status.FAILED;
+		}
 	}
 }
 
