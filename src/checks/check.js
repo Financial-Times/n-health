@@ -12,8 +12,7 @@ const isOfficeHoursNow = () => {
 };
 
 class Check {
-
-	constructor (opts) {
+	constructor(opts) {
 		[
 			'name',
 			'severity',
@@ -21,12 +20,12 @@ class Check {
 			'panicGuide',
 			'technicalSummary'
 		].forEach(prop => {
-			if (!opts[prop]) {
+			if(!opts[prop]) {
 				throw new Error(`${prop} is required for every healthcheck`);
 			}
 		})
 
-		if (this.start !== Check.prototype.start || this._tick !== Check.prototype._tick) {
+		if(this.start !== Check.prototype.start || this._tick !== Check.prototype._tick) {
 			throw new Error(`Do no override native start and _tick methods of n-health checks.
 They provide essential error handlers. If complex setup is required, define
 an init method returning a Promise`)
@@ -42,37 +41,34 @@ an init method returning a Promise`)
 		this.status = status.PENDING;
 		this.lastUpdated = null;
 	}
-	init () {
-		return Promise.resolve();
-	}
-	start () {
-		this.init()
-			.then(() => {
-				this.int = setInterval(this._tick.bind(this), this.interval);
-				this._tick();
-			})
-	}
 
-	_tick () {
+	async init() {}
 
-		return Promise.resolve()
-			.then(() => this.tick())
-			.catch(err => {
-				logger.error({ event: 'FAILED_HEALTHCHECK_TICK', name: this.name }, err)
-				raven.captureError(err);
-				this.status = status.ERRORED;
-				this.checkOutput = 'Healthcheck failed to execute';
-			})
-			.then(() => {
-				this.lastUpdated = new Date();
-			});
+	async start() {
+		await this.init();
+
+		this.int = setInterval(this._tick.bind(this), this.interval);
+		this._tick();
 	}
 
-	stop () {
+	async _tick() {
+		try {
+			await this.tick()
+		} catch(err){
+			logger.error({ event: 'FAILED_HEALTHCHECK_TICK', name: this.name }, err)
+			raven.captureError(err);
+			this.status = status.ERRORED;
+			this.checkOutput = 'Healthcheck failed to execute';
+		}
+
+		this.lastUpdated = new Date();
+	}
+
+	stop() {
 		clearInterval(this.int);
 	}
 
-	getStatus () {
+	getStatus() {
 		const output = {
 			name: this.name,
 			ok: this.status === status.PASSED,
@@ -85,10 +81,10 @@ an init method returning a Promise`)
 			checkOutput: this.status === status.ERRORED ? 'Healthcheck failed to execute' : this.checkOutput
 		};
 
-		if (this.officeHoursOnly && !isOfficeHoursNow()) {
+		if(this.officeHoursOnly && !isOfficeHoursNow()) {
 			output.ok = true;
 			output.checkOutput = 'This check is not set to run outside of office hours';
-		} else if (this.lastUpdated) {
+		} else if(this.lastUpdated) {
 			output.lastUpdated = this.lastUpdated.toISOString();
 			let shouldHaveRun = Date.now() - (this.interval + 1000);
 			if(this.lastUpdated.getTime() < shouldHaveRun){
@@ -96,6 +92,7 @@ an init method returning a Promise`)
 				output.checkOutput = 'Check has not run recently';
 			}
 		}
+
 		return output;
 	}
 }

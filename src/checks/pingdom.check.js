@@ -17,29 +17,21 @@ class PingdomCheck extends Check{
 		this.checkOutput = `Pingdom check ${this.checkId} has not yet run`;
 	}
 
-	tick(){
-		return fetch(this.url, {
-			headers : this.headers
-		})
-			.then(response => {
-					this.rawResponse = response;
-					return response.json();
-			})
-			.then(response => {
-				if(!this.rawResponse.ok){
-					throw new Error(`Pingdom API returned ${response.error.statuscode}: ${response.error.errormessage}`);
-				}
+	async tick(){
+		try {
+			const response = await fetch(this.url, { headers : this.headers });
+			const json = await response.json();
 
-				return response;
-			})
-			.then(json => {
-				this.status = (json.check.status === 'up') ? status.PASSED : status.FAILED;
-				this.checkOutput = `Pingdom status: ${json.check.status}`;
-			})
-			.catch(err => {
-				this.status = status.FAILED;
-				this.checkOutput = `Failed to get status: ${err.message}`;
-			})
+			if(!response.ok){
+				throw new Error(`Pingdom API returned ${json.error.statuscode}: ${json.error.errormessage}`);
+			}
+
+			this.status = (json.check.status === 'up') ? status.PASSED : status.FAILED;
+			this.checkOutput = `Pingdom status: ${json.check.status}`;
+		} catch(err) {
+			this.status = status.FAILED;
+			this.checkOutput = `Failed to get status: ${err.message}`;
+		}
 	}
 
 }

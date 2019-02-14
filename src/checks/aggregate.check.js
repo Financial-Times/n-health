@@ -35,7 +35,6 @@ class AggregateCheck extends Check {
 	init () {
 		let watchRegex = new RegExp(`(${this.watch.join('|')})`, 'i');
 		this.obserables = this.parent.checks.filter(check => watchRegex.test(check.name));
-		return Promise.resolve()
 	}
 
 	tick(){
@@ -43,7 +42,6 @@ class AggregateCheck extends Check {
 		if(this.mode === AggregateCheck.modes.AT_LEAST_ONE){
 			this.status = results.length && results.some(r => r) ? status.PASSED : status.FAILED;
 		}
-		return Promise.resolve();
 	}
 }
 
