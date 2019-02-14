@@ -20,7 +20,7 @@ It returns an object with an `asArray` method. If you're using `n-express`, pass
 const nExpress = require('@financial-times/n-express')
 
 nExpress({
-	healthChecks
+	healthChecks: healthChecks.asArray()
 })
 ```
 
