@@ -42,7 +42,7 @@ an init method returning a Promise`)
 		this.lastUpdated = null;
 	}
 
-	async init() {}
+	init() {}
 
 	async start() {
 		await this.init();
