@@ -14,13 +14,17 @@ const isOfficeHoursNow = () => {
 class Check {
 
 	constructor (opts) {
-		'name,severity,businessImpact,panicGuide,technicalSummary'
-			.split(',')
-			.forEach(prop => {
-				if (!opts[prop]) {
-					throw new Error(`${prop} is required for every healthcheck`);
-				}
-			})
+		[
+			'name',
+			'severity',
+			'businessImpact',
+			'panicGuide',
+			'technicalSummary'
+		].forEach(prop => {
+			if (!opts[prop]) {
+				throw new Error(`${prop} is required for every healthcheck`);
+			}
+		})
 
 		if (this.start !== Check.prototype.start || this._tick !== Check.prototype._tick) {
 			throw new Error(`Do no override native start and _tick methods of n-health checks.
