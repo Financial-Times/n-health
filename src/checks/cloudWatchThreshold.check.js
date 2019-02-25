@@ -31,9 +31,10 @@ class CloudWatchThresholdCheck extends Check {
 		// use a larger window when gathering stats, because CloudWatch
 		// can take its sweet time with populating new datapoints.
 		let timeWindow = this.samplePeriod * 1.5;
-		return  {
-			EndTime: moment().toISOString(),
-			StartTime: moment().subtract(timeWindow, 'seconds').toISOString(),
+		const now = moment();
+		return {
+			EndTime: now.toISOString(),
+			StartTime: now.subtract(timeWindow, 'seconds').toISOString(),
 			MetricName: this.cloudWatchMetricName,
 			Namespace: this.cloudWatchNamespace,
 			Period: this.samplePeriod,
@@ -42,31 +43,28 @@ class CloudWatchThresholdCheck extends Check {
 		};
 	}
 
-	tick() {
+	async tick() {
 		const params = this.generateParams();
 
-		return this.cloudWatch
+		try {
+			const res = await this.cloudWatch
 				.getMetricStatistics(params)
-				.promise()
-				.then(res => {
-					res.Datapoints.sort((a, b) => b['Timestamp'] - a['Timestamp']);
-					const value = res.Datapoints[0][this.cloudWatchStatistic];
-					let ok;
+				.promise();
 
-					if (this.direction === 'above') {
-						ok = value <= this.threshold;
-					} else {
-						ok = value >= this.threshold;
-					}
+			res.Datapoints.sort((a, b) => b['Timestamp'] - a['Timestamp']);
+			const value = res.Datapoints[0][this.cloudWatchStatistic];
 
-					this.status = ok ? status.PASSED : status.FAILED;
-					this.checkOutput = ok ? `No threshold change detected in CloudWatch data. Current value: ${value}` : `CloudWatch data ${this.direction} required threshold. Current value: ${value}`;
-				})
-				.catch(err => {
-					log.error('Failed to get CloudWatch data', err);
-					this.status = status.FAILED;
-					this.checkOutput = `Cloudwatch threshold check failed to fetch data: ${err.message}`;
-				});
+			const ok = this.direction === 'above'
+				? value <= this.threshold
+				: value >= this.threshold;
+
+			this.status = ok ? status.PASSED : status.FAILED;
+			this.checkOutput = ok ? `No threshold change detected in CloudWatch data. Current value: ${value}` : `CloudWatch data ${this.direction} required threshold. Current value: ${value}`;
+		} catch(err) {
+			log.error('Failed to get CloudWatch data', err);
+			this.status = status.FAILED;
+			this.checkOutput = `Cloudwatch threshold check failed to fetch data: ${err.message}`;
+		}
 	}
 }
 
