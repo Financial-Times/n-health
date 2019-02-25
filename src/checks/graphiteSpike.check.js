@@ -25,15 +25,13 @@ class GraphiteSpikeCheck extends Check {
 
 		this.ftGraphiteBaseUrl = 'https://graphitev2-api.ft.com/render/?';
 		this.ftGraphiteKey = process.env.FT_GRAPHITE_KEY;
-		if (!this.ftGraphiteKey) {
+
+		if(!this.ftGraphiteKey) {
 			throw new Error('You must set FT_GRAPHITE_KEY environment variable');
 		}
-		if (!options.numerator) {
+
+		if(!options.numerator) {
 			throw new Error(`You must pass in a numerator for the "${options.name}" check - e.g., "next.heroku.article.*.express.start"`);
-		}
-		
-		if (!/next\./.test(options.numerator)) {
-			throw new Error(`You must prepend the numerator (${options.numerator}) with "next." for the "${options.name}" check - e.g., "heroku.article.*.express.start" needs to be "next.heroku.article.*.express.start"`);
 		}
 
 		this.sampleUrl = this.generateUrl(options.numerator, options.divisor, this.samplePeriod);
@@ -41,24 +39,26 @@ class GraphiteSpikeCheck extends Check {
 
 		// If there's no divisor specified we probably need to normalize sample and baseline to account for the difference in size between their time ranges
 		this.shouldNormalize = typeof options.normalize !== 'undefined' ? options.normalize : !options.divisor;
-		if (this.shouldNormalize) {
+
+		if(this.shouldNormalize) {
 			this.sampleMs = ms(this.samplePeriod);
 			this.baselineMs = ms(this.baselinePeriod);
 		}
+
 		this.checkOutput = 'Graphite spike check has not yet run';
 	}
 
 	generateUrl(numerator, divisor, period) {
 		const urlBase = this.ftGraphiteBaseUrl + `from=-${period}&format=json&target=`;
-		if (divisor) {
+		if(divisor) {
 			return urlBase + `divideSeries(summarize(${this.seriesFunction}(${numerator}),"${period}","${this.summarizeFunction}",true),summarize(${this.seriesFunction}(${divisor}),"${period}","${this.summarizeFunction}",true))`;
 		} else {
 			return urlBase + `summarize(${this.seriesFunction}(${numerator}),"${period}","${this.summarizeFunction}",true)`;
 		}
 	}
 
-	normalize (data) {
-		if (this.shouldNormalize) {
+	normalize(data) {
+		if(this.shouldNormalize) {
 			data.sample = data.sample / this.sampleMs;
 			data.baseline = data.baseline / this.baselineMs;
 		}
@@ -66,40 +66,34 @@ class GraphiteSpikeCheck extends Check {
 		return data;
 	}
 
-	tick(){
+	async tick() {
+		try {
+			const [sample, baseline] = await Promise.all([
+				fetch(this.sampleUrl, { headers: { key: this.ftGraphiteKey } })
+					.then(fetchres.json),
+				fetch(this.baselineUrl, { headers: { key: this.ftGraphiteKey } })
+					.then(fetchres.json)
+			])
 
-		return Promise.all([
-			fetch(this.sampleUrl, { headers: { key: this.ftGraphiteKey } })
-				.then(fetchres.json),
-			fetch(this.baselineUrl, { headers: { key: this.ftGraphiteKey } })
-				.then(fetchres.json)
-		])
-			.then(jsons => {
-
-				return this.normalize({
-					sample: jsons[0][0] ? jsons[0][0].datapoints[0][0] : 0,
-					// baseline should not be allowed to be smaller than one as it is use as a divisor
-					baseline: jsons[1][0] ? jsons[1][0].datapoints[0][0] : 1
-				});
-			})
-			.then(data => {
-				let ok;
-				if (this.direction === 'up') {
-					ok = data.sample / data.baseline < this.threshold;
-				} else {
-					ok = data.sample / data.baseline > 1 / this.threshold;
-				}
-				this.status = ok ? status.PASSED : status.FAILED;
-
-				this.checkOutput = ok ? 'No spike detected in graphite data' : 'Spike detected in graphite data';
-			})
-			.catch(err => {
-				logger.error({ event: `${logEventPrefix}_ERROR`, url: this.sampleUrl }, err);
-				this.status = status.FAILED;
-				this.checkOutput = 'Graphite spike check failed to fetch data: ' + err.message;
+			const data = this.normalize({
+				sample: sample[0] ? sample[0].datapoints[0][0] : 0,
+				// baseline should not be allowed to be smaller than one as it is use as a divisor
+				baseline: baseline[0] ? baseline[0].datapoints[0][0] : 1
 			});
-	}
 
+			const ok = this.direction === 'up'
+				? data.sample / data.baseline < this.threshold
+				: data.sample / data.baseline > 1 / this.threshold;
+
+			this.status = ok ? status.PASSED : status.FAILED;
+			this.checkOutput = ok ? 'No spike detected in graphite data' : 'Spike detected in graphite data';
+
+		} catch(err) {
+			logger.error({ event: `${logEventPrefix}_ERROR`, url: this.sampleUrl }, err);
+			this.status = status.FAILED;
+			this.checkOutput = 'Graphite spike check failed to fetch data: ' + err.message;
+		}
+	}
 }
 
 module.exports = GraphiteSpikeCheck;

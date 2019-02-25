@@ -2,10 +2,11 @@
 const status = require('./status');
 const Check = require('./check');
 const fetch = require('node-fetch');
+const fetchres = require('fetchres');
 
 class JsonCheck extends Check{
 
-	constructor(options){
+	constructor(options) {
 		super(options);
 		this.callback = options.callback;
 		this.url = options.url;
@@ -13,27 +14,20 @@ class JsonCheck extends Check{
 		this.fetchOptions = options.fetchOptions;
 	}
 
-	get checkOutput(){
+	get checkOutput() {
 		return this.checkResultInternal[this.status];
 	}
 
-	tick(){
-		return fetch(this.url, this.fetchOptions)
-			.then(response => {
-				if(!response.ok){
-					throw new Error('BadResponse ' + response.status);
-				}
+	async tick() {
+		try {
+			const json = await fetch(this.url, this.fetchOptions).then(fetchres.json)
 
-				return response.json();
-			})
-			.then(json => {
-				let result = this.callback(json);
-				this.status = result ? status.PASSED : status.FAILED;
-			})
-			.catch(err => {
-				console.error('Failed to get JSON', err);
-				this.status = status.FAILED;
-			})
+			let result = this.callback(json);
+			this.status = result ? status.PASSED : status.FAILED;
+		} catch(err) {
+			console.error('Failed to get JSON', err);
+			this.status = status.FAILED;
+		}
 	}
 }
 
