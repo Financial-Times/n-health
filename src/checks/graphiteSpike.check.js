@@ -85,10 +85,11 @@ class GraphiteSpikeCheck extends Check {
 				? data.sample / data.baseline < this.threshold
 				: data.sample / data.baseline > 1 / this.threshold;
 
-			this.status = ok ? status.PASSED : status.FAILED;
 			if (ok) {
-				this.checkOutput 'No spike detected in graphite data';
+				this.status = status.PASSED;
+			 	this.checkOutput = 'No spike detected in graphite data';
 			} else {
+				this.status = status.FAILED;
 				this.checkOutput = `Spike detected in graphite data. Amount: ${data.sample / data.sample} Threshold: ${this.threshold} `;		    
 			}
 
