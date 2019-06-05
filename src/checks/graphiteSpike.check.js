@@ -1,4 +1,23 @@
 'use strict';
+/**
+ * Detect spikes/troughs in a given metric compared to baseline historical data.
+ *
+ * Let's say for example you want to get a notification if there's a sudden increase in the average network response time for your API.
+ *
+ * You can detect data spikes by comparing a "sample" (say, the last ten minutes of data) against a longer "baseline" (say, the last seven days of data).
+ *
+ * If the sample of the thing you're measuring is significantly larger — or significantly smaller — than the baseline, then
+ * it's considered to be an abberation; that is, a "spike".
+ *
+ * Sometimes the thing you want to measure is a ratio of two properties. For example: What's the amount of 5xx network responses (errors), compared
+ * to the amount of 2xx network responses (normal traffic). You'd expect a small percent of errors, but you probably care about error spikes.
+ *
+ * numerator: The property you want to focus on; e.g. Response times or errors.
+ * divisor: (optional) The property you want to compare against; e.g. Normal responses.
+ * samplePeriod: How much time you want to look for spikes in. Too brief, and you might miss gradual spikes. Too long, and you might get false positives.
+ * baselinePeriod: How long it takes to get a good average of your metric. It needs to be long enough to smooth out any past spikes.
+ * direction: Whether you care about sample metric increases (up) or decreases (down).
+ */
 
 const logger = require('@financial-times/n-logger').default;
 const status = require('./status');
