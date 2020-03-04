@@ -31,6 +31,7 @@ They provide essential error handlers. If complex setup is required, define
 an init method returning a Promise`)
 		}
 
+		this.id = opts.id;
 		this.name = opts.name;
 		this.severity = opts.severity;
 		this.businessImpact = opts.businessImpact;
@@ -70,6 +71,7 @@ an init method returning a Promise`)
 
 	getStatus() {
 		const output = {
+			id: this.id,
 			name: this.name,
 			ok: this.status === status.PASSED,
 			severity: this.severity,
