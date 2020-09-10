@@ -55,12 +55,28 @@ references:
     branches:
       ignore: /.*/
 
-version: 2
+orbs:
+  slack: circleci/slack@3.4.2
+
+version: 2.1
+
+commands:
+  send_nightly_build_failed_notification:
+    steps:
+      - slack/status:
+          fail_only: true
+          failure_message: Nightly Build failed. Please check the cause to avoid further issues.
+          include_job_number_field: false
+          webhook: ${OPSCOPS_SLACK_WEBHOOK}
 
 jobs:
 
   build:
     <<: *container_config_node8
+    parameters:
+      is_nightly:
+        type: boolean
+        default: false
     steps:
       - checkout
       - run:
@@ -88,9 +104,17 @@ jobs:
           root: *workspace_root
           paths:
             - build
+      - when:
+          condition: << parameters.is_nightly >>
+          steps:
+            - send_nightly_build_failed_notification
 
   test:
     <<: *container_config_node8
+    parameters:
+      is_nightly:
+        type: boolean
+        default: false
     steps:
       - *attach_workspace
       - run:
@@ -104,6 +128,10 @@ jobs:
       - store_artifacts:
           path: test-results
           destination: test-results
+      - when:
+          condition: << parameters.is_nightly >>
+          steps:
+            - send_nightly_build_failed_notification
 
   publish:
     <<: *container_config_node8
@@ -155,10 +183,12 @@ workflows:
     jobs:
       - build:
           context: next-nightly-build
+          is_nightly: true
       - test:
           requires:
             - build
           context: next-nightly-build
+          is_nightly: true
 
 notify:
   webhooks:
