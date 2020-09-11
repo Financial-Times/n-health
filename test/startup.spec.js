@@ -14,10 +14,4 @@ describe('Startup', function(){
 		expect(result.get('paywall')).to.be.an.instanceOf(HealthChecks);
 	});
 
-	// TODO: Remove after Ops Cops confirmed the failing nightly build notification was sent
-	// This test was added for this ops cops ticket => https://financialtimes.atlassian.net/browse/NOPS-388
-	it('This test is a part of ops cops expriment. It should fail.', function(){
-		expect(false).to.be.true;
-	});
-
 });
