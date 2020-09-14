@@ -55,7 +55,19 @@ references:
     branches:
       ignore: /.*/
 
-version: 2
+orbs:
+  slack: circleci/slack@3.4.2
+
+version: 2.1
+
+commands:
+  send_nightly_build_failed_notification:
+    steps:
+      - slack/status:
+          fail_only: true
+          failure_message: Nightly Build failed. Please check the cause to avoid further issues.
+          include_job_number_field: false
+          webhook: ${TEAM_SLACK_WEBHOOK}
 
 jobs:
 
@@ -155,10 +167,14 @@ workflows:
     jobs:
       - build:
           context: next-nightly-build
+          post-steps:
+            - send_nightly_build_failed_notification
       - test:
           requires:
             - build
           context: next-nightly-build
+          post-steps:
+            - send_nightly_build_failed_notification
 
 notify:
   webhooks:
