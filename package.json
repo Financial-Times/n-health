@@ -14,7 +14,7 @@
     "prepare": "npx snyk protect || npx snyk protect -d || true"
   },
   "engines": {
-    "node": "^4.0.0"
+    "node": "12.x"
   },
   "repository": {
     "type": "git",
