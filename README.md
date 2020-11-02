@@ -73,11 +73,6 @@ A healthcheck config is a Javascript file that exports an object with these prop
 * `interval`: time between checks in milliseconds or any string compatible with [ms](https://www.npmjs.com/package/ms) [default: 1minute]
 * `officeHoursOnly`: [default: `false`] For queries that will probably fail out of hours (e.g. Internet Explorer usage, B2B stuff), set this to true and the check will pass on weekends and outside office hours (defined as 8am-6pm UTC). Use sparingly.
 
-#### `pingdom`
-Will poll the pingdom API to get the status of a specific check
-
-* `checkId`: The id of the check in pingdom
-
 #### `responseCompare`
 Fetches from multiple urls and compares the responses. Useful to check that replication is working
 
