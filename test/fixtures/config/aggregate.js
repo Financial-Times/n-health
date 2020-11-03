@@ -4,7 +4,7 @@ module.exports = {
 	description: '',
 	checks: [
 		{
-			type: 'pingdom',
+			type: 'graphiteThreshold',
 			name: 'test1',
 			checkId: '5555',
 			severity: 2,
@@ -14,7 +14,7 @@ module.exports = {
 			interval: '1s'
 		},
 		{
-			type: 'pingdom',
+			type: 'graphiteThreshold',
 			name: 'test2',
 			checkId: '5656',
 			severity: 2,

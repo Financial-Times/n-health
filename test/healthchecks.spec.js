@@ -1,7 +1,7 @@
 'use strict';
 
 const expect = require('chai').expect;
-const PingdomCheck = require('../src/checks/').pingdom;
+const GraphiteThresholdCheck = require('../src/checks/').graphiteThreshold;
 
 describe('Healthchecks', function(){
 
@@ -31,7 +31,7 @@ describe('Healthchecks', function(){
 
 	it('Should create new checks as described in the config', function(){
 
-		expect(healthchecks.checks[0]).to.be.an.instanceOf(PingdomCheck);
+		expect(healthchecks.checks[0]).to.be.an.instanceOf(GraphiteThresholdCheck);
 	});
 
 	it("Should report its status correctly", function(){
