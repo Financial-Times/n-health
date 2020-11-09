@@ -35,10 +35,6 @@ references:
     branches:
       only: master
 
-  filters_ignore_master: &filters_ignore_master
-    branches:
-      ignore: master
-
   filters_ignore_tags: &filters_ignore_tags
     tags:
       ignore: /.*/
@@ -52,6 +48,16 @@ references:
 
 orbs:
   slack: circleci/slack@3.4.2
+
+  filters_only_renovate_nori: &filters_only_renovate_nori
+    branches:
+      only: /(^renovate-.*|^nori/.*)/
+
+  filters_ignore_tags_renovate_nori: &filters_ignore_tags_renovate_nori
+    tags:
+      ignore: /.*/
+    branches:
+      ignore: /(^renovate-.*|^nori/.*)/
 
 version: 2.1
 
@@ -132,7 +138,7 @@ workflows:
     jobs:
       - build:
           filters:
-            <<: *filters_ignore_tags
+            <<: *filters_ignore_tags_renovate_nori
       - test:
           requires:
             - build
@@ -152,6 +158,19 @@ workflows:
             <<: *filters_version_tag
           requires:
             - test
+
+  renovate-nori-build-test:
+    jobs:
+      - waiting-for-approval:
+          type: approval
+          filters:
+              <<: *filters_only_renovate_nori
+      - build:
+          requires:
+              - waiting-for-approval
+      - test:
+          requires:
+              - build
 
   nightly:
     triggers:
