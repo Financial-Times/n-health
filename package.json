@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/Financial-Times/n-health#readme",
   "devDependencies": {
-    "@financial-times/n-gage": "^1.19.14",
+    "@financial-times/n-gage": "^8.0.0",
     "chai": "^3.5.0",
     "dotenv": "^2.0.0",
     "lintspaces-cli": "^0.1.1",
