@@ -2,6 +2,7 @@ const status = require('./status');
 const Check = require('./check');
 const fetch = require('node-fetch');
 const log = require('@financial-times/n-logger').default;
+const fetchres = require('fetchres');
 
 const logEventPrefix = 'GRAPHITE_WORKING_CHECK';
 
@@ -12,7 +13,6 @@ function badJSON(message, json) {
 }
 
 class GraphiteWorkingCheck extends Check {
-
 	constructor (options) {
 		options.technicalSummary = options.technicalSummary || 'There has been no metric data for a sustained period of time';
 		options.panicGuide = options.panicGuide || 'Check this is up and running. Check this has been able to send metrics to Graphite (see Heroku and Splunk logs). Check Graphite has not been dropping metric data.';
@@ -30,56 +30,60 @@ class GraphiteWorkingCheck extends Check {
 		}
 
 		const fromTime = options.time || '-5minutes';
-		this.url = encodeURI(`https://graphite-api.ft.com/render/?target=${this.metric}&from=${fromTime}&format=json`);
+		this.url = encodeURI(`https://graphitev2-api.ft.com/render/?target=${this.metric}&from=${fromTime}&format=json`);
 
 		this.checkOutput = "This check has not yet run";
 	}
 
-	tick () {
-		return fetch(this.url, { headers: { key: this.ftGraphiteKey } })
-			.then(response => {
-				if(!response.ok){
-					throw new Error('Bad Response: ' + response.status);
-				}
+	async tick() {
+		try {
+			const json = await fetch(this.url, {
+				headers: { key: this.ftGraphiteKey }
+			}).then(fetchres.json);
 
-				return response.json();
-			})
-			.then(json => {
-				if(!json.length){
-					badJSON('returned JSON should be an array', json);
-				}
+			if(!json.length) {
+				badJSON('returned JSON should be an array', json);
+			}
 
-				if(!json[0].datapoints){
-					badJSON('No datapoints property', json);
-				}
+			if(!json[0].datapoints) {
+				badJSON('No datapoints property', json);
+			}
 
-				if(json[0].datapoints.length < 1){
-					badJSON('Expected at least one datapoint', json);
-				}
+			if(json[0].datapoints.length < 1) {
+				badJSON('Expected at least one datapoint', json);
+			}
 
-				const simplifiedResults = json.map(result => {
-					// This sums the number of nulls at the tail of the list of metrics.
-					const nullsForHowLong = result.datapoints.reduce((xs, x) => x[0] === null ? xs + 1 : 0, 0);
-					const simplifiedResult = { target: result.target, nullsForHowLong };
-					log.info({ event: `${logEventPrefix}_NULLS_FOR_HOW_LONG` }, simplifiedResult);
-					return simplifiedResult;
-				});
+			const simplifiedResults = json.map(result => {
+				let nullsForHowManySeconds;
 
-				const failedResults = simplifiedResults.filter(r => r.nullsForHowLong > 2);
-
-				if (failedResults.length === 0) {
-					this.status = status.PASSED;
-					this.checkOutput =`${this.metric} has data`;
+				if (result.datapoints.every(datapoint => datapoint[0] === null)) {
+					nullsForHowManySeconds = Infinity;
 				} else {
-					this.status = status.FAILED;
-					this.checkOutput = failedResults.map(r => `${r.target} has been null for ${r.nullsForHowLong} minutes.`).join(' ');
-				}
-			})
-			.catch(err => {
-				log.error({ event: `${logEventPrefix}_ERROR`, url: this.url }, err);
-				this.status = status.FAILED;
-				this.checkOutput = err.toString();
+					// This sums the number of seconds since the last non-null result at the tail of the list of metrics.
+							nullsForHowManySeconds = result.datapoints
+									.map((datapoint, index, array) => [datapoint[0], index > 0 ? datapoint[1] - array[index - 1][1]  : 0])
+									.reduce((xs, datapoint) => datapoint[0] === null ? xs + datapoint[1] : 0, 0);
+						}
+
+				const simplifiedResult = { target: result.target, nullsForHowManySeconds };
+				log.info({ event: `${logEventPrefix}_NULLS_FOR_HOW_LONG` }, simplifiedResult);
+				return simplifiedResult;
 			});
+
+			const failedResults = simplifiedResults.filter(r => r.nullsForHowManySeconds >= 180);
+
+			if (failedResults.length === 0) {
+				this.status = status.PASSED;
+				this.checkOutput =`${this.metric} has data`;
+			} else {
+				this.status = status.FAILED;
+				this.checkOutput = failedResults.map(r => `${r.target} has been null for ${Math.round(r.nullsForHowManySeconds / 60)} minutes.`).join(' ');
+			}
+		} catch(err) {
+			log.error({ event: `${logEventPrefix}_ERROR`, url: this.url }, err);
+			this.status = status.FAILED;
+			this.checkOutput = err.toString();
+		}
 	}
 }
 

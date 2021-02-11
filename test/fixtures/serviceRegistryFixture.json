@@ -1349,35 +1349,6 @@
     }
   },
   {
-    "name": "signup-proxy",
-    "systemCode": "next-singup-pxi",
-    "paths": [],
-    "desc": "Proxy server for the next-signup app to redirect zuora requests to heroku branch apps during CI",
-    "serves": [
-      "qa"
-    ],
-    "tier": "bronze",
-    "versions": {
-      "1": {
-        "nodes": [
-          "http://ft-next-signup-proxy.herokuapp.com"
-        ],
-        "repo": "https://github.com/Financial-Times/next-signup-proxy",
-        "dashboard": "https://dashboard.heroku.com/apps/ft-next-signup-proxy/resources",
-        "configuration": "https://ft-next-config-vars.herokuapp.com/app/ft-next-signup-proxy",
-        "processes": {
-          "web": {
-            "size": "standard-1X",
-            "scale": 1
-          }
-        },
-        "checks": {
-          "availability": []
-        }
-      }
-    }
-  },
-  {
     "name": "webhooks",
     "systemCode": "next-webhooks",
     "paths": [],

@@ -9,9 +9,6 @@ IGNORE_A11Y = true
 .PHONY: test
 
 test-unit:
-	KEEN_READ_KEY=123 KEEN_PROJECT_ID=abc FT_GRAPHITE_KEY=123 HEROKU_AUTH_TOKEN=token mocha
-
-test-int:
-	mocha int-tests/ -r loadvars.js
+	FT_GRAPHITE_KEY=123 HEROKU_AUTH_TOKEN=token mocha
 
 test: verify test-unit

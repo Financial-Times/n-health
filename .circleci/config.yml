@@ -3,15 +3,10 @@
 
 references:
 
-  container_config_node8: &container_config_node8
+  container_config_node: &container_config_node
     working_directory: ~/project/build
     docker:
-      - image: circleci/node:8-browsers
-
-  container_config_lambda_node8: &container_config_lambda_node8
-    working_directory: ~/project/build
-    docker:
-      - image: lambci/lambda:build-nodejs8.10
+      - image: circleci/node:12
 
   workspace_root: &workspace_root
     ~/project
@@ -36,13 +31,9 @@ references:
     restore_cache:
         <<: *npm_cache_keys
 
-  filters_only_master: &filters_only_master
+  filters_only_main: &filters_only_main
     branches:
-      only: master
-
-  filters_ignore_master: &filters_ignore_master
-    branches:
-      ignore: master
+      only: main
 
   filters_ignore_tags: &filters_ignore_tags
     tags:
@@ -55,12 +46,34 @@ references:
     branches:
       ignore: /.*/
 
-version: 2
+orbs:
+  slack: circleci/slack@3.4.2
+
+  filters_only_renovate_nori: &filters_only_renovate_nori
+    branches:
+      only: /(^renovate-.*|^nori/.*)/
+
+  filters_ignore_tags_renovate_nori: &filters_ignore_tags_renovate_nori
+    tags:
+      ignore: /.*/
+    branches:
+      ignore: /(^renovate-.*|^nori/.*)/
+
+version: 2.1
+
+commands:
+  send_nightly_build_failed_notification:
+    steps:
+      - slack/status:
+          fail_only: true
+          failure_message: Nightly Build failed. Please check the cause to avoid further issues.
+          include_job_number_field: false
+          webhook: ${TEAM_SLACK_WEBHOOK}
 
 jobs:
 
   build:
-    <<: *container_config_node8
+    <<: *container_config_node
     steps:
       - checkout
       - run:
@@ -90,7 +103,7 @@ jobs:
             - build
 
   test:
-    <<: *container_config_node8
+    <<: *container_config_node
     steps:
       - *attach_workspace
       - run:
@@ -106,12 +119,13 @@ jobs:
           destination: test-results
 
   publish:
-    <<: *container_config_node8
+    <<: *container_config_node
     steps:
       - *attach_workspace
       - run:
           name: shared-helper / npm-store-auth-token
           command: .circleci/shared-helpers/helper-npm-store-auth-token
+      - run: npx snyk monitor --org=customer-products --project-name=Financial-Times/n-health
       - run:
           name: shared-helper / npm-version-and-publish-public
           command: .circleci/shared-helpers/helper-npm-version-and-publish-public
@@ -124,7 +138,7 @@ workflows:
     jobs:
       - build:
           filters:
-            <<: *filters_ignore_tags
+            <<: *filters_ignore_tags_renovate_nori
       - test:
           requires:
             - build
@@ -145,19 +159,36 @@ workflows:
           requires:
             - test
 
+  renovate-nori-build-test:
+    jobs:
+      - waiting-for-approval:
+          type: approval
+          filters:
+              <<: *filters_only_renovate_nori
+      - build:
+          requires:
+              - waiting-for-approval
+      - test:
+          requires:
+              - build
+
   nightly:
     triggers:
       - schedule:
           cron: "0 0 * * *"
           filters:
-            <<: *filters_only_master
+            <<: *filters_only_main
     jobs:
       - build:
           context: next-nightly-build
+          post-steps:
+            - send_nightly_build_failed_notification
       - test:
           requires:
             - build
           context: next-nightly-build
+          post-steps:
+            - send_nightly_build_failed_notification
 
 notify:
   webhooks:
