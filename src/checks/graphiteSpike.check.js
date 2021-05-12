@@ -70,9 +70,9 @@ class GraphiteSpikeCheck extends Check {
 	generateUrl(numerator, divisor, period) {
 		const urlBase = this.ftGraphiteBaseUrl + `from=-${period}&format=json&target=`;
 		if(divisor) {
-			return urlBase + `divideSeries(summarize(${this.seriesFunction}(${numerator}),"${period}","${this.summarizeFunction}",true),summarize(${this.seriesFunction}(${divisor}),"${period}","${this.summarizeFunction}",true))`;
+			return urlBase + `divideSeries(summarize(${this.seriesFunction}(transformNull(${numerator})),"${period}","${this.summarizeFunction}",true),summarize(${this.seriesFunction}(transformNull(${divisor})),"${period}","${this.summarizeFunction}",true))`;
 		} else {
-			return urlBase + `summarize(${this.seriesFunction}(${numerator}),"${period}","${this.summarizeFunction}",true)`;
+			return urlBase + `summarize(${this.seriesFunction}(transformNull(${numerator})),"${period}","${this.summarizeFunction}",true)`;
 		}
 	}
 
