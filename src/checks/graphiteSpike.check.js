@@ -70,9 +70,9 @@ class GraphiteSpikeCheck extends Check {
 	generateUrl(numerator, divisor, period) {
 		const urlBase = this.ftGraphiteBaseUrl + `from=-${period}&format=json&target=`;
 		if(divisor) {
-			return urlBase + `divideSeries(summarize(${this.seriesFunction}(${numerator}),"${period}","${this.summarizeFunction}",true),summarize(${this.seriesFunction}(${divisor}),"${period}","${this.summarizeFunction}",true))`;
+			return urlBase + `divideSeries(summarize(${this.seriesFunction}(transformNull(${numerator})),"${period}","${this.summarizeFunction}",true),summarize(${this.seriesFunction}(transformNull(${divisor})),"${period}","${this.summarizeFunction}",true))`;
 		} else {
-			return urlBase + `summarize(${this.seriesFunction}(${numerator}),"${period}","${this.summarizeFunction}",true)`;
+			return urlBase + `summarize(${this.seriesFunction}(transformNull(${numerator})),"${period}","${this.summarizeFunction}",true)`;
 		}
 	}
 
@@ -95,9 +95,9 @@ class GraphiteSpikeCheck extends Check {
 			])
 
 			const data = this.normalize({
-				sample: sample[0] ? sample[0].datapoints[0][0] : 0,
+				sample: sample[0] && !Object.is(sample[0].datapoints[0][0], null) ? sample[0].datapoints[0][0] : 0,
 				// baseline should not be allowed to be smaller than one as it is use as a divisor
-				baseline: baseline[0] ? baseline[0].datapoints[0][0] : 1
+				baseline: baseline[0] && !Object.is(baseline[0].datapoints[0][0], null) ? baseline[0].datapoints[0][0] : 1
 			});
 
 			const ok = this.direction === 'up'
