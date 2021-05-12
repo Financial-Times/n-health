@@ -126,8 +126,7 @@ Checks if the value of a graphite metric has received data recently.
 #### `cloudWatchThreshold`
 Checks whether the value of a CloudWatch metric has crossed a threshold
 
-_Note: this assumes that `AWS_ACCESS_KEY` & `AWS_SECRET_ACCESS_KEY` are implicitly main
-available as environment variables on process.env_
+_Note: this assumes that `AWS_ACCESS_KEY` & `AWS_SECRET_ACCESS_KEY` are implicitly available as environment variables on process.env_
 
 * `cloudWatchRegion` = [default `'eu-west-1'`] AWS region the metrics are stored
 * `cloudWatchMetricName` = [required] Name of the CloudWatch metric to count
