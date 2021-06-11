@@ -192,6 +192,22 @@ describe('Graphite Spike Check', function(){
 			done();
 		});
 	});
+
+	it('Should be possible to handle sample and baseline 0 values', function(done){
+		mockGraphite([0, 0]);
+		check = new Check(getCheckConfig({
+			direction: 'up',
+			threshold: 5,
+			divisor: 'metric.*',
+			normalize: false,
+		}));
+		check.start();
+		setTimeout(() => {
+			expect(check.getStatus().ok).to.be.true;
+			done();
+		});
+	});
+
 });
 
 
