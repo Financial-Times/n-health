@@ -94,13 +94,13 @@ class GraphiteSpikeCheck extends Check {
 					.then(fetchres.json)
 			])
 
-			const baselineValue = baseline[0].datapoints[0][0]
-			const sampleValue = sample[0].datapoints[0][0]
+			const baselineValue = baseline[0] && baseline[0].datapoints[0][0]
+			const sampleValue = sample[0] && sample[0].datapoints[0][0]
 
 			const data = this.normalize({
-				sample: sample[0] && !Object.is(sampleValue, null) ? sampleValue : 0,
+				sample: sampleValue && !Object.is(sampleValue, null) ? sampleValue : 0,
 				// baseline should not be allowed to be smaller than one as it is use as a divisor
-				baseline: baseline[0] && !Object.is(baselineValue, null) && !Object.is(baselineValue, 0) ? baselineValue : 1
+				baseline: baselineValue && !Object.is(baselineValue, null) && !Object.is(baselineValue, 0) ? baselineValue : 1
 			});
 
 			const ok = this.direction === 'up'
