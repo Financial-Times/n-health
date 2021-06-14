@@ -3,10 +3,10 @@ module.exports = {
 	description: ' ',
 	checks: [
 		{
-			type: 'pingdom',
+			type: 'graphiteThreshold',
 			name: 'test',
-			checkID: '112345',
 			severity: 2,
+			metric: 'next.fake.metric',
 			businessImpact: 'blah',
 			technicalSummary: 'god knows',
 			panicGuide: 'Don\'t Panic',
