@@ -8,9 +8,6 @@
   },
   "scripts": {
     "test": "make test",
-    "precommit": "node_modules/.bin/secret-squirrel",
-    "commitmsg": "node_modules/.bin/secret-squirrel-commitmsg",
-    "prepush": "make verify -j3",
     "prepare": "npx snyk protect || npx snyk protect -d || true"
   },
   "engines": {
@@ -27,7 +24,7 @@
   },
   "homepage": "https://github.com/Financial-Times/n-health#readme",
   "devDependencies": {
-    "@financial-times/n-gage": "^1.19.14",
+    "@financial-times/n-gage": "^8.3.2",
     "chai": "^3.5.0",
     "dotenv": "^2.0.0",
     "lintspaces-cli": "^0.1.1",
@@ -46,5 +43,12 @@
     "ms": "^2.0.0",
     "node-fetch": "^1.5.1"
   },
-  "config": {}
+  "config": {},
+  "husky": {
+    "hooks": {
+      "commit-msg": "node_modules/.bin/secret-squirrel-commitmsg",
+      "pre-commit": "node_modules/.bin/secret-squirrel",
+      "pre-push": "make verify -j3"
+    }
+  }
 }
