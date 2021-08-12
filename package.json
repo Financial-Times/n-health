@@ -8,10 +8,12 @@
   },
   "scripts": {
     "test": "make test",
-    "prepare": "npx snyk protect || npx snyk protect -d || true"
+    "prepare": "npx snyk protect || npx snyk protect -d || true",
+    "preinstall": "npm_config_yes=true npx check-engine"
   },
   "engines": {
-    "node": "12.x"
+    "node": "12.x",
+    "npm": "7.x"
   },
   "repository": {
     "type": "git",
@@ -26,6 +28,7 @@
   "devDependencies": {
     "@financial-times/n-gage": "^8.3.2",
     "chai": "^3.5.0",
+    "check-engines": "^1.5.0",
     "dotenv": "^2.0.0",
     "lintspaces-cli": "^0.1.1",
     "mocha": "^2.4.5",
@@ -50,5 +53,9 @@
       "pre-commit": "node_modules/.bin/secret-squirrel",
       "pre-push": "make verify -j3"
     }
+  },
+  "volta": {
+    "node": "12.22.5",
+    "npm": "7.20.2"
   }
 }
