@@ -114,6 +114,9 @@ Checks whether the value of a graphite metric has crossed a threshold
 * `direction`: [default: `'above'`] Direction on which to trigger the healthcheck:
 	- `'above'` = alert if value goes above the threshold
 	- `'below'` = alert if value goes below the threshold
+* `ignoreNullData`: [default: `true`]
+	- `true` = only alert if data breaches the threshold, null values are considered healthy
+	- `false` = alert if values breach the threshold or any values are null
 
 #### `graphiteWorking`
 

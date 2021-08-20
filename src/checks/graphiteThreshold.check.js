@@ -19,6 +19,7 @@ class GraphiteThresholdCheck extends Check {
 		this.direction = options.direction || 'above';
 
 		this.samplePeriod = options.samplePeriod || '10min';
+		this.ignoreNullData = options.hasOwnProperty('ignoreNullData') ? options.ignoreNullData : true;
 
 		this.ftGraphiteBaseUrl = 'https://graphitev2-api.ft.com/render/?';
 		this.ftGraphiteKey = process.env.FT_GRAPHITE_KEY;
@@ -48,9 +49,7 @@ class GraphiteThresholdCheck extends Check {
 			const simplifiedResults = results.map(result => {
 				const isFailing = result.datapoints.some(value => {
 					if (value[0] === null) {
-						// metric data is unavailable, we don't fail this threshold check if metric data is unavailable
-						// if you want a failing check for when metric data is unavailable, use graphiteWorking
-						return false;
+						return this.ignoreNullData === true ? false : true;
 					} else {
 						return this.direction === 'above' ?
 							Number(value[0]) > this.threshold :

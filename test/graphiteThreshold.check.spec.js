@@ -173,4 +173,43 @@ describe('Graphite Threshold Check', function(){
 		});
 	});
 
+	context('ignoreNullData option', function () {
+		beforeEach(function(){
+			mockGraphite([
+				{ datapoints: [[null, 1234567890]] },
+			]);
+		});
+
+		it('Should mark null data as healthy by default', function(done){
+			check = new Check(getCheckConfig({}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.true;
+				done();
+			});
+		});
+
+		it('Should mark null data as healthy if told to ignoreNullData', function(done){
+			check = new Check(getCheckConfig({
+				ignoreNullData: true,
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.true;
+				done();
+			});
+		});
+
+		it('Should mark null data as unhealthy if ignoreNullData is false', function(done){
+			check = new Check(getCheckConfig({
+				ignoreNullData: false,
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.false;
+				done();
+			});
+		});
+	});
+
 });
