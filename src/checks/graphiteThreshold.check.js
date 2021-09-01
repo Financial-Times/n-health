@@ -50,6 +50,10 @@ class GraphiteThresholdCheck extends Check {
 					if (value[0] === null) {
 						// metric data is unavailable, we don't fail this threshold check if metric data is unavailable
 						// if you want a failing check for when metric data is unavailable, use graphiteWorking
+						logger.info({
+							event: `${logEventPrefix}_NULL_DATA`,
+							url: this.sampleUrl,
+						});
 						return false;
 					} else {
 						return this.direction === 'above' ?
