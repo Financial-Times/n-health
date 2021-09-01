@@ -9,6 +9,13 @@ function getCheckConfig (conf) {
 	return Object.assign({}, fixture, conf || {});
 }
 
+const mockLogger = {
+	default: {
+		error: function() {},
+		info: function() {},
+	}
+}
+
 let mockFetch;
 let Check;
 
@@ -21,7 +28,10 @@ function mockGraphite (results) {
 		json : () => Promise.resolve(results)
 	}));
 
-	Check = proxyquire('../src/checks/graphiteThreshold.check', {'node-fetch':mockFetch});
+	Check = proxyquire('../src/checks/graphiteThreshold.check', {
+		'@financial-times/n-logger': mockLogger,
+		'node-fetch': mockFetch,
+	});
 }
 
 describe('Graphite Threshold Check', function(){
