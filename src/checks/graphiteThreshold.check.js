@@ -44,8 +44,19 @@ class GraphiteThresholdCheck extends Check {
 			const results = await fetch(this.sampleUrl, {
 				headers: { key: this.ftGraphiteKey }
 			}).then(fetchres.json);
-
+			
 			const simplifiedResults = results.map(result => {
+
+				if(result.target && result.target.includes('summarize(sumSeries')){
+					const fetchCountPerTimeUnit = result.datapoints.map(item => Number(item[0]));
+					const sumUp = (previousValue, currentValue) => previousValue + currentValue;
+					const talliedUp = fetchCountPerTimeUnit.reduce(sumUp);
+					const isFailing = this.direction === 'above' ?
+					Number(talliedUp) > this.threshold :
+					Number(talliedUp) < this.threshold;
+					return { target: result.target, isFailing };
+				}
+
 				const isFailing = result.datapoints.some(value => {
 					if (value[0] === null) {
 						// metric data is unavailable, we don't fail this threshold check if metric data is unavailable
