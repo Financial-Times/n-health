@@ -171,6 +171,87 @@ describe('Graphite Threshold Check', function(){
 
 	});
 
+	context('It handles summarize(sumSeries)', function () {
+
+		it('Should be healthy if sum above lower threshold', function (done) {
+			mockGraphite([
+				{ 
+					datapoints: [
+					[ null, 1635125640],[null,1635129240],[1,1635132840],[1,1635136440],[null,1635140040],[3,1635143640]], 
+					target: 'summarize(sumSeries)'
+				}	
+			]);
+			check = new Check(getCheckConfig({
+				threshold: 1,
+				direction: 'below'
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.true;
+				done();
+			});
+		});
+
+		it('Should be healthy if sum below upper threshold', function (done) {
+			mockGraphite([
+				{ datapoints: [
+					[ null, 1635125640],[null,1635129240],[1,1635132840],[1,1635136440],[null,1635140040],[3,1635143640]], 
+					target: 'summarize(sumSeries)'
+				}	
+			]);
+			check = new Check(getCheckConfig({
+				threshold: 8
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.true;
+				done();
+			});
+		});
+
+		it('Should be unhealthy if sum above lower threshold', function (done) {
+			mockGraphite([
+				{ datapoints: [
+					[ null, 1635125640],[null,1635129240],[1,1635132840],[1,1635136440],[null,1635140040],[3,1635143640]], 
+					target: 'summarize(sumSeries)'
+
+				}	
+			]);
+			check = new Check(getCheckConfig({
+				threshold: 6,
+				direction: 'below'
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.false;
+				done();
+			});
+		});
+
+		it('Should be unhealthy if sum below upper threshold', function (done) {
+			mockGraphite([
+				{ datapoints: [
+					[ null, 1635125640],[null,1635129240],[1,1635132840],[1,1635136440],[null,1635140040],[3,1635143640]], 
+					target: 'summarize(sumSeries)'
+
+				},
+				
+			]);
+			check = new Check(getCheckConfig({
+				threshold: 4
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.false;
+				done();
+			});
+		});
+	
+
+
+
+	});
+
 	it('Should be possible to configure sample period', function(done){
 		mockGraphite([{ datapoints: [] }]);
 		check = new Check(getCheckConfig({
