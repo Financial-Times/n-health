@@ -173,7 +173,7 @@ describe('Graphite Threshold Check', function(){
 
 	context('It handles summarize(sumSeries)', function () {
 
-		it('Should be healthy if sum above lower threshold', function (done) {
+		it('Should be healthy if sum above threshold', function (done) {
 			mockGraphite([
 				{ 
 					datapoints: [
@@ -192,7 +192,7 @@ describe('Graphite Threshold Check', function(){
 			});
 		});
 
-		it('Should be healthy if sum below upper threshold', function (done) {
+		it('Should be healthy if sum below threshold', function (done) {
 			mockGraphite([
 				{ datapoints: [
 					[ null, 1635125640],[null,1635129240],[1,1635132840],[1,1635136440],[null,1635140040],[3,1635143640]], 
@@ -209,7 +209,7 @@ describe('Graphite Threshold Check', function(){
 			});
 		});
 
-		it('Should be unhealthy if sum above lower threshold', function (done) {
+		it('Should be unhealthy if sum below threshold', function (done) {
 			mockGraphite([
 				{ datapoints: [
 					[ null, 1635125640],[null,1635129240],[1,1635132840],[1,1635136440],[null,1635140040],[3,1635143640]], 
@@ -228,7 +228,7 @@ describe('Graphite Threshold Check', function(){
 			});
 		});
 
-		it('Should be unhealthy if sum below upper threshold', function (done) {
+		it('Should be unhealthy if sum above threshold', function (done) {
 			mockGraphite([
 				{ datapoints: [
 					[ null, 1635125640],[null,1635129240],[1,1635132840],[1,1635136440],[null,1635140040],[3,1635143640]], 
@@ -246,10 +246,158 @@ describe('Graphite Threshold Check', function(){
 				done();
 			});
 		});
-	
+	});
 
+	context('It handles asPercent', function () {
 
+		it('Should be healthy if above threshold', function (done) {
+			mockGraphite([
+				{ 
+					datapoints: [
+					[ 8, 1635125640]], 
+					target: `asPercent(summarize(sumSeries(failure.count), '10min', 'sum', true), summarize(sumSeries(success.count), '10min', 'sum', true))`
+				}	
+			]);
 
+			check = new Check(getCheckConfig({
+				threshold: 1,
+				direction: 'below'
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.true;
+				done();
+			});
+		});
+
+		it('Should be healthy if below threshold', function (done) {
+			mockGraphite([
+				{ datapoints: [
+					[ null, 1635125640]], 
+					target: `asPercent(summarize(sumSeries(failure.count), '10min', 'sum', true), summarize(sumSeries(success.count), '10min', 'sum', true))`
+				}	
+			]);
+			check = new Check(getCheckConfig({
+				threshold: 1
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.true;
+				done();
+			});
+		});
+
+		it('Should be unhealthy if above threshold', function (done) {
+			mockGraphite([
+				{ datapoints: [
+					[ 8, 1635125640]], 
+					target: `asPercent(summarize(sumSeries(failure.count), '10min', 'sum', true),summarize(sumSeries(success.count), '10min', 'sum', true))`
+				}	
+			]);
+			check = new Check(getCheckConfig({
+				threshold: 5,
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.false;
+				done();
+			});
+		});
+
+		it('Should be unhealthy if below threshold', function (done) {
+			mockGraphite([
+				{ datapoints: [
+					[ null, 1635125640]], 
+					target: `asPercent(summarize(sumSeries(failure.count), '10min', 'sum', true), summarize(sumSeries(success.count), '10min', 'sum', true))`
+				},
+				
+			]);
+			check = new Check(getCheckConfig({
+				threshold: 4,
+				direction: 'below'
+
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.false;
+				done();
+			});
+		});
+	});
+
+	context('It handles divideSeries', function () {
+
+		it('Should be healthy if above threshold', function (done) {
+			mockGraphite([
+				{ 
+					datapoints: [
+					[ 8, 1635125640]], 
+					target: `divideSeries(sumSeries(error.count), sumSeries(status.*.count))`
+				}	
+			]);
+
+			check = new Check(getCheckConfig({
+				threshold: 1,
+				direction: 'below'
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.true;
+				done();
+			});
+		});
+
+		it('Should be healthy if below threshold', function (done) {
+			mockGraphite([
+				{ datapoints: [
+					[ null, 1635125640]], 
+					target: `divideSeries(sumSeries(error.count), sumSeries(status.*.count))`
+				}	
+			]);
+			check = new Check(getCheckConfig({
+				threshold: 1
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.true;
+				done();
+			});
+		});
+
+		it('Should be unhealthy if above threshold', function (done) {
+			mockGraphite([
+				{ datapoints: [
+					[ 8, 1635125640]], 
+					target: `divideSeries(sumSeries(error.count),sumSeries(status.*.count))`
+				}	
+			]);
+			check = new Check(getCheckConfig({
+				threshold: 5,
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.false;
+				done();
+			});
+		});
+
+		it('Should be unhealthy if below threshold', function (done) {
+			mockGraphite([
+				{ datapoints: [
+					[ null, 1635125640]], 
+					target: `divideSeries(sumSeries(error.count), sumSeries(status.*.count))`
+				},			
+			]);
+			check = new Check(getCheckConfig({
+				threshold: 4,
+				direction: 'below'
+			}));
+			check.start();
+			setTimeout(() => {
+				expect(check.getStatus().ok).to.be.false;
+				done();
+			});
+		});
 	});
 
 	it('Should be possible to configure sample period', function(done){
