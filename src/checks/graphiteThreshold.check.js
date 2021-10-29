@@ -52,6 +52,12 @@ class GraphiteThresholdCheck extends Check {
 
 				if(result.target && asPercentRegex.test(result.target) || result.target && divideSeriesRegex.test(result.target)){
 					const fetchCountPerTimeUnit = result.datapoints.map(item => Number(item[0]));
+					if(fetchCountPerTimeUnit.length !== 1){
+						logger.info({
+							event: 'HEALTHCHECK_LENGTH_NOT_1',
+							datapoints: result.datapoints
+						});
+					}
 					const isFailing = this.direction === 'above' ?
 					Number(fetchCountPerTimeUnit[0]) > this.threshold :
 					Number(fetchCountPerTimeUnit[0]) < this.threshold;
