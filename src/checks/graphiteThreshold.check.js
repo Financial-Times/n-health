@@ -47,6 +47,23 @@ class GraphiteThresholdCheck extends Check {
 			
 			const simplifiedResults = results.map(result => {
 
+				const divideSeriesRegex = /divideSeries\(sumSeries\(.*?\),\s?sumSeries\(.*?\)\)/g; 
+				const asPercentRegex = /asPercent\(summarize\(sumSeries\(.*?\),.*?,.*?,.*?\),\s?summarize\(sumSeries\(.*?\),.*?,.*?,.*?\)\)/g;
+
+				if(result.target && asPercentRegex.test(result.target) || result.target && divideSeriesRegex.test(result.target)){
+					const fetchCountPerTimeUnit = result.datapoints.map(item => Number(item[0]));
+					if(fetchCountPerTimeUnit.length !== 1){
+						logger.info({
+							event: 'HEALTHCHECK_LENGTH_NOT_1',
+							datapoints: result.datapoints
+						});
+					}
+					const isFailing = this.direction === 'above' ?
+					Number(fetchCountPerTimeUnit[0]) > this.threshold :
+					Number(fetchCountPerTimeUnit[0]) < this.threshold;
+					return { target: result.target, isFailing };
+				}
+
 				if(result.target && result.target.includes('summarize(sumSeries')){
 					const fetchCountPerTimeUnit = result.datapoints.map(item => Number(item[0]));
 					const sumUp = (previousValue, currentValue) => previousValue + currentValue;
