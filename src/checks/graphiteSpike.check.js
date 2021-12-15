@@ -36,6 +36,8 @@ class GraphiteSpikeCheck extends Check {
 		super(options);
 		this.threshold = options.threshold || 3;
 		this.direction = options.direction || 'up';
+		this.id = options.id;
+		this.name = options.name;
 
 		this.samplePeriod = options.samplePeriod || '10min';
 		this.baselinePeriod = options.baselinePeriod || '7d';
@@ -114,6 +116,22 @@ class GraphiteSpikeCheck extends Check {
 			} else {
 				this.status = status.FAILED;
 				this.checkOutput = `Spike detected in graphite data. ${details}`;
+				logger.warn({
+					event: "graphiteSpike fail",
+					checkId: this.id,
+					checkName: this.name,
+					threshold: this.threshold,
+					sampleDetails: {
+						url: this.sampleUrl,
+						rawValue: sampleValue,
+						normalisedValue: data.sample
+					},
+					baselineDetails: {
+						url: this.baselineUrl,
+						rawValue: baselineValue,
+						normalisedValue: data.baseline
+					},
+				})
 			}
 
 		} catch(err) {
