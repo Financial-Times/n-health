@@ -3,43 +3,50 @@
 
 references:
 
-  container_config_node: &container_config_node
+  container_config_node:
+    &container_config_node
     working_directory: ~/project/build
     docker:
       - image: cimg/node:12.22
 
-  workspace_root: &workspace_root
-    ~/project
+  workspace_root: &workspace_root ~/project
 
-  attach_workspace: &attach_workspace
+  attach_workspace:
+    &attach_workspace
     attach_workspace:
       at: *workspace_root
 
-  npm_cache_keys: &npm_cache_keys
+  npm_cache_keys:
+    &npm_cache_keys
     keys:
-        - v1-dependency-npm-{{ checksum "package.json" }}-
-        - v1-dependency-npm-{{ checksum "package.json" }}
-        - v1-dependency-npm-
+      - v1-dependency-npm-{{ checksum "package.json" }}-
+      - v1-dependency-npm-{{ checksum "package.json" }}
+      - v1-dependency-npm-
 
-  cache_npm_cache: &cache_npm_cache
+  cache_npm_cache:
+    &cache_npm_cache
     save_cache:
-        key: v1-dependency-npm-{{ checksum "package.json" }}-{{ epoch }}
-        paths:
+      key: v1-dependency-npm-{{ checksum "package.json" }}-{{ epoch }}
+      paths:
         - ./node_modules/
 
-  restore_npm_cache: &restore_npm_cache
+  restore_npm_cache:
+    &restore_npm_cache
     restore_cache:
-        <<: *npm_cache_keys
+      <<: *npm_cache_keys
 
-  filters_only_main: &filters_only_main
+  filters_only_main:
+    &filters_only_main
     branches:
       only: main
 
-  filters_ignore_tags: &filters_ignore_tags
+  filters_ignore_tags:
+    &filters_ignore_tags
     tags:
       ignore: /.*/
 
-  filters_version_tag: &filters_version_tag
+  filters_version_tag:
+    &filters_version_tag
     tags:
       only:
         - /^v?\d+\.\d+\.\d+(?:-beta\.\d+)?$/
@@ -50,11 +57,13 @@ orbs:
   node: circleci/node@4.6.0
   slack: circleci/slack@3.4.2
 
-  filters_only_renovate_nori: &filters_only_renovate_nori
+  filters_only_renovate_nori:
+    &filters_only_renovate_nori
     branches:
       only: /(^renovate-.*|^nori/.*)/
 
-  filters_ignore_tags_renovate_nori: &filters_ignore_tags_renovate_nori
+  filters_ignore_tags_renovate_nori:
+    &filters_ignore_tags_renovate_nori
     tags:
       ignore: /.*/
     branches:
@@ -79,7 +88,9 @@ jobs:
       - checkout
       - run:
           name: Checkout next-ci-shared-helpers
-          command: git clone --depth 1 git@github.com:Financial-Times/next-ci-shared-helpers.git .circleci/shared-helpers
+          command: git clone --depth 1
+            git@github.com:Financial-Times/next-ci-shared-helpers.git
+            .circleci/shared-helpers
       - *restore_npm_cache
       - node/install-npm:
           version: "7"
@@ -122,7 +133,8 @@ jobs:
       - run:
           name: shared-helper / npm-store-auth-token
           command: .circleci/shared-helpers/helper-npm-store-auth-token
-      - run: npx snyk monitor --org=customer-products --project-name=Financial-Times/n-health
+      - run: npx snyk monitor --org=customer-products
+          --project-name=Financial-Times/n-health
       - run:
           name: shared-helper / npm-version-and-publish-public
           command: .circleci/shared-helpers/helper-npm-version-and-publish-public
@@ -151,6 +163,7 @@ workflows:
           requires:
             - build
       - publish:
+          context: npm-publish-token
           filters:
             <<: *filters_version_tag
           requires:
@@ -161,13 +174,13 @@ workflows:
       - waiting-for-approval:
           type: approval
           filters:
-              <<: *filters_only_renovate_nori
+            <<: *filters_only_renovate_nori
       - build:
           requires:
-              - waiting-for-approval
+            - waiting-for-approval
       - test:
           requires:
-              - build
+            - build
 
   nightly:
     triggers:
