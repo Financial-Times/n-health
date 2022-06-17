@@ -48,41 +48,37 @@ describe('CloudWatch Alarm Check', () => {
 		cloudWatchMock = cloudWatchPassedMock;
 		check = new Check(configFixture);
 		check.start();
-		return waitFor(10).then(() => {
-			const args = cloudWatchPassedMock.lastCall.args[0];
-
-			expect(cloudWatchPassedMock.called).to.be.true;
-			expect(args).to.have.property('AlarmNames');
-			expect(args.AlarmNames).to.be.an('Array');
-			expect(args.AlarmNames[0]).to.be.an('String');
-			expect(args.AlarmNames[0]).to.equal('test');
-		});
+		await waitFor(10);
+		//
+		const args = cloudWatchPassedMock.lastCall.args[0];
+		expect(cloudWatchPassedMock.called).to.be.true;
+		expect(args).to.have.property('AlarmNames');
+		expect(args.AlarmNames).to.be.an('Array');
+		expect(args.AlarmNames[0]).to.be.an('String');
+		expect(args.AlarmNames[0]).to.equal('test');
 	});
 
 	it('Should pass if the current state of the given alarm is OK', async () => {
 		cloudWatchMock = cloudWatchPassedMock;
 		check = new Check(configFixture);
 		check.start();
-		return waitFor(10).then(() => {
-			expect(check.getStatus().ok).to.be.true;
-		});
+		await waitFor(10);
+		expect(check.getStatus().ok).to.be.true;
 	});
 
 	it('Should fail if the current state of the given alarm is ALARM', async () => {
 		cloudWatchMock = cloudWatchFailedMock;
 		check = new Check(configFixture);
 		check.start();
-		return waitFor(10).then(() => {
-			expect(check.getStatus().ok).to.be.false;
-		});
+		await waitFor(10);
+		expect(check.getStatus().ok).to.be.false;
 	});
 
 	it('Should fail if there is no data', async () => {
 		cloudWatchMock = cloudWatchInsuficientMock;
 		check = new Check(configFixture);
 		check.start();
-		return waitFor(10).then(() => {
-			expect(check.getStatus().ok).to.be.false;
-		});
+		await waitFor(10);
+		expect(check.getStatus().ok).to.be.false;
 	});
 });
