@@ -79,6 +79,10 @@ class FastlyKeyExpirationCheck extends Check {
 		const expirationDate = this.parseStringDate(metadata['expires_at']);
 		return expirationDate;
 	}
+
+	isValidExpirationDate(expirationDate) {
+		const limitDate = moment().add(2, 'weeks');
+		return expirationDate.isAfter(limitDate);
 	}
 
 	async tick() {
