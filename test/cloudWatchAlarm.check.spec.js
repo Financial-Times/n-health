@@ -1,33 +1,41 @@
 'use strict';
 
 const expect = require('chai').expect;
-const configFixture = require('./fixtures/config/cloudWatchAlarmFixture').checks[0];
+const configFixture = require('./fixtures/config/cloudWatchAlarmFixture')
+	.checks[0];
 const failedFixture = require('./fixtures/cloudWatchAlarmFailedResponse');
 const insufficentFixture = require('./fixtures/cloudWatchAlarmInsuficientResponse');
 const passedFixture = require('./fixtures/cloudWatchAlarmPassedResponse');
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const sinon = require('sinon');
 
-const cloudWatchFailedMock = sinon.stub().returns({ promise: () => Promise.resolve(failedFixture) });
-const cloudWatchInsuficientMock = sinon.stub().returns({ promise: () => Promise.resolve(insufficentFixture) });
-const cloudWatchPassedMock = sinon.stub().returns({ promise: () => Promise.resolve(passedFixture) });
+const cloudWatchFailedMock = sinon
+	.stub()
+	.returns({ promise: () => Promise.resolve(failedFixture) });
+const cloudWatchInsuficientMock = sinon
+	.stub()
+	.returns({ promise: () => Promise.resolve(insufficentFixture) });
+const cloudWatchPassedMock = sinon
+	.stub()
+	.returns({ promise: () => Promise.resolve(passedFixture) });
 
 let cloudWatchMock;
 
 const awsMock = {
-	CloudWatch: function() {
-		this.describeAlarms = cloudWatchMock
+	CloudWatch: function () {
+		this.describeAlarms = cloudWatchMock;
 	}
-}
+};
 
-const Check = proxyquire('../src/checks/cloudWatchAlarm.check', {'aws-sdk': awsMock});
+const Check = proxyquire('../src/checks/cloudWatchAlarm.check', {
+	'aws-sdk': awsMock
+});
 
 function waitFor(time) {
-	return new Promise(resolve => setTimeout(resolve, time));
+	return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 describe('CloudWatch Alarm Check', () => {
-
 	let check;
 
 	afterEach(() => {
@@ -36,7 +44,7 @@ describe('CloudWatch Alarm Check', () => {
 		check.stop();
 	});
 
-	it('Should call AWS using the given alarm name', () => {
+	it('Should call AWS using the given alarm name', async () => {
 		cloudWatchMock = cloudWatchPassedMock;
 		check = new Check(configFixture);
 		check.start();
@@ -51,7 +59,7 @@ describe('CloudWatch Alarm Check', () => {
 		});
 	});
 
-	it('Should pass if the current state of the given alarm is OK', () => {
+	it('Should pass if the current state of the given alarm is OK', async () => {
 		cloudWatchMock = cloudWatchPassedMock;
 		check = new Check(configFixture);
 		check.start();
@@ -60,7 +68,7 @@ describe('CloudWatch Alarm Check', () => {
 		});
 	});
 
-	it('Should fail if the current state of the given alarm is ALARM', () => {
+	it('Should fail if the current state of the given alarm is ALARM', async () => {
 		cloudWatchMock = cloudWatchFailedMock;
 		check = new Check(configFixture);
 		check.start();
@@ -69,7 +77,7 @@ describe('CloudWatch Alarm Check', () => {
 		});
 	});
 
-	it('Should fail if there is no data', () => {
+	it('Should fail if there is no data', async () => {
 		cloudWatchMock = cloudWatchInsuficientMock;
 		check = new Check(configFixture);
 		check.start();
