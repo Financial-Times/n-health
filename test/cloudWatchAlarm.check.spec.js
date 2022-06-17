@@ -43,8 +43,7 @@ describe('CloudWatch Alarm Check', () => {
 		return waitFor(10).then(() => {
 			const args = cloudWatchPassedMock.lastCall.args[0];
 
-			sinon.assert.called(cloudWatchPassedMock);
-
+			expect(cloudWatchPassedMock.called).to.be.true;
 			expect(args).to.have.property('AlarmNames');
 			expect(args.AlarmNames).to.be.an('Array');
 			expect(args.AlarmNames[0]).to.be.an('String');
