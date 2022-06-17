@@ -9,16 +9,7 @@ const passedFixture = require('./fixtures/cloudWatchAlarmPassedResponse');
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const sinon = require('sinon');
 
-const cloudWatchFailedMock = sinon
-	.stub()
-	.returns({ promise: () => Promise.resolve(failedFixture) });
-const cloudWatchInsuficientMock = sinon
-	.stub()
-	.returns({ promise: () => Promise.resolve(insufficentFixture) });
-const cloudWatchPassedMock = sinon
-	.stub()
-	.returns({ promise: () => Promise.resolve(passedFixture) });
-
+let cloudWatchFailedMock, cloudWatchInsuficientMock, cloudWatchPassedMock;
 let cloudWatchMock;
 
 const awsMock = {
@@ -37,11 +28,23 @@ function waitFor(time) {
 
 describe('CloudWatch Alarm Check', () => {
 	let check;
+	beforeEach(() => {
+		cloudWatchFailedMock = sinon
+			.stub()
+			.returns({ promise: () => Promise.resolve(failedFixture) });
+		cloudWatchInsuficientMock = sinon
+			.stub()
+			.returns({ promise: () => Promise.resolve(insufficentFixture) });
+		cloudWatchPassedMock = sinon
+			.stub()
+			.returns({ promise: () => Promise.resolve(passedFixture) });
+	});
 
 	afterEach(() => {
 		cloudWatchFailedMock.reset();
 		cloudWatchPassedMock.reset();
 		check.stop();
+		sinon.restore();
 	});
 
 	it('Should call AWS using the given alarm name', async () => {
