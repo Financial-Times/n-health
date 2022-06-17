@@ -5,6 +5,36 @@ const Check = require('./check');
 const status = require('./status');
 
 const fastlyApiEndpoint = 'https://api.fastly.com/tokens/self';
+/* 
+{
+	PASSED : 'PASSED',
+	FAILED : 'FAILED',
+	ERRORED : 'ERRORED',
+	PENDING : 'PENDING'
+};
+*/
+const states = {
+	PENDING: {
+		status: status.PENDING,
+		checkOutput: 'Fastly key check has not yet run'
+	},
+	FAILED_VALIDATION: {
+		status: status.FAILED,
+		checkOutput: 'Fastly key expiration date is within 2 weeks'
+	},
+	FAILED_DATE:{
+		status: status.FAILED,
+		checkOutput: 'Invalid Fastly key check expiring date'
+	},
+	ERRORED: {
+		status: status.ERRORED,
+		checkOutput: 'Fastly key check failed to fetch data'
+	},
+	PASSED: {
+		status: status.PASSED,
+		checkOutput: 'Fastly key check has not yet run'
+	}
+};
 
 /**
  * @description Polls the current state of a Fastly key expiration date
@@ -17,22 +47,32 @@ class FastlyKeyExpirationCheck extends Check {
 		this.fastlyKey = options.fastlyKey;
 	}
 
+	setState(state) {
+		// To be able to assign a varialble number of parameters
+		Object.assign(this, state);
+	}
+
 	async getFastlyKeyMetadata() {
 		try {
 			const result = await fetch(fastlyApiEndpoint, {
-				headers: { Fastly- Key: this.fastlyKey}
+				headers: { 'Fastly-Key': this.fastlyKey }
 			});
-		const json = await result.json();
-		return json;
-		} catch(error) {
+			const json = await result.json();
+			return json;
+		} catch (error) {
 			log.error('Failed to get Fastly key metadata', error);
-			this.status = status.FAILED;
-			this.checkOutput = `Fastly keys check failed to fetch data: ${error.message}`;
+			this.setState(states.ERRORED);
 		}
+	}
 	}
 
 	async tick() {
-		const metadata = await getFastlyKeyMetadata();
+		const expirationDate = await getExpirationDate();
+		if (this.isValidExpirationDate(expirationDate)) {
+			this.setState(states.PASSED);
+		} else {
+			this.setState(states.FAILED_VALIDATION);
+		}
 	}
 }
 
