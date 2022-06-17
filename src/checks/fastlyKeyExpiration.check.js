@@ -64,10 +64,25 @@ class FastlyKeyExpirationCheck extends Check {
 			this.setState(states.ERRORED);
 		}
 	}
+
+	parseStringDate(stringDate) {
+		const date = moment(stringDate, 'YYYY-MM-DDTHH:mm:ssZ');
+		if (!date.isValid()) {
+			logger.warn(`Invalid Fastly Key expiration date ${stringDate}`);
+			this.setState(states.FAILED_DATE);
+		}
+		return date;
+	}
+
+	async getExpirationDate() {
+		const metadata = await this.getFastlyKeyMetadata();
+		const expirationDate = this.parseStringDate(metadata['expires_at']);
+		return expirationDate;
+	}
 	}
 
 	async tick() {
-		const expirationDate = await getExpirationDate();
+		const expirationDate = await this.getExpirationDate();
 		if (this.isValidExpirationDate(expirationDate)) {
 			this.setState(states.PASSED);
 		} else {
