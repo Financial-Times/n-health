@@ -119,7 +119,7 @@ describe('Fastly Key Expiration Check', () => {
 		// Arrange
 		const now = new Date();
 		const limitDate = new Date(
-			now.getTime() + millisecondsFornight // 2 weeks from now
+			now.getTime() + millisecondsFortnight // 2 weeks from now
 		);
 		// Fix now as reference time
 		sinon.useFakeTimers(now);
@@ -143,7 +143,7 @@ describe('Fastly Key Expiration Check', () => {
 		// Arrange
 		const now = new Date();
 		const limitDate = new Date(
-			now.getTime() + millisecondsFornight + 1000 // 2 weeks from now + 1 second
+			now.getTime() + millisecondsFortnight + 1000 // 2 weeks from now + 1 second
 		);
 		// Fix now as reference time
 		sinon.useFakeTimers(now);
