@@ -5,7 +5,7 @@ const logger = require('@financial-times/n-logger').default;
 const FastlyCheck = require('../src/checks/fastlyKeyExpiration.check');
 const status = require('../src/checks/status');
 
-const millisecondsFornight = 14 * 24 * 60 * 60 * 1000;
+const millisecondsFortnight = 14 * 24 * 60 * 60 * 1000;
 const defaultOptions = {
 	name: 'fastlyKeyExpiration',
 	severity: 2,
