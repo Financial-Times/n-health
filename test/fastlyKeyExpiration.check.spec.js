@@ -3,6 +3,7 @@ const { expect } = require('chai');
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const logger = require('@financial-times/n-logger').default;
 const FastlyCheck = require('../src/checks/fastlyKeyExpiration.check');
+const status = require('../src/checks/status');
 
 const millisecondsFornight = 14 * 24 * 60 * 60 * 1000;
 const defaultOptions = {
@@ -20,6 +21,44 @@ describe('Fastly Key Expiration Check', () => {
 	});
 	afterEach(() => {
 		sinon.restore();
+	});
+	it('FastlyKeyExpirationCheck instance set & freeze states properly ', () => {
+		const fastlyKeyExpirationCheck = new FastlyCheck(defaultOptions);
+		const initialStates = {
+			PENDING: {
+				status: status.PENDING,
+				checkOutput: 'Fastly key check has not yet run',
+				severity: 2
+			},
+			FAILED_VALIDATION: {
+				status: status.FAILED,
+				checkOutput: 'Fastly key expiration date is due within 2 weeks',
+				severity: 2
+			},
+			FAILED_URGENT_VALIDATION: {
+				status: status.FAILED,
+				checkOutput: 'Fastly key is expired',
+				severity: 1
+			},
+			FAILED_DATE: {
+				status: status.FAILED,
+				checkOutput: 'Invalid Fastly key expiring date',
+				severity: 2
+			},
+			ERRORED: {
+				status: status.ERRORED,
+				checkOutput: 'Fastly key check failed to fetch data',
+				severity: 2
+			},
+			PASSED: {
+				status: status.PASSED,
+				checkOutput: 'Fastly key expiration date is ok',
+				severity: 2
+			}
+		};
+		expect(fastlyKeyExpirationCheck.states).to.be.deep.equal(initialStates);
+		fastlyKeyExpirationCheck.severity = 1;
+		expect(fastlyKeyExpirationCheck.states).to.be.deep.equal(initialStates);
 	});
 
 	it('returns ok=false if fastly key check has not yet run', async () => {

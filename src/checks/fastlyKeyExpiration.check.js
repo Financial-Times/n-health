@@ -14,7 +14,7 @@ class FastlyKeyExpirationCheck extends Check {
 	constructor(options) {
 		super(options);
 		this.fastlyKey = options.fastlyKey;
-		this.states = {
+		this.states = Object.freeze({
 			PENDING: {
 				status: status.PENDING,
 				checkOutput: 'Fastly key check has not yet run',
@@ -45,7 +45,7 @@ class FastlyKeyExpirationCheck extends Check {
 				checkOutput: 'Fastly key expiration date is ok',
 				severity: this.severity
 			}
-		};
+		});
 		this.setState(this.states.PENDING);
 	}
 
