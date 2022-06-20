@@ -5,36 +5,6 @@ const Check = require('./check');
 const status = require('./status');
 
 const fastlyApiEndpoint = 'https://api.fastly.com/tokens/self';
-/* 
-{
-	PASSED : 'PASSED',
-	FAILED : 'FAILED',
-	ERRORED : 'ERRORED',
-	PENDING : 'PENDING'
-};
-*/
-const states = {
-	PENDING: {
-		status: status.PENDING,
-		checkOutput: 'Fastly key check has not yet run'
-	},
-	FAILED_VALIDATION: {
-		status: status.FAILED,
-		checkOutput: 'Fastly key expiration date is within 2 weeks'
-	},
-	FAILED_DATE:{
-		status: status.FAILED,
-		checkOutput: 'Invalid Fastly key check expiring date'
-	},
-	ERRORED: {
-		status: status.ERRORED,
-		checkOutput: 'Fastly key check failed to fetch data'
-	},
-	PASSED: {
-		status: status.PASSED,
-		checkOutput: 'Fastly key check has not yet run'
-	}
-};
 
 /**
  * @description Polls the current state of a Fastly key expiration date
@@ -45,6 +15,39 @@ class FastlyKeyExpirationCheck extends Check {
 	constructor(options) {
 		super(options);
 		this.fastlyKey = options.fastlyKey;
+		this.states = {
+			PENDING: {
+				status: status.PENDING,
+				checkOutput: 'Fastly key check has not yet run',
+				severity: this.severity
+			},
+			FAILED_VALIDATION: {
+				status: status.FAILED,
+				checkOutput: 'Fastly key expiration date is due within 2 weeks',
+				severity: this.severity
+			},
+			FAILED_URGENT_VALIDATION: {
+				status: status.FAILED,
+				checkOutput: 'Fastly key is expired',
+				severity: 1
+			},
+			FAILED_DATE: {
+				status: status.FAILED,
+				checkOutput: 'Invalid Fastly key expiring date',
+				severity: this.severity
+			},
+			ERRORED: {
+				status: status.ERRORED,
+				checkOutput: 'Fastly key check failed to fetch data',
+				severity: this.severity
+			},
+			PASSED: {
+				status: status.PASSED,
+				checkOutput: 'Fastly key expiration date is ok',
+				severity: this.severity
+			}
+		};
+		this.setState(this.states.PENDING);
 	}
 
 	setState(state) {
@@ -60,8 +63,9 @@ class FastlyKeyExpirationCheck extends Check {
 			const json = await result.json();
 			return json;
 		} catch (error) {
-			log.error('Failed to get Fastly key metadata', error);
-			this.setState(states.ERRORED);
+			logger.error('Failed to get Fastly key metadata', error.message);
+			this.setState(this.states.ERRORED);
+			throw error;
 		}
 	}
 
@@ -69,7 +73,8 @@ class FastlyKeyExpirationCheck extends Check {
 		const date = moment(stringDate, 'YYYY-MM-DDTHH:mm:ssZ');
 		if (!date.isValid()) {
 			logger.warn(`Invalid Fastly Key expiration date ${stringDate}`);
-			this.setState(states.FAILED_DATE);
+			this.setState(this.states.FAILED_DATE);
+			throw new Error('Invalid date');
 		}
 		return date;
 	}
@@ -80,17 +85,24 @@ class FastlyKeyExpirationCheck extends Check {
 		return expirationDate;
 	}
 
-	isValidExpirationDate(expirationDate) {
+	checkExpirationDate(expirationDate) {
+		const now = moment();
 		const limitDate = moment().add(2, 'weeks');
-		return expirationDate.isAfter(limitDate);
+		switch(true){
+			case  expirationDate.isAfter(limitDate): return this.states.PASSED;
+			case expirationDate.isBefore(now): return this.states.FAILED_URGENT_VALIDATION;
+			default: return this.states.FAILED_VALIDATION
+		}
 	}
 
 	async tick() {
-		const expirationDate = await this.getExpirationDate();
-		if (this.isValidExpirationDate(expirationDate)) {
-			this.setState(states.PASSED);
-		} else {
-			this.setState(states.FAILED_VALIDATION);
+		try {
+			const expirationDate = await this.getExpirationDate();
+			const state = this.checkExpirationDate(expirationDate);
+			this.setState(state);
+		} catch {
+			// This catch is meant to end the execution of the tick function.
+			// An expecific state has been set for each error type.
 		}
 	}
 }
