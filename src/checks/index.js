@@ -11,5 +11,5 @@ module.exports = {
 	graphiteWorking: require('./graphiteWorking.check'),
 	cloudWatchAlarm: require('./cloudWatchAlarm.check'),
 	cloudWatchThreshold: require('./cloudWatchThreshold.check'),
-	fastlyKeys: require('./fastlyKeyExpiration.check')
+	fastlyKeyExpiration: require('./fastlyKeyExpiration.check')
 };
