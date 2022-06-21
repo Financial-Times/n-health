@@ -5,6 +5,7 @@ const Check = require('./check');
 const status = require('./status');
 
 const fastlyApiEndpoint = 'https://api.fastly.com/tokens/self';
+const defaultPanicGuide = 'Contact the Slack channel #fastly-support to rotate the keys https://financialtimes.slack.com/archives/C2GFE1C9X',
 /**
  * @description Polls the current state of a Fastly key expiration date
  * alert if the key expires in the next week or two
@@ -14,6 +15,7 @@ class FastlyKeyExpirationCheck extends Check {
 	constructor(options) {
 		super(options);
 		this.fastlyKey = options.fastlyKey;
+		this.panicGuide options.panicGuide || defaultPanicGuide;
 		this.states = Object.freeze({
 			PENDING: {
 				status: status.PENDING,
