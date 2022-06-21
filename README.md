@@ -146,3 +146,10 @@ _Note: this assumes that `AWS_ACCESS_KEY` & `AWS_SECRET_ACCESS_KEY` are implicit
 
 * `cloudWatchRegion` = [default `'eu-west-1'`] AWS region the metrics are stored
 * `cloudWatchAlarmName` = [required] Name of the CloudWatch alarm to check
+
+#### `fastlyKeyExpiration`
+Checks if the expiration date of a Fastly key is due for the next 2 weeks
+
+* `fastlyKey` =  The value of the fastly key to check
+
+_Note: if the expiration date is past, the severity level is 1_
