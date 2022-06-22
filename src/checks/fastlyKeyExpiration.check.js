@@ -6,7 +6,7 @@ const status = require('./status');
 
 const fastlyApiEndpoint = 'https://api.fastly.com/tokens/self';
 const defaultPanicGuide = 'Contact the Slack channel #fastly-support to rotate the keys https://financialtimes.slack.com/archives/C2GFE1C9X';
-const defaultTechnicalSummary: 'Check the Fastly key in the api token information endpoint to obtain the expiration date';
+const defaultTechnicalSummary = 'Check the Fastly key in the api token information endpoint to obtain the expiration date';
 const defaultSeverity = 2;
 /**
  * @description Polls the current state of a Fastly key expiration date
