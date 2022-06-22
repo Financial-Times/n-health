@@ -150,6 +150,11 @@ _Note: this assumes that `AWS_ACCESS_KEY` & `AWS_SECRET_ACCESS_KEY` are implicit
 #### `fastlyKeyExpiration`
 Checks if the expiration date of a Fastly key is due for the next 2 weeks
 
+_Note: there are some default properties_
+** _panic guide: 'Contact the Slack channel #fastly-support to rotate the keys https://financialtimes.slack.com/archives/C2GFE1C9X'_
+** _technicalSummary: 'Check the Fastly key in the api token information endpoint to obtain the expiration date'_
+** _severity = 2_
+
 * `fastlyKey` =  The value of the fastly key to check
 
 _Note: if the expiration date is past, the severity level is 1_
