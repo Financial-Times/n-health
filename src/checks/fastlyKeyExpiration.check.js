@@ -5,8 +5,10 @@ const Check = require('./check');
 const status = require('./status');
 
 const fastlyApiEndpoint = 'https://api.fastly.com/tokens/self';
-const defaultPanicGuide = 'Generate a new key in your own Fastly account with the same permissions and update it in Vault or your app';
-const defaultTechnicalSummary = 'Check the Fastly key in the api token information endpoint to obtain the expiration date';
+const defaultPanicGuide =
+	'Generate a new key in your own Fastly account with the same permissions and update it in Vault or your app';
+const defaultTechnicalSummary =
+	'Check the Fastly key in the api token information endpoint to obtain the expiration date';
 const defaultSeverity = 2;
 /**
  * @description Polls the current state of a Fastly key expiration date
@@ -95,10 +97,13 @@ class FastlyKeyExpirationCheck extends Check {
 	checkExpirationDate(expirationDate) {
 		const now = moment();
 		const limitDate = moment().add(2, 'weeks');
-		switch(true){
-			case  expirationDate.isAfter(limitDate): return this.states.PASSED;
-			case expirationDate.isBefore(now): return this.states.FAILED_URGENT_VALIDATION;
-			default: return this.states.FAILED_VALIDATION
+		switch (true) {
+			case expirationDate.isAfter(limitDate):
+				return this.states.PASSED;
+			case expirationDate.isBefore(now):
+				return this.states.FAILED_URGENT_VALIDATION;
+			default:
+				return this.states.FAILED_VALIDATION;
 		}
 	}
 
