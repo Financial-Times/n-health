@@ -8,10 +8,7 @@ const status = require('../src/checks/status');
 const millisecondsFortnight = 14 * 24 * 60 * 60 * 1000;
 const defaultOptions = {
 	name: 'fastlyKeyExpiration',
-	severity: 2,
 	businessImpact: 'b',
-	panicGuide: 'p',
-	technicalSummary: 't',
 	fastlyKey: 'k'
 };
 

@@ -14,12 +14,14 @@ const defaultSeverity = 2;
  * alert if the key has a null expiry date
  */
 class FastlyKeyExpirationCheck extends Check {
-	constructor(options) {
-		super(options);
+	constructor({
+		panicGuide = defaultPanicGuide,
+		technicalSummary = defaultTechnicalSummary,
+		severity = defaultSeverity,
+		...options
+	}) {
+		super({ panicGuide, technicalSummary, severity, ...options });
 		this.fastlyKey = options.fastlyKey;
-		this.panicGuide = options.panicGuide || defaultPanicGuide;
-		this.technicalSummary = options.technicalSummary || defaultTechnicalSummary;
-		this.severity = options.severity || defaultSeverity;
 		this.states = Object.freeze({
 			PENDING: {
 				status: status.PENDING,
