@@ -49,7 +49,7 @@ describe('Fastly Key Expiration Check', () => {
 			},
 			PASSED: {
 				status: status.PASSED,
-				checkOutput: 'Fastly key expiration date is ok',
+				checkOutput: `Fastly key ${defaultOptions.name} is configured correctly`,
 				severity: 2
 			}
 		};

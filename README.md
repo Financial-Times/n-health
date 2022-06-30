@@ -1,6 +1,7 @@
 # n-health [![CircleCI](https://circleci.com/gh/Financial-Times/n-health.svg?style=svg)](https://circleci.com/gh/Financial-Times/n-health)
 
-Collection of healthcheck classes to use in your nodejs application
+Collection of healthcheck classes to use in your nodejs application.   
+To create a new health check, please follow the [current standard](https://docs.google.com/document/edit?id=1ftlkDj1SUXvKvKJGvoMoF1GnSUInCNPnNGomqTpJaFk)
 
 ## Usage
 

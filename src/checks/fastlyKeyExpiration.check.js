@@ -52,7 +52,7 @@ class FastlyKeyExpirationCheck extends Check {
 			},
 			PASSED: {
 				status: status.PASSED,
-				checkOutput: 'Fastly key expiration date is ok',
+				checkOutput: `Fastly key ${this.name} is configured correctly`,
 				severity: this.severity
 			}
 		});
