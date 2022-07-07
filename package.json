@@ -42,7 +42,7 @@
     "@financial-times/n-raven": "^2.1.0",
     "aws-sdk": "^2.6.10",
     "fetchres": "^1.5.1",
-    "moment": "^2.29.2",
+    "moment": "^2.29.4",
     "ms": "^2.0.0",
     "node-fetch": "^1.5.1"
   },
