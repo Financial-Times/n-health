@@ -129,7 +129,7 @@ Checks if the value of a graphite metric has received data recently.
 Checks whether a Heroku log drain is configured correctly for the app. We determine the validity of a log drain based on [the "Logging to Splunk from Heroku" guide here](https://tech.in.ft.com/tech-topics/logging/splunk/logging-from-heroku#configuration).
 
 * `herokuAuthToken` = [default `process.env.HEROKU_AUTH_TOKEN`] an auth token with read access on the Heroku app
-* `herokuAppId` = [default `process.env.HEROKU_APP_ID`] the Heroku UUID for the Heroku app
+* `herokuAppId` = [default `process.env.HEROKU_APP_ID`] the Heroku UUID for the Heroku app, which should be provided by the [Heroku runtime-dyno-metadata feature](https://devcenter.heroku.com/articles/dyno-metadata).
 
 
 #### `cloudWatchThreshold`

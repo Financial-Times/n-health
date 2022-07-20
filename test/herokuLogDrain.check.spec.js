@@ -337,7 +337,7 @@ describe.only('Heroku Log Drain Check', () => {
 
 		it('it sets the check properties to indicate failure', () => {
 			const status = check.getStatus();
-			expect(status.checkOutput).to.equal('Heroku log drain configuration check failed to fetch data: A Heroku app ID is required to run this check. `HEROKU_APP_ID` env var was missing');
+			expect(status.checkOutput).to.equal('Heroku log drain configuration check failed to fetch data: A Heroku app ID is required to run this check. Please enable the runtime-dyno-metadata labs feature');
 			expect(status.ok).to.be.false;
 		});
 

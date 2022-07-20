@@ -29,7 +29,7 @@ class HerokuLogDrainCheck extends Check {
 			throw new Error('A Heroku auth token is required to run this check. `HEROKU_AUTH_TOKEN` env var was missing');
 		}
 		if (!this.herokuAppId) {
-			throw new Error('A Heroku app ID is required to run this check. `HEROKU_APP_ID` env var was missing');
+			throw new Error('A Heroku app ID is required to run this check. Please enable the runtime-dyno-metadata labs feature');
 		}
 	}
 
