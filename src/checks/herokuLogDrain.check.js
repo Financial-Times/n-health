@@ -79,7 +79,12 @@ class HerokuLogDrainCheck extends Check {
 			throw new Error('log drain URL does not match "https://x:<token>@http-inputs-financialtimes.splunkcloud.com/services/collector/raw"');
 		}
 
-		if (!parsedUrl.searchParams.get('source') || (process.env.SYSTEM_CODE && parsedUrl.searchParams.get('source') !== process.env.SYSTEM_CODE)) {
+		const hasCorrectSourceParam = (
+			process.env.SYSTEM_CODE ?
+				parsedUrl.searchParams.get('source') === process.env.SYSTEM_CODE :
+				true
+		);
+		if (!parsedUrl.searchParams.get('source') || !hasCorrectSourceParam) {
 			throw new Error('log drain source parameter is not set to the application system code');
 		}
 
