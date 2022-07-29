@@ -39,7 +39,6 @@
   },
   "dependencies": {
     "@financial-times/n-logger": "^10.2.0",
-    "@financial-times/n-raven": "^6.2.0",
     "aws-sdk": "^2.6.10",
     "fetchres": "^1.5.1",
     "moment": "^2.29.4",
