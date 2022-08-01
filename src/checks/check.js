@@ -2,7 +2,6 @@
 const status = require('./status');
 const ms = require('ms');
 const logger = require('@financial-times/n-logger').default;
-const raven = require('@financial-times/n-raven');
 
 const isOfficeHoursNow = () => {
 	const date = new Date();
@@ -57,7 +56,6 @@ an init method returning a Promise`)
 			await this.tick()
 		} catch(err){
 			logger.error({ event: 'FAILED_HEALTHCHECK_TICK', name: this.name }, err)
-			raven.captureError(err);
 			this.status = status.ERRORED;
 			this.checkOutput = 'Healthcheck failed to execute';
 		}
