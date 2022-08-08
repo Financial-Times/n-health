@@ -11,7 +11,7 @@ const mockValidResponse = {
 	ok: true,
 	json: sinon.stub().resolves([
 		{
-			url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?sourcetype=heroku&source=mock-system-code&host=mock-host&channel=mock-channel'
+			url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?source=mock-system-code&host=mock-host&channel=mock-channel'
 		}
 	])
 };
@@ -194,7 +194,7 @@ describe.only('Heroku Log Drain Check', () => {
 		beforeEach(done => {
 			mockValidResponse.json.resolves([
 				{
-					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?sourcetype=heroku&host=mock-host&channel=mock-channel'
+					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?host=mock-host&channel=mock-channel'
 				}
 			]);
 			check.start();
@@ -214,7 +214,7 @@ describe.only('Heroku Log Drain Check', () => {
 		beforeEach(done => {
 			mockValidResponse.json.resolves([
 				{
-					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?sourcetype=heroku&source=invalid&host=mock-host&channel=mock-channel'
+					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?source=invalid&host=mock-host&channel=mock-channel'
 				}
 			]);
 			check.start();
@@ -229,32 +229,12 @@ describe.only('Heroku Log Drain Check', () => {
 
 	});
 
-	describe('when the app log drain has an invalid sourcetype query parameter', () => {
-
-		beforeEach(done => {
-			mockValidResponse.json.resolves([
-				{
-					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?sourcetype=invalid&source=mock-system-code&host=mock-host&channel=mock-channel'
-				}
-			]);
-			check.start();
-			setTimeout(done);
-		});
-
-		it('it sets the check properties to indicate failure', () => {
-			const status = check.getStatus();
-			expect(status.checkOutput).to.equal('Heroku log drains are misconfigured: log drain sourcetype parameter is not set to "heroku"');
-			expect(status.ok).to.be.false;
-		});
-
-	});
-
 	describe('when the app log drain has no host query parameter', () => {
 
 		beforeEach(done => {
 			mockValidResponse.json.resolves([
 				{
-					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?sourcetype=heroku&source=mock-system-code&channel=mock-channel'
+					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?source=mock-system-code&channel=mock-channel'
 				}
 			]);
 			check.start();
@@ -274,7 +254,7 @@ describe.only('Heroku Log Drain Check', () => {
 		beforeEach(done => {
 			mockValidResponse.json.resolves([
 				{
-					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?sourcetype=heroku&source=mock-system-code&host=mock-host'
+					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?source=mock-system-code&host=mock-host'
 				}
 			]);
 			check.start();
