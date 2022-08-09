@@ -88,8 +88,8 @@ class HerokuLogDrainCheck extends Check {
 			throw new Error('log drain source parameter is not set to the application system code');
 		}
 
-		if (parsedUrl.searchParams.get('sourcetype') !== 'heroku') {
-			throw new Error('log drain sourcetype parameter is not set to "heroku"');
+		if (parsedUrl.searchParams.get('sourcetype')) {
+			throw new Error('log drain sourcetype parameter is present; sourcetype should instead be specified on the HEC (HTTP Event Collector) token');
 		}
 
 		if (!parsedUrl.searchParams.get('host')) {
