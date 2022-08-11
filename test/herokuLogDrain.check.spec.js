@@ -63,7 +63,7 @@ describe.only('Heroku Log Drain Check', () => {
 		expect(status.severity).to.equal(2);
 		expect(status.businessImpact).to.equal('Logs may not be captured in Splunk for this application. It may not be possible to debug other issues while log drains are not configured.');
 		expect(status.technicalSummary).to.equal('Uses the Heroku API to fetch Heroku log drains for the application and verify that they\'re configured to drain into the correct Splunk endpoint.');
-		expect(status.panicGuide).to.equal('[Check whether the app has been migrated to use log drains](https://financialtimes.atlassian.net/wiki/spaces/DS/pages/7883555001/Migrating+an+app+to+Heroku+log+drains). If it has been migrated then the log drain is either misconfigured or missing, follow the migration guide to correct this.');
+		expect(status.panicGuide).to.equal('Check whether the app has been migrated to use log drains. If it has been migrated then the log drain is either misconfigured or missing, and can be corrected by following the migration guide (https://financialtimes.atlassian.net/wiki/spaces/DS/pages/7883555001/Migrating+an+app+to+Heroku+log+drains).');
 	});
 
 	describe('when the app has a valid Heroku log drain configured', () => {
