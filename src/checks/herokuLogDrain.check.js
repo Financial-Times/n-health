@@ -8,6 +8,10 @@ const defaultTechnicalSummary = 'Uses the Heroku API to fetch Heroku log drains 
 const defaultBusinessImpact = 'Logs may not be captured in Splunk for this application. It may not be possible to debug other issues while log drains are not configured.';
 const defaultSeverity = 2;
 
+// Required format is the Heroku app URL exlcuding the protocol and path
+// e.g. ft-next-ads-api-eu.herokuapp.com, not https:/ft-next-ads-api-eu.herokuapp.com
+const HEROKU_LOG_DRAIN_HOST_FORMAT_REGEX = new RegExp(/^(?!http:\/)[a-z\-]*\.herokuapp\.com$/);
+
 class HerokuLogDrainCheck extends Check {
 
 	constructor({
@@ -92,8 +96,11 @@ class HerokuLogDrainCheck extends Check {
 			throw new Error('log drain sourcetype parameter is present; sourcetype should instead be specified on the HEC (HTTP Event Collector) token');
 		}
 
-		if (!parsedUrl.searchParams.get('host')) {
-			throw new Error('log drain host parameter is not set');
+		if (
+			!parsedUrl.searchParams.get('host') ||
+			!HEROKU_LOG_DRAIN_HOST_FORMAT_REGEX.test(parsedUrl.searchParams.get('host'))
+		) {
+			throw new Error('log drain host parameter is not set or is in an incorrect format');
 		}
 
 		if (!parsedUrl.searchParams.get('channel')) {
