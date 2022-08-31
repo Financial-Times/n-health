@@ -10,7 +10,7 @@ const defaultSeverity = 2;
 
 // Required format is the Heroku app URL exlcuding the protocol and path
 // e.g. ft-next-ads-api-eu.herokuapp.com, not https:/ft-next-ads-api-eu.herokuapp.com
-const HEROKU_LOG_DRAIN_HOST_FORMAT_REGEX = new RegExp(/^(?!http:\/)[a-z\-]*\.herokuapp\.com$/);
+const HEROKU_LOG_DRAIN_HOST_FORMAT_REGEX = /^[a-z0-9-]+\.herokuapp\.com$/;
 
 class HerokuLogDrainCheck extends Check {
 
