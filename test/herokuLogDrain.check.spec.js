@@ -11,7 +11,7 @@ const mockValidResponse = {
 	ok: true,
 	json: sinon.stub().resolves([
 		{
-			url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?source=mock-system-code&host=mock-host.herokuapp.com&channel=mock-channel'
+			url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?source=mock-system-code&host=mock-valid-app-name.herokuapp.com&channel=mock-channel'
 		}
 	])
 };
@@ -44,7 +44,8 @@ describe.only('Heroku Log Drain Check', () => {
 			id: 'mock-id',
 			name: 'mock-name',
 			herokuAuthToken: 'mock-auth-token',
-			herokuAppId: 'mock-valid-app-id'
+			herokuAppId: 'mock-valid-app-id',
+			herokuAppName: 'mock-valid-app-name',
 		});
 	});
 
@@ -194,7 +195,7 @@ describe.only('Heroku Log Drain Check', () => {
 		beforeEach(done => {
 			mockValidResponse.json.resolves([
 				{
-					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?host=mock-host.herokuapp.com&channel=mock-channel'
+					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?host=mock-valid-app-name.herokuapp.com&channel=mock-channel'
 				}
 			]);
 			check.start();
@@ -214,7 +215,7 @@ describe.only('Heroku Log Drain Check', () => {
 		beforeEach(done => {
 			mockValidResponse.json.resolves([
 				{
-					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?source=invalid&host=mock-host.herokuapp.com&channel=mock-channel'
+					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?source=invalid&host=mock-valid-app-name.herokuapp.com&channel=mock-channel'
 				}
 			]);
 			check.start();
@@ -234,7 +235,7 @@ describe.only('Heroku Log Drain Check', () => {
 		beforeEach(done => {
 			mockValidResponse.json.resolves([
 				{
-					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?sourcetype=mock-sourcetype&source=mock-system-code&host=mock-host.herokuapp.com&channel=mock-channel'
+					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?sourcetype=mock-sourcetype&source=mock-system-code&host=mock-valid-app-name.herokuapp.com&channel=mock-channel'
 				}
 			]);
 			check.start();
@@ -263,7 +264,7 @@ describe.only('Heroku Log Drain Check', () => {
 
 		it('it sets the check properties to indicate failure', () => {
 			const status = check.getStatus();
-			expect(status.checkOutput).to.equal('Heroku log drains are misconfigured: log drain host parameter is not set or is in an incorrect format');
+			expect(status.checkOutput).to.equal('Heroku log drains are misconfigured: log drain host parameter is not set or is not the app\'s name (excluding protocol and path)');
 			expect(status.ok).to.be.false;
 		});
 
@@ -274,7 +275,7 @@ describe.only('Heroku Log Drain Check', () => {
 		beforeEach(done => {
 			mockValidResponse.json.resolves([
 				{
-					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?source=mock-system-code&host=https:/mock-host.herokuapp.com&channel=mock-channel'
+					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?source=mock-system-code&host=mock-invalid-app-name.herokuapp.com&channel=mock-channel'
 				}
 			]);
 			check.start();
@@ -283,7 +284,7 @@ describe.only('Heroku Log Drain Check', () => {
 
 		it('it sets the check properties to indicate failure', () => {
 			const status = check.getStatus();
-			expect(status.checkOutput).to.equal('Heroku log drains are misconfigured: log drain host parameter is not set or is in an incorrect format');
+			expect(status.checkOutput).to.equal('Heroku log drains are misconfigured: log drain host parameter is not set or is not the app\'s name (excluding protocol and path)');
 			expect(status.ok).to.be.false;
 		});
 
@@ -294,7 +295,7 @@ describe.only('Heroku Log Drain Check', () => {
 		beforeEach(done => {
 			mockValidResponse.json.resolves([
 				{
-					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?source=mock-system-code&host=mock-host.herokuapp.com'
+					url: 'https://x:mock-splunk-token@http-inputs-financialtimes.splunkcloud.com/services/collector/raw?source=mock-system-code&host=mock-valid-app-name.herokuapp.com'
 				}
 			]);
 			check.start();

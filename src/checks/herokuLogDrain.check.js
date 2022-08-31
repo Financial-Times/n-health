@@ -8,10 +8,6 @@ const defaultTechnicalSummary = 'Uses the Heroku API to fetch Heroku log drains 
 const defaultBusinessImpact = 'Logs may not be captured in Splunk for this application. It may not be possible to debug other issues while log drains are not configured.';
 const defaultSeverity = 2;
 
-// Required format is the Heroku app URL exlcuding the protocol and path
-// e.g. ft-next-ads-api-eu.herokuapp.com, not https:/ft-next-ads-api-eu.herokuapp.com
-const HEROKU_LOG_DRAIN_HOST_FORMAT_REGEX = /^[a-z0-9-]+\.herokuapp\.com$/;
-
 class HerokuLogDrainCheck extends Check {
 
 	constructor({
@@ -21,11 +17,13 @@ class HerokuLogDrainCheck extends Check {
 		severity = defaultSeverity,
 		herokuAuthToken = process.env.HEROKU_AUTH_TOKEN,
 		herokuAppId = process.env.HEROKU_APP_ID,
+		herokuAppName = process.env.HEROKU_APP_NAME,
 		...options
 	}) {
 		super({ panicGuide, technicalSummary, businessImpact, severity, ...options });
 		this.herokuAuthToken = herokuAuthToken;
 		this.herokuAppId = herokuAppId;
+		this.herokuAppName = herokuAppName;
 	}
 
 	validateHerokuConfig() {
@@ -98,9 +96,9 @@ class HerokuLogDrainCheck extends Check {
 
 		if (
 			!parsedUrl.searchParams.get('host') ||
-			!HEROKU_LOG_DRAIN_HOST_FORMAT_REGEX.test(parsedUrl.searchParams.get('host'))
+			parsedUrl.searchParams.get('host') !== `${this.herokuAppName}.herokuapp.com`
 		) {
-			throw new Error('log drain host parameter is not set or is in an incorrect format');
+			throw new Error('log drain host parameter is not set or is not the app\'s name (excluding protocol and path)');
 		}
 
 		if (!parsedUrl.searchParams.get('channel')) {
