@@ -17,11 +17,13 @@ class HerokuLogDrainCheck extends Check {
 		severity = defaultSeverity,
 		herokuAuthToken = process.env.HEROKU_AUTH_TOKEN,
 		herokuAppId = process.env.HEROKU_APP_ID,
+		herokuAppName = process.env.HEROKU_APP_NAME,
 		...options
 	}) {
 		super({ panicGuide, technicalSummary, businessImpact, severity, ...options });
 		this.herokuAuthToken = herokuAuthToken;
 		this.herokuAppId = herokuAppId;
+		this.herokuAppName = herokuAppName;
 	}
 
 	validateHerokuConfig() {
@@ -92,8 +94,11 @@ class HerokuLogDrainCheck extends Check {
 			throw new Error('log drain sourcetype parameter is present; sourcetype should instead be specified on the HEC (HTTP Event Collector) token');
 		}
 
-		if (!parsedUrl.searchParams.get('host')) {
-			throw new Error('log drain host parameter is not set');
+		if (
+			!parsedUrl.searchParams.get('host') ||
+			parsedUrl.searchParams.get('host') !== `${this.herokuAppName}.herokuapp.com`
+		) {
+			throw new Error('log drain host parameter is not set or is not the app\'s name (excluding protocol and path)');
 		}
 
 		if (!parsedUrl.searchParams.get('channel')) {
