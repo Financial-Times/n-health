@@ -3,10 +3,13 @@ const logger = require('@financial-times/n-logger').default;
 const Check = require('./check');
 const status = require('./status');
 
+const ONE_DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
+
 const defaultPanicGuide = 'Check whether the app has been migrated to use log drains. If it has been migrated then the log drain is either misconfigured or missing, and can be corrected by following the migration guide (https://financialtimes.atlassian.net/wiki/spaces/DS/pages/7883555001/Migrating+an+app+to+Heroku+log+drains).';
 const defaultTechnicalSummary = 'Uses the Heroku API to fetch Heroku log drains for the application and verify that they\'re configured to drain into the correct Splunk endpoint.';
 const defaultBusinessImpact = 'Logs may not be captured in Splunk for this application. It may not be possible to debug other issues while log drains are not configured.';
 const defaultSeverity = 2;
+const defaultInterval = ONE_DAY_IN_MILLISECONDS;
 
 class HerokuLogDrainCheck extends Check {
 
@@ -15,6 +18,7 @@ class HerokuLogDrainCheck extends Check {
 		technicalSummary = defaultTechnicalSummary,
 		businessImpact = defaultBusinessImpact,
 		severity = defaultSeverity,
+		interval = defaultInterval,
 		herokuAuthToken = process.env.HEROKU_AUTH_TOKEN,
 		herokuAppId = process.env.HEROKU_APP_ID,
 		herokuAppName = process.env.HEROKU_APP_NAME,
