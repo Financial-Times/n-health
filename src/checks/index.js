@@ -9,7 +9,6 @@ module.exports = {
 	graphiteSpike: require('./graphiteSpike.check'),
 	graphiteThreshold: require('./graphiteThreshold.check'),
 	graphiteWorking: require('./graphiteWorking.check'),
-	herokuLogDrain: require('./herokuLogDrain.check'),
 	cloudWatchAlarm: require('./cloudWatchAlarm.check'),
 	cloudWatchThreshold: require('./cloudWatchThreshold.check'),
 	fastlyKeyExpiration: require('./fastlyKeyExpiration.check')
