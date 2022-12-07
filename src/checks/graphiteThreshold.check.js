@@ -19,19 +19,21 @@ class GraphiteThresholdCheck extends Check {
 		this.direction = options.direction || 'above';
 
 		this.samplePeriod = options.samplePeriod || '10min';
+		this.isConsistentBreach = options.isConsistentBreach || false;
 
 		this.ftGraphiteBaseUrl = 'https://graphitev2-api.ft.com/render/?';
 		this.ftGraphiteKey = process.env.FT_GRAPHITE_KEY;
 		if (!this.ftGraphiteKey) {
 			throw new Error('You must set FT_GRAPHITE_KEY environment variable');
 		}
-		
+
 		if (!options.metric) {
 			throw new Error(`You must pass in a metric for the "${options.name}" check - e.g., "next.heroku.article.*.express.start"`);
 		}
 
 		this.metric = options.metric;
 		this.sampleUrl = this.generateUrl(options.metric, this.samplePeriod);
+
 		this.checkOutput = 'Graphite threshold check has not yet run';
 	}
 
@@ -44,10 +46,10 @@ class GraphiteThresholdCheck extends Check {
 			const results = await fetch(this.sampleUrl, {
 				headers: { key: this.ftGraphiteKey }
 			}).then(fetchres.json);
-			
+
 			const simplifiedResults = results.map(result => {
 
-				const divideSeriesRegex = /divideSeries\(sumSeries\(.*?\),\s?sumSeries\(.*?\)\)/g; 
+				const divideSeriesRegex = /divideSeries\(sumSeries\(.*?\),\s?sumSeries\(.*?\)\)/g;
 				const asPercentRegex = /asPercent\(summarize\(sumSeries\(.*?\),.*?,.*?,.*?\),\s?summarize\(sumSeries\(.*?\),.*?,.*?,.*?\)\)/g;
 
 				if(result.target && asPercentRegex.test(result.target) || result.target && divideSeriesRegex.test(result.target)){
@@ -74,7 +76,7 @@ class GraphiteThresholdCheck extends Check {
 					return { target: result.target, isFailing };
 				}
 
-				const isFailing = result.datapoints.some(value => {
+				const datapointFailureStatuses = result.datapoints.map(value => {
 					if (value[0] === null) {
 						// metric data is unavailable, we don't fail this threshold check if metric data is unavailable
 						// if you want a failing check for when metric data is unavailable, use graphiteWorking
@@ -89,6 +91,11 @@ class GraphiteThresholdCheck extends Check {
 							Number(value[0]) < this.threshold;
 					}
 				});
+
+				const isFailing = this.isConsistentBreach
+					? datapointFailureStatuses.every(Boolean)
+					: datapointFailureStatuses.some(Boolean);
+
 				return { target: result.target, isFailing };
 			});
 

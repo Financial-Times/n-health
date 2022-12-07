@@ -112,6 +112,7 @@ Checks whether the value of a graphite metric has crossed a threshold
 * `metric`: [required] Name of graphite metric to count (may contain wildcards)
 * `threshold`: [required] Value to check the metrics against
 * `samplePeriod`: [default: `'10min'`] Length of time to count metrics for a sample of current behaviour
+* `isConsistentBreach`: [default: `false`] Boolan value to dictate whether all data points need to have breached the defined threshold to fail the check
 * `direction`: [default: `'above'`] Direction on which to trigger the healthcheck:
 	- `'above'` = alert if value goes above the threshold
 	- `'below'` = alert if value goes below the threshold
