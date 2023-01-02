@@ -160,3 +160,4 @@ _Note: there are some default properties_
 * `fastlyKey` =  The value of the fastly key to check
 
 _Note: if the expiration date is past, the severity level is 1_
+test
