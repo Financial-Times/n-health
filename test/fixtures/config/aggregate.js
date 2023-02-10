@@ -4,9 +4,9 @@ module.exports = {
 	description: '',
 	checks: [
 		{
-			type: 'pingdom',
+			type: 'graphiteThreshold',
 			name: 'test1',
-			checkId: '5555',
+			metric: 'next.fake.metric',
 			severity: 2,
 			businessImpact: 'blah',
 			technicalSummary: 'god knows',
@@ -14,9 +14,9 @@ module.exports = {
 			interval: '1s'
 		},
 		{
-			type: 'pingdom',
+			type: 'graphiteThreshold',
 			name: 'test2',
-			checkId: '5656',
+			metric: 'next.fake.metric',
 			severity: 2,
 			businessImpact: 'blah',
 			technicalSummary: 'god knows',
