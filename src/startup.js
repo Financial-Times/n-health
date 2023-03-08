@@ -45,7 +45,7 @@ function startup(configPath, additionalChecks){
 			return;
 		}
 
-		if(configFile.endsWith('.map.js')){
+		if(configFile.endsWith('.map')){
 			return;
 		}
 
