@@ -45,6 +45,10 @@ function startup(configPath, additionalChecks){
 			return;
 		}
 
+		if(configFile.endsWith('.map.js')){
+			return;
+		}
+
 		const name = configFile.replace('.js', '');
 		const config = require(path.resolve(configDir, configFile));
 		const healthchecks = new HealthChecks(config, checks);
