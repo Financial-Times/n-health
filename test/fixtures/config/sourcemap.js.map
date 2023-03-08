@@ -1,5 +1,20 @@
-module.exports = {
-  name: 'Sourcemaps',
-  description: 'Sourcemaps should not be ingested as config code',
-  checks: null
+{
+  "version": 3,
+  "file": "sourcemap.js",
+  "sourceRoot": "",
+  "sources": [
+    "foo.js",
+    "bar.js"
+  ],
+  "sourcesContent": [
+    null,
+    null
+  ],
+  "names": [
+    "src",
+    "maps",
+    "are",
+    "fun"
+  ],
+  "mappings": "A,AAAB;;ABCDE;"
 }
