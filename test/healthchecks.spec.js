@@ -50,15 +50,15 @@ describe('Healthchecks', function () {
 	});
 
 	describe('with an unknown type', function () {
-		before(function () {
+		it('Should throw an error for unknown check types', function () {
 			Healthchecks = require('../src/healthchecks');
-			fixture = require('./fixtures/config/unknownType.js');
-			healthchecks = new Healthchecks(fixture, require('../src/checks/'));
-		});
+			fixture = require('./fixtures/badConfig/unknownType.js');
 
-		it('Should ignore the unknown healthcheck silently', function () {
-			expect(healthchecks.checks.length).to.equal(1);
-			expect(healthchecks.checks[0].name).to.equal('A Graphite check');
+			const newHealthchecks = () => {
+				new Healthchecks(fixture, require('../src/checks/'));
+			};
+
+			expect(newHealthchecks).to.throw(/Attempted to create/);
 		});
 	});
 });
