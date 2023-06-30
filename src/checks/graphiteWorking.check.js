@@ -3,7 +3,6 @@ const Check = require('./check');
 const fetch = require('node-fetch');
 const log = require('@financial-times/n-logger').default;
 const fetchres = require('fetchres');
-
 const logEventPrefix = 'GRAPHITE_WORKING_CHECK';
 
 function badJSON(message, json) {
@@ -11,6 +10,7 @@ function badJSON(message, json) {
 	log.error({ event: `${logEventPrefix}_BAD_JSON` }, err);
 	throw err;
 }
+
 
 class GraphiteWorkingCheck extends Check {
 	constructor (options) {
@@ -29,15 +29,64 @@ class GraphiteWorkingCheck extends Check {
 			throw new Error(`You must pass in a metric for the "${options.name}" check - e.g., "next.heroku.article.*.express.start"`);
 		}
 
-		const fromTime = options.time || '-5minutes';
-		this.url = encodeURI(`https://graphitev2-api.ft.com/render/?target=${this.metric}&from=${fromTime}&format=json`);
-
+		this.time = options.time || '-5minutes';
 		this.checkOutput = "This check has not yet run";
+		this.override = options.override;
+		this.initialState = {};
+		this.isOverride = false;
+		//store the initial status of the properties that are going to be override
+		if (this.override) {
+			for (let conceptOverride in this.override) {
+				for (let key in this.override[conceptOverride]) {
+					this.initialState[key] = this[key];
+				}
+			}
+		}
+
+	}
+	get fromTime() {
+		return this.time;
+	}
+	getUrl() {
+		return encodeURI(`https://graphitev2-api.ft.com/render/?target=${this.metric}&from=${this.fromTime}&format=json`);
+	}
+
+	hookOverrides() {
+		if (!this.override)
+			return;
+		if (this.override.weekend) {
+			if (this.isWeekend() && !this.isOverride) {
+				this.applyOverrides(this.override.weekend);
+			}
+			else if (this.isOverride) {
+				this.setInitialState();
+			}
+		}
+	}
+
+	setInitialState() {
+		this.applyOverrides(this.initialState);
+		this.isOverride = false;
+	}
+
+	applyOverrides(overrides) {
+		if (!overrides)
+			return;
+		Object.keys(overrides).forEach((key) => {
+			this[key] = overrides[key];
+		});
+		this.isOverride = true;
+	}
+	isWeekend() {
+		const date = new Date();
+		const day = date.getDay(); // Sunday is 0, Saturday is 6
+		return day === 0 || day === 6;
 	}
 
 	async tick() {
 		try {
-			const json = await fetch(this.url, {
+			this.hookOverrides();
+			const json = await fetch(this.getUrl(), {
 				headers: { key: this.ftGraphiteKey }
 			}).then(fetchres.json);
 
@@ -60,10 +109,10 @@ class GraphiteWorkingCheck extends Check {
 					nullsForHowManySeconds = Infinity;
 				} else {
 					// This sums the number of seconds since the last non-null result at the tail of the list of metrics.
-							nullsForHowManySeconds = result.datapoints
-									.map((datapoint, index, array) => [datapoint[0], index > 0 ? datapoint[1] - array[index - 1][1]  : 0])
-									.reduce((xs, datapoint) => datapoint[0] === null ? xs + datapoint[1] : 0, 0);
-						}
+					nullsForHowManySeconds = result.datapoints
+					.map((datapoint, index, array) => [datapoint[0], index > 0 ? datapoint[1] - array[index - 1][1]  : 0])
+					.reduce((xs, datapoint) => datapoint[0] === null ? xs + datapoint[1] : 0, 0);
+			}
 
 				const simplifiedResult = { target: result.target, nullsForHowManySeconds };
 				log.info({ event: `${logEventPrefix}_NULLS_FOR_HOW_LONG` }, simplifiedResult);
@@ -80,7 +129,7 @@ class GraphiteWorkingCheck extends Check {
 				this.checkOutput = failedResults.map(r => `${r.target} has been null for ${Math.round(r.nullsForHowManySeconds / 60)} minutes.`).join(' ');
 			}
 		} catch(err) {
-			log.error({ event: `${logEventPrefix}_ERROR`, url: this.url }, err);
+			log.error({ event: `${logEventPrefix}_ERROR`, url: this.getUrl() }, err);
 			this.status = status.FAILED;
 			this.checkOutput = err.toString();
 		}
@@ -88,3 +137,4 @@ class GraphiteWorkingCheck extends Check {
 }
 
 module.exports = GraphiteWorkingCheck;
+
