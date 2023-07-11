@@ -66,7 +66,7 @@ class GraphiteWorkingCheck extends Check {
 						}
 
 				const simplifiedResult = { target: result.target, nullsForHowManySeconds };
-				log.info({ event: `${logEventPrefix}_NULLS_FOR_HOW_LONG` }, simplifiedResult);
+				log.debug({ event: `${logEventPrefix}_NULLS_FOR_HOW_LONG` }, simplifiedResult);
 				return simplifiedResult;
 			});
 

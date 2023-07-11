@@ -13,6 +13,7 @@ const mockLogger = {
 	default: {
 		error: function() {},
 		info: function() {},
+		debug: function() {},
 	}
 }
 

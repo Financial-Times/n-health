@@ -55,7 +55,7 @@ class GraphiteThresholdCheck extends Check {
 				if(result.target && asPercentRegex.test(result.target) || result.target && divideSeriesRegex.test(result.target)){
 					const fetchCountPerTimeUnit = result.datapoints.map(item => Number(item[0]));
 					if(fetchCountPerTimeUnit.length !== 1){
-						logger.info({
+						logger.debug({
 							event: 'HEALTHCHECK_LENGTH_NOT_1',
 							datapoints: result.datapoints
 						});
@@ -80,7 +80,7 @@ class GraphiteThresholdCheck extends Check {
 					if (value[0] === null) {
 						// metric data is unavailable, we don't fail this threshold check if metric data is unavailable
 						// if you want a failing check for when metric data is unavailable, use graphiteWorking
-						logger.info({
+						logger.debug({
 							event: `${logEventPrefix}_NULL_DATA`,
 							url: this.sampleUrl,
 						});
