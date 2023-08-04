@@ -1,7 +1,7 @@
 const sinon = require('sinon');
 const { expect } = require('chai');
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
-const logger = require('@financial-times/n-logger').default;
+const logger = require('@dotcom-reliability-kit/logger');
 const FastlyCheck = require('../src/checks/fastlyKeyExpiration.check');
 const status = require('../src/checks/status');
 

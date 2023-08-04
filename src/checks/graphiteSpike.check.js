@@ -19,7 +19,7 @@
  * direction: Whether you care about sample metric increases (up) or decreases (down).
  */
 
-const logger = require('@financial-times/n-logger').default;
+const logger = require('@dotcom-reliability-kit/logger');
 const status = require('./status');
 const Check = require('./check');
 const fetch = require('node-fetch');

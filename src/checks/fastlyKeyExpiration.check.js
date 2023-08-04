@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const moment = require('moment');
-const logger = require('@financial-times/n-logger').default;
+const logger = require('@dotcom-reliability-kit/logger');
 const Check = require('./check');
 const status = require('./status');
 
