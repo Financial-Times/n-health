@@ -1,7 +1,7 @@
 'use strict';
 
 const AWS = require('aws-sdk');
-const log = require('@financial-times/n-logger').default;
+const logger = require('@dotcom-reliability-kit/logger');
 const status = require('./status');
 const Check = require('./check');
 
@@ -53,7 +53,7 @@ class CloudWatchAlarmCheck extends Check {
 					this.checkOutput = output;
 				})
 				.catch(err => {
-					log.error('Failed to get CloudWatch alarm data', err);
+					logger.error('Failed to get CloudWatch alarm data', err);
 					this.status = status.FAILED;
 					this.checkOutput = `Cloudwatch alarm check failed to fetch data: ${err.message}`;
 				});

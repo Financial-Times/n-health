@@ -2,7 +2,7 @@
 
 const AWS = require('aws-sdk');
 const moment = require('moment');
-const log = require('@financial-times/n-logger').default;
+const logger = require('@dotcom-reliability-kit/logger');
 const status = require('./status');
 const Check = require('./check');
 
@@ -61,7 +61,7 @@ class CloudWatchThresholdCheck extends Check {
 			this.status = ok ? status.PASSED : status.FAILED;
 			this.checkOutput = ok ? `No threshold change detected in CloudWatch data. Current value: ${value}` : `CloudWatch data ${this.direction} required threshold. Current value: ${value}`;
 		} catch(err) {
-			log.error('Failed to get CloudWatch data', err);
+			logger.error('Failed to get CloudWatch data', err);
 			this.status = status.FAILED;
 			this.checkOutput = `Cloudwatch threshold check failed to fetch data: ${err.message}`;
 		}

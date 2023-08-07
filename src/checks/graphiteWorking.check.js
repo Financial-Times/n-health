@@ -1,14 +1,14 @@
 const status = require('./status');
 const Check = require('./check');
 const fetch = require('node-fetch');
-const log = require('@financial-times/n-logger').default;
+const logger = require('@dotcom-reliability-kit/logger');
 const fetchres = require('fetchres');
 
 const logEventPrefix = 'GRAPHITE_WORKING_CHECK';
 
 function badJSON(message, json) {
 	const err = new Error(message);
-	log.error({ event: `${logEventPrefix}_BAD_JSON` }, err);
+	logger.error({ event: `${logEventPrefix}_BAD_JSON` }, err);
 	throw err;
 }
 
@@ -66,7 +66,7 @@ class GraphiteWorkingCheck extends Check {
 						}
 
 				const simplifiedResult = { target: result.target, nullsForHowManySeconds };
-				log.debug({ event: `${logEventPrefix}_NULLS_FOR_HOW_LONG` }, simplifiedResult);
+				logger.debug({ event: `${logEventPrefix}_NULLS_FOR_HOW_LONG` }, simplifiedResult);
 				return simplifiedResult;
 			});
 
@@ -80,7 +80,7 @@ class GraphiteWorkingCheck extends Check {
 				this.checkOutput = failedResults.map(r => `${r.target} has been null for ${Math.round(r.nullsForHowManySeconds / 60)} minutes.`).join(' ');
 			}
 		} catch(err) {
-			log.error({ event: `${logEventPrefix}_ERROR`, url: this.url }, err);
+			logger.error({ event: `${logEventPrefix}_ERROR`, url: this.url }, err);
 			this.status = status.FAILED;
 			this.checkOutput = err.toString();
 		}

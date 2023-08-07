@@ -10,12 +10,10 @@ function getCheckConfig (conf) {
 }
 
 const mockLogger = {
-	default: {
-		error: function() {},
-		info: function() {},
-		debug: function() {},
-	}
-}
+	error: function() {},
+	info: function() {},
+	debug: function() {},
+};
 
 let mockFetch;
 let Check;
@@ -30,7 +28,7 @@ function mockGraphite (results) {
 	}));
 
 	Check = proxyquire('../src/checks/graphiteThreshold.check', {
-		'@financial-times/n-logger': mockLogger,
+		'@dotcom-reliability-kit/logger': mockLogger,
 		'node-fetch': mockFetch,
 	});
 }

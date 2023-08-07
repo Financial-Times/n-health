@@ -1,7 +1,7 @@
 'use strict';
 const status = require('./status');
 const ms = require('ms');
-const logger = require('@financial-times/n-logger').default;
+const logger = require('@dotcom-reliability-kit/logger');
 
 const isOfficeHoursNow = () => {
 	const date = new Date();
