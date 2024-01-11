@@ -5,6 +5,11 @@ const path = require('path');
 const HealthChecks = require('../src/healthchecks');
 const startup = require('../src/startup');
 
+// We set this so that the tests don't immediately fail due to a missing environment variable.
+// n-gage used to provide the environment variables locally via dotenv and the tests were written
+// assuming that it'd be present.
+process.env.FT_GRAPHITE_KEY = 'mock-graphite-key';
+
 describe('Startup', function(){
 
 

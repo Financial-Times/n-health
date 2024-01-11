@@ -1,0 +1,13 @@
+plugins:
+  - "@dotcom-tool-kit/component"
+  - '@dotcom-tool-kit/husky-npm'
+  - '@dotcom-tool-kit/lint-staged-npm'
+  - "@dotcom-tool-kit/mocha"
+hooks:
+  git:precommit:
+    - LintStaged
+options:
+  '@dotcom-tool-kit/circleci':
+    nodeVersion:
+      - '18.19'
+      - '16.20'
