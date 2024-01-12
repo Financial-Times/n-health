@@ -1,5 +1,7 @@
 .circleci
+.eslintrc.json
 .github
+.prettierrc.json
 .snyk
 .toolkitrc.yml
 renovate.json
