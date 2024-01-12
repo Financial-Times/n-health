@@ -5,7 +5,6 @@ const status = require('./status');
 const Check = require('./check');
 const fetch = require('node-fetch');
 const fetchres = require('fetchres');
-const ms = require('ms');
 
 const logEventPrefix = 'GRAPHITE_THRESHOLD_CHECK';
 
