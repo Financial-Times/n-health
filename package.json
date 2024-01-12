@@ -57,5 +57,8 @@
   },
   "volta": {
     "node": "20.11.0"
+  },
+  "mocha": {
+    "exit": true
   }
 }
