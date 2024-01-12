@@ -2,6 +2,7 @@
 const status = require('./status');
 const Check = require('./check');
 const fetch = require('node-fetch');
+const logger = require('@dotcom-reliability-kit/logger');
 
 function allEqual(responses){
 	for(let i = 1, l = responses.length; i < l; i++){
@@ -49,8 +50,11 @@ class ResponseCompareCheck extends Check {
 			if(this.comparison === ResponseCompareCheck.comparisons.EQUAL){
 				this.status = allEqual(responses) ? status.PASSED : status.FAILED;
 			}
-		} catch(err) {
-			console.error('Response was not OK', err);
+		} catch(error) {
+			logger.error({
+				event: 'RESPONSE_COMPARE_CHECK_ERROR',
+				message: 'Response was not OK'
+			}, error);
 			this.status = status.FAILED;
 		}
 	}
