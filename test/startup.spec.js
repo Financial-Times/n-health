@@ -1,5 +1,5 @@
-/* global before, after, it, describe */
 'use strict';
+
 const expect = require('chai').expect;
 const path = require('path');
 const HealthChecks = require('../src/healthchecks');

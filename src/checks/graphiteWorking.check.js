@@ -6,7 +6,7 @@ const fetchres = require('fetchres');
 
 const logEventPrefix = 'GRAPHITE_WORKING_CHECK';
 
-function badJSON(message, json) {
+function badJSON(message) {
 	const err = new Error(message);
 	logger.error({ event: `${logEventPrefix}_BAD_JSON` }, err);
 	throw err;
@@ -42,15 +42,15 @@ class GraphiteWorkingCheck extends Check {
 			}).then(fetchres.json);
 
 			if(!json.length) {
-				badJSON('returned JSON should be an array', json);
+				badJSON('returned JSON should be an array');
 			}
 
 			if(!json[0].datapoints) {
-				badJSON('No datapoints property', json);
+				badJSON('No datapoints property');
 			}
 
 			if(json[0].datapoints.length < 1) {
-				badJSON('Expected at least one datapoint', json);
+				badJSON('Expected at least one datapoint');
 			}
 
 			const simplifiedResults = json.map(result => {
