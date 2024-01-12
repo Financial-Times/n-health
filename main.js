@@ -2,7 +2,7 @@
 const startup = require('./src/startup');
 const Check = require('./src/checks/check');
 const status = require('./src/checks/status');
-const checks = require('./src/checks')
+const checks = require('./src/checks');
 
 function categoryInCheckName(healthCheck, check){
 	check.name = healthCheck.name + ': ' + check.name;
@@ -22,7 +22,7 @@ module.exports = function(config, additionalChecks){
 
 			return healthCheckArray;
 		}
-	}
+	};
 };
 
 module.exports.Check = Check;

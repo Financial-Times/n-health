@@ -61,7 +61,7 @@ class GraphiteWorkingCheck extends Check {
 				} else {
 					// This sums the number of seconds since the last non-null result at the tail of the list of metrics.
 							nullsForHowManySeconds = result.datapoints
-									.map((datapoint, index, array) => [datapoint[0], index > 0 ? datapoint[1] - array[index - 1][1]  : 0])
+									.map((datapoint, index, array) => [datapoint[0], index > 0 ? datapoint[1] - array[index - 1][1] : 0])
 									.reduce((xs, datapoint) => datapoint[0] === null ? xs + datapoint[1] : 0, 0);
 						}
 

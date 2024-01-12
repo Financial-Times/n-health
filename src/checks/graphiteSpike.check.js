@@ -94,10 +94,10 @@ class GraphiteSpikeCheck extends Check {
 					.then(fetchres.json),
 				fetch(this.baselineUrl, { headers: { key: this.ftGraphiteKey } })
 					.then(fetchres.json)
-			])
+			]);
 
-			const baselineValue = baseline[0] && baseline[0].datapoints[0][0]
-			const sampleValue = sample[0] && sample[0].datapoints[0][0]
+			const baselineValue = baseline[0] && baseline[0].datapoints[0][0];
+			const sampleValue = sample[0] && sample[0].datapoints[0][0];
 
 			const data = this.normalize({
 				sample: sampleValue && !Object.is(sampleValue, null) ? sampleValue : 0,
@@ -109,7 +109,7 @@ class GraphiteSpikeCheck extends Check {
 				? data.sample / data.baseline < this.threshold
 				: data.sample / data.baseline > 1 / this.threshold;
 
-			const details = `Direction: ${this.direction} Sample: ${data.sample} Baseline: ${data.baseline} Threshold: ${this.threshold}`
+			const details = `Direction: ${this.direction} Sample: ${data.sample} Baseline: ${data.baseline} Threshold: ${this.threshold}`;
 			if (ok) {
 				this.status = status.PASSED;
 			 	this.checkOutput = `No spike detected in graphite data. ${details}`;
@@ -131,7 +131,7 @@ class GraphiteSpikeCheck extends Check {
 						rawValue: baselineValue,
 						normalisedValue: data.baseline
 					},
-				})
+				});
 			}
 
 		} catch(err) {

@@ -19,7 +19,7 @@ class CloudWatchAlarmCheck extends Check {
 			'OK': status.PASSED,
 			'ALARM': status.FAILED,
 			'INSUFFICIENT_DATA': status.FAILED
-		}
+		};
 
 		this.checkOutput = 'CloudWatch alarm check has not yet run';
 	}
@@ -47,7 +47,7 @@ class CloudWatchAlarmCheck extends Check {
 							output = `CloudWatch alarm ${name} in ALARM state`;
 							break;
 						case 'INSUFFICIENT_DATA':
-							output = `CloudWatch alarm ${name} has insufficent data.`
+							output = `CloudWatch alarm ${name} has insufficent data.`;
 					};
 
 					this.checkOutput = output;

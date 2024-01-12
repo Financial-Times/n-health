@@ -42,7 +42,7 @@ class ResponseCompareCheck extends Check {
 						r => r.text().then(this.normalizeResponse)
 					)
 				)
-			)
+			);
 
 			if(this.comparison === ResponseCompareCheck.comparisons.EQUAL){
 				this.status = allEqual(responses) ? status.PASSED : status.FAILED;
