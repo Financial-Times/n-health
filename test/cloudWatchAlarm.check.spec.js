@@ -9,7 +9,7 @@ const passedFixture = require('./fixtures/cloudWatchAlarmPassedResponse');
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const sinon = require('sinon');
 
-let cloudWatchFailedMock, cloudWatchInsuficientMock, cloudWatchPassedMock;
+let cloudWatchFailedMock; let cloudWatchInsuficientMock; let cloudWatchPassedMock;
 let cloudWatchMock;
 
 const awsMock = {

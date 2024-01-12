@@ -22,12 +22,12 @@ class Check {
 			if(!opts[prop]) {
 				throw new Error(`${prop} is required for every healthcheck`);
 			}
-		})
+		});
 
 		if(this.start !== Check.prototype.start || this._tick !== Check.prototype._tick) {
 			throw new Error(`Do no override native start and _tick methods of n-health checks.
 They provide essential error handlers. If complex setup is required, define
-an init method returning a Promise`)
+an init method returning a Promise`);
 		}
 
 		this.id = opts.id;
@@ -53,9 +53,9 @@ an init method returning a Promise`)
 
 	async _tick() {
 		try {
-			await this.tick()
+			await this.tick();
 		} catch(err){
-			logger.error({ event: 'FAILED_HEALTHCHECK_TICK', name: this.name }, err)
+			logger.error({ event: 'FAILED_HEALTHCHECK_TICK', name: this.name }, err);
 			this.status = status.ERRORED;
 			this.checkOutput = 'Healthcheck failed to execute';
 		}

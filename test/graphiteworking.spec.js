@@ -65,7 +65,7 @@ describe('Graphite Working Check', function(){
 			}
 		}));
 
-		GraphiteWorkingCheck = proxyquire('../src/checks/graphiteWorking.check.js', {'node-fetch':mockFetch})
+		GraphiteWorkingCheck = proxyquire('../src/checks/graphiteWorking.check.js', {'node-fetch':mockFetch});
 		check = new GraphiteWorkingCheck(fixture);
 	}
 
@@ -122,6 +122,6 @@ describe('Graphite Working Check', function(){
 				expect(check.getStatus().ok).to.be.true;
 			});
 		});
-	})
+	});
 
 });

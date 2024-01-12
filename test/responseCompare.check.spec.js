@@ -69,6 +69,6 @@ describe('Response Compare Check', function(){
 				done();
 			});
 		});
-	})
+	});
 
 });

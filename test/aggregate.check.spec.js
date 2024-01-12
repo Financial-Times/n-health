@@ -13,7 +13,7 @@ class MockCheck {
 	getStatus () {
 		return {
 			ok : this.ok
-		}
+		};
 	}
 }
 
@@ -53,5 +53,5 @@ describe('Aggregate Check', function(){
 				done();
 			});
 		});
-	})
+	});
 });

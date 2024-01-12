@@ -10,7 +10,7 @@ class HealthChecks {
 				return check.type in healthchecks;
 			})
 			.map(check => {
-				return new healthchecks[check.type](check, this)
+				return new healthchecks[check.type](check, this);
 			});
 	}
 
@@ -23,7 +23,7 @@ class HealthChecks {
 	}
 
 	getStatus(){
-		var status = {
+		let status = {
 			schemaVersion: 1,
 			name: this.name,
 			description: this.description

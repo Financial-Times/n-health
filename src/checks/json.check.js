@@ -20,7 +20,7 @@ class JsonCheck extends Check{
 
 	async tick() {
 		try {
-			const json = await fetch(this.url, this.fetchOptions).then(fetchres.json)
+			const json = await fetch(this.url, this.fetchOptions).then(fetchres.json);
 
 			let result = this.callback(json);
 			this.status = result ? status.PASSED : status.FAILED;

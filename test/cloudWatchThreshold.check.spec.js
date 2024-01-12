@@ -11,7 +11,7 @@ function getCheckConfig(conf) {
 }
 
 function loadFixture(fixture) {
-	var fixtureData = fs.readFileSync(fixture + '.json');
+	let fixtureData = fs.readFileSync(fixture + '.json');
 	return JSON.parse(fixtureData, function (key, val) {
 		if (key === 'Timestamp') {
 			return new Date(val);
