@@ -3,9 +3,6 @@
   "version": "0.0.0",
   "description": "Makes it easy to add healthchecks to an app",
   "main": "main.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "test": "dotcom-tool-kit test:local",
     "prepare": "npx snyk protect || npx snyk protect -d || true",
@@ -20,11 +17,8 @@
     "type": "git",
     "url": "git+https://github.com/Financial-Times/n-health.git"
   },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Financial-Times/n-health/issues"
-  },
+  "license": "MIT",
+  "bugs": "https://github.com/Financial-Times/n-health/issues",
   "homepage": "https://github.com/Financial-Times/n-health#readme",
   "devDependencies": {
     "@dotcom-tool-kit/component": "^4.1.0",
