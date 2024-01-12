@@ -3,6 +3,7 @@ const status = require('./status');
 const Check = require('./check');
 const fetch = require('node-fetch');
 const fetchres = require('fetchres');
+const logger = require('@dotcom-reliability-kit/logger');
 
 class JsonCheck extends Check{
 
@@ -24,8 +25,11 @@ class JsonCheck extends Check{
 
 			let result = this.callback(json);
 			this.status = result ? status.PASSED : status.FAILED;
-		} catch(err) {
-			console.error('Failed to get JSON', err);
+		} catch(error) {
+			logger.error({
+				event: 'JSON_CHECK_ERROR',
+				message: `Failed to fetch JSON from ${this.url}`
+			}, error);
 			this.status = status.FAILED;
 		}
 	}

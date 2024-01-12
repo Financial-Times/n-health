@@ -3,6 +3,7 @@ const status = require('./status');
 const Check = require('./check');
 const fetch = require('node-fetch');
 const fetchres = require('fetchres');
+const logger = require('@dotcom-reliability-kit/logger');
 
 class StringCheck extends Check {
 
@@ -25,8 +26,11 @@ class StringCheck extends Check {
 		try {
 			const body = await fetch(this.url, this.fetchOptions).then(fetchres.text);
 			this.status = body === this.expected ? status.PASSED : status.FAILED;
-		} catch(err) {
-			console.error('Response was not OK', err);
+		} catch(error) {
+			logger.error({
+				event: 'STRING_CHECK_ERROR',
+				message: 'Response was not OK'
+			}, error);
 			this.status = status.FAILED;
 		}
 	}
