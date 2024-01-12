@@ -5,6 +5,9 @@ orbs:
 executors:
   node:
     docker:
+      - image: cimg/node:20.11
+  node18_19:
+    docker:
       - image: cimg/node:18.19
   node16_20:
     docker:
@@ -34,8 +37,6 @@ workflows:
           filters:
             branches:
               only: /(^renovate-.*|^nori/.*)/
-            tags:
-              only: /^v\d+\.\d+\.\d+(-.+)?/
       - tool-kit/setup:
           name: tool-kit/setup-<< matrix.executor >>
           requires:
@@ -45,6 +46,7 @@ workflows:
             parameters:
               executor:
                 - node
+                - node18_19
                 - node16_20
           filters:
             tags:
@@ -57,6 +59,7 @@ workflows:
             parameters:
               executor:
                 - node
+                - node18_19
                 - node16_20
           filters:
             tags:
@@ -69,6 +72,7 @@ workflows:
             parameters:
               executor:
                 - node
+                - node18_19
                 - node16_20
           filters:
             tags:
@@ -103,6 +107,7 @@ workflows:
             parameters:
               executor:
                 - node
+                - node18_19
                 - node16_20
       - tool-kit/build:
           name: tool-kit/build-<< matrix.executor >>
@@ -112,6 +117,7 @@ workflows:
             parameters:
               executor:
                 - node
+                - node18_19
                 - node16_20
       - tool-kit/test:
           name: tool-kit/test-<< matrix.executor >>
@@ -121,4 +127,5 @@ workflows:
             parameters:
               executor:
                 - node
+                - node18_19
                 - node16_20
