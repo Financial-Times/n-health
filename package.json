@@ -7,7 +7,8 @@
     "test": "dotcom-tool-kit test:local",
     "prepare": "npx snyk protect || npx snyk protect -d || true",
     "build": "dotcom-tool-kit build:local",
-    "start": "dotcom-tool-kit run:local"
+    "start": "dotcom-tool-kit run:local",
+    "format": "dotcom-tool-kit format:local"
   },
   "engines": {
     "node": "16.x || 18.x || 20.x",
@@ -28,6 +29,7 @@
     "@dotcom-tool-kit/husky-npm": "^4.2.0",
     "@dotcom-tool-kit/lint-staged-npm": "^3.2.0",
     "@dotcom-tool-kit/mocha": "^3.2.0",
+    "@dotcom-tool-kit/prettier": "^3.2.0",
     "@financial-times/eslint-config-next": "^7.1.0",
     "chai": "^4.3.6",
     "dotcom-tool-kit": "^3.4.0",
