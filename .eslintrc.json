@@ -1,0 +1,19 @@
+{
+	"env": {
+		"mocha": true
+	},
+	"extends": [
+		"@financial-times/eslint-config-next",
+		"@dotcom-reliability-kit/eslint-config"
+	],
+	"parser": "@babel/eslint-parser",
+	"parserOptions": {
+		"requireConfigFile": false,
+		"sourceType": "script"
+	},
+	"rules": {
+		"indent": "off",
+		"quotes": 0,
+		"space-before-function-paren": 0
+	}
+}
