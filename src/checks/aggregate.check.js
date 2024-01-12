@@ -30,6 +30,8 @@ class AggregateCheck extends Check {
 					return 'None of the checks are passing';
 			}
 		}
+
+		return undefined;
 	}
 
 	init () {

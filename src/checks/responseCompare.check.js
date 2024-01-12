@@ -32,6 +32,8 @@ class ResponseCompareCheck extends Check {
 		if(this.comparison === ResponseCompareCheck.comparisons.EQUAL){
 			return `${urls} are ${this.status === status.PASSED ? '' : 'not'} equal`;
 		}
+
+		return undefined;
 	}
 
 	async tick(){
