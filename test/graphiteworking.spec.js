@@ -3,8 +3,7 @@ const expect = require('chai').expect;
 const sinon = require('sinon');
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 
-describe('Graphite Working Check', function(){
-
+describe('Graphite Working Check', function () {
 	const fixture = require('./fixtures/config/graphiteWorkingFixture').checks[0];
 
 	let GraphiteWorkingCheck;
@@ -13,59 +12,67 @@ describe('Graphite Working Check', function(){
 
 	const goodResponse = [
 		{
-			"target": "summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.asia.requests, \"1h\", \"sum\", true)",
-			"datapoints": [
-				[ null, 1459333140 ],
-				[ null, 1459333200 ],
-				[ 1, 1459333260 ],
-				[ 1, 1459333320 ],
-				[ null, 1459333380 ],
-				[ null, 1459333420 ],
+			target:
+				'summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.asia.requests, "1h", "sum", true)',
+			datapoints: [
+				[null, 1459333140],
+				[null, 1459333200],
+				[1, 1459333260],
+				[1, 1459333320],
+				[null, 1459333380],
+				[null, 1459333420]
 			]
 		}
 	];
 
 	const recentlyBadResponse = [
 		{
-			"target": "summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, \"1h\", \"sum\", true)",
-			"datapoints": [
-				[ null, 1459333140 ],
-				[ 1, 1459333200 ],
-				[ 1, 1459333260 ],
-				[ null, 1459333320 ],
-				[ null, 1459333380 ],
-				[ null, 1459333440 ],
+			target:
+				'summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, "1h", "sum", true)',
+			datapoints: [
+				[null, 1459333140],
+				[1, 1459333200],
+				[1, 1459333260],
+				[null, 1459333320],
+				[null, 1459333380],
+				[null, 1459333440]
 			]
 		}
 	];
 
-    const completelyBadResponse = [
-        {
-            "target": "summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, \"1h\", \"sum\", true)",
-            "datapoints": [
-                [ null, 1459333140 ],
-                [ null, 1459333200 ],
-                [ null, 1459333260 ],
-                [ null, 1459333320 ],
-                [ null, 1459333380 ],
-                [ null, 1459333440 ],
-            ]
-        }
-    ];
+	const completelyBadResponse = [
+		{
+			target:
+				'summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, "1h", "sum", true)',
+			datapoints: [
+				[null, 1459333140],
+				[null, 1459333200],
+				[null, 1459333260],
+				[null, 1459333320],
+				[null, 1459333380],
+				[null, 1459333440]
+			]
+		}
+	];
 
-	function waitFor(time){
-		return new Promise(resolve => setTimeout(resolve, time));
+	function waitFor(time) {
+		return new Promise((resolve) => setTimeout(resolve, time));
 	}
 
-	function setup(response){
-		mockFetch = sinon.stub().returns(Promise.resolve({
-			ok: true,
-			json: function(){
-				return Promise.resolve(response);
-			}
-		}));
+	function setup(response) {
+		mockFetch = sinon.stub().returns(
+			Promise.resolve({
+				ok: true,
+				json: function () {
+					return Promise.resolve(response);
+				}
+			})
+		);
 
-		GraphiteWorkingCheck = proxyquire('../src/checks/graphiteWorking.check.js', {'node-fetch':mockFetch});
+		GraphiteWorkingCheck = proxyquire(
+			'../src/checks/graphiteWorking.check.js',
+			{ 'node-fetch': mockFetch }
+		);
 		check = new GraphiteWorkingCheck(fixture);
 	}
 
@@ -84,7 +91,9 @@ describe('Graphite Working Check', function(){
 		setup(goodResponse);
 		check.start();
 		return waitFor(10).then(() => {
-			expect(check.getStatus().checkOutput).to.equal('next.fastly.f8585BOxnGQDMbnkJoM1e.all.requests has data');
+			expect(check.getStatus().checkOutput).to.equal(
+				'next.fastly.f8585BOxnGQDMbnkJoM1e.all.requests has data'
+			);
 			expect(check.getStatus().ok).to.be.true;
 		});
 	});
@@ -94,26 +103,28 @@ describe('Graphite Working Check', function(){
 		check.start();
 		return waitFor(10).then(() => {
 			expect(check.getStatus().ok).to.be.false;
-			expect(check.getStatus().checkOutput).to.equal('summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, "1h", "sum", true) has been null for 3 minutes.');
+			expect(check.getStatus().checkOutput).to.equal(
+				'summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, "1h", "sum", true) has been null for 3 minutes.'
+			);
 		});
 	});
 
-    it('Should fail if there is no data', () => {
-        setup(completelyBadResponse);
-        check.start();
-        return waitFor(10).then(() => {
-            expect(check.getStatus().ok).to.be.false;
-            expect(check.getStatus().checkOutput).to.equal('summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, "1h", "sum", true) has been null for Infinity minutes.');
-        });
-    });
+	it('Should fail if there is no data', () => {
+		setup(completelyBadResponse);
+		check.start();
+		return waitFor(10).then(() => {
+			expect(check.getStatus().ok).to.be.false;
+			expect(check.getStatus().checkOutput).to.equal(
+				'summarize(next.fastly.133g5BGAc00Hv4v8t0dMry.anzac.requests, "1h", "sum", true) has been null for Infinity minutes.'
+			);
+		});
+	});
 
 	//todo get the graphite api key into the CI config - doesn't seem possible right now...
-	describe.skip('Integration', function(){
-
+	describe.skip('Integration', function () {
 		before(() => {
 			GraphiteWorkingCheck = require('../src/checks/graphiteWorking.check');
 			check = new GraphiteWorkingCheck(fixture);
-
 		});
 
 		it('Can actually call graphite', () => {
@@ -123,5 +134,4 @@ describe('Graphite Working Check', function(){
 			});
 		});
 	});
-
 });

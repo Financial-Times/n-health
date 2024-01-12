@@ -4,32 +4,31 @@ const fs = require('fs');
 const path = require('path');
 const checks = require('./checks/');
 
-function readConfigDir(configDir){
-	if (!fs.existsSync(configDir)){
+function readConfigDir(configDir) {
+	if (!fs.existsSync(configDir)) {
 		throw new Error(`${configDir} does not exist`);
 	}
 
 	return fs.readdirSync(configDir);
 }
 
-function getConfigDir(){
+function getConfigDir() {
 	const cwd = process.cwd();
-	const dirs = [
-		path.resolve(cwd, 'healthchecks'),
-		path.resolve(cwd, 'config')
-	];
+	const dirs = [path.resolve(cwd, 'healthchecks'), path.resolve(cwd, 'config')];
 
-	for (let dir of dirs){
-		if (fs.existsSync(dir)){
+	for (let dir of dirs) {
+		if (fs.existsSync(dir)) {
 			return dir;
 		}
 	}
 
-	throw new Error(`Failed to find config directory checked ${dirs.join(' & ')}`);
+	throw new Error(
+		`Failed to find config directory checked ${dirs.join(' & ')}`
+	);
 }
 
-function startup(configPath, additionalChecks){
-	if (arguments.length === 1 && typeof configPath !== 'string'){
+function startup(configPath, additionalChecks) {
+	if (arguments.length === 1 && typeof configPath !== 'string') {
 		configPath = additionalChecks;
 		additionalChecks = null;
 	}
@@ -39,13 +38,12 @@ function startup(configPath, additionalChecks){
 	const configDir = configPath || getConfigDir();
 	const healthCheckMap = new Map();
 
-	readConfigDir(configDir).forEach(function(configFile){
-
-		if(configFile.indexOf('.json') > -1){
+	readConfigDir(configDir).forEach(function (configFile) {
+		if (configFile.indexOf('.json') > -1) {
 			return;
 		}
 
-		if(configFile.endsWith('.map')){
+		if (configFile.endsWith('.map')) {
 			return;
 		}
 

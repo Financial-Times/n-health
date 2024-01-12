@@ -31,8 +31,7 @@ const logEventPrefix = 'GRAPHITE_SPIKE_CHECK';
 /** Detects spikes/troughs in a given metric compared to baseline historical data */
 
 class GraphiteSpikeCheck extends Check {
-
-	constructor(options){
+	constructor(options) {
 		super(options);
 		this.threshold = options.threshold || 3;
 		this.direction = options.direction || 'up';
@@ -47,21 +46,34 @@ class GraphiteSpikeCheck extends Check {
 		this.ftGraphiteBaseUrl = 'https://graphitev2-api.ft.com/render/?';
 		this.ftGraphiteKey = process.env.FT_GRAPHITE_KEY;
 
-		if(!this.ftGraphiteKey) {
+		if (!this.ftGraphiteKey) {
 			throw new Error('You must set FT_GRAPHITE_KEY environment variable');
 		}
 
-		if(!options.numerator) {
-			throw new Error(`You must pass in a numerator for the "${options.name}" check - e.g., "next.heroku.article.*.express.start"`);
+		if (!options.numerator) {
+			throw new Error(
+				`You must pass in a numerator for the "${options.name}" check - e.g., "next.heroku.article.*.express.start"`
+			);
 		}
 
-		this.sampleUrl = this.generateUrl(options.numerator, options.divisor, this.samplePeriod);
-		this.baselineUrl = this.generateUrl(options.numerator, options.divisor, this.baselinePeriod);
+		this.sampleUrl = this.generateUrl(
+			options.numerator,
+			options.divisor,
+			this.samplePeriod
+		);
+		this.baselineUrl = this.generateUrl(
+			options.numerator,
+			options.divisor,
+			this.baselinePeriod
+		);
 
 		// If there's no divisor specified we probably need to normalize sample and baseline to account for the difference in size between their time ranges
-		this.shouldNormalize = typeof options.normalize !== 'undefined' ? options.normalize : !options.divisor;
+		this.shouldNormalize =
+			typeof options.normalize !== 'undefined'
+				? options.normalize
+				: !options.divisor;
 
-		if(this.shouldNormalize) {
+		if (this.shouldNormalize) {
 			this.sampleMs = ms(this.samplePeriod);
 			this.baselineMs = ms(this.baselinePeriod);
 		}
@@ -70,16 +82,23 @@ class GraphiteSpikeCheck extends Check {
 	}
 
 	generateUrl(numerator, divisor, period) {
-		const urlBase = this.ftGraphiteBaseUrl + `from=-${period}&format=json&target=`;
-		if(divisor) {
-			return urlBase + `divideSeries(summarize(${this.seriesFunction}(transformNull(${numerator})),"${period}","${this.summarizeFunction}",true),summarize(${this.seriesFunction}(transformNull(${divisor})),"${period}","${this.summarizeFunction}",true))`;
+		const urlBase =
+			this.ftGraphiteBaseUrl + `from=-${period}&format=json&target=`;
+		if (divisor) {
+			return (
+				urlBase +
+				`divideSeries(summarize(${this.seriesFunction}(transformNull(${numerator})),"${period}","${this.summarizeFunction}",true),summarize(${this.seriesFunction}(transformNull(${divisor})),"${period}","${this.summarizeFunction}",true))`
+			);
 		} else {
-			return urlBase + `summarize(${this.seriesFunction}(transformNull(${numerator})),"${period}","${this.summarizeFunction}",true)`;
+			return (
+				urlBase +
+				`summarize(${this.seriesFunction}(transformNull(${numerator})),"${period}","${this.summarizeFunction}",true)`
+			);
 		}
 	}
 
 	normalize(data) {
-		if(this.shouldNormalize) {
+		if (this.shouldNormalize) {
 			data.sample = data.sample / this.sampleMs;
 			data.baseline = data.baseline / this.baselineMs;
 		}
@@ -90,10 +109,12 @@ class GraphiteSpikeCheck extends Check {
 	async tick() {
 		try {
 			const [sample, baseline] = await Promise.all([
-				fetch(this.sampleUrl, { headers: { key: this.ftGraphiteKey } })
-					.then(fetchres.json),
-				fetch(this.baselineUrl, { headers: { key: this.ftGraphiteKey } })
-					.then(fetchres.json)
+				fetch(this.sampleUrl, { headers: { key: this.ftGraphiteKey } }).then(
+					fetchres.json
+				),
+				fetch(this.baselineUrl, { headers: { key: this.ftGraphiteKey } }).then(
+					fetchres.json
+				)
 			]);
 
 			const baselineValue = baseline[0] && baseline[0].datapoints[0][0];
@@ -102,22 +123,28 @@ class GraphiteSpikeCheck extends Check {
 			const data = this.normalize({
 				sample: sampleValue && !Object.is(sampleValue, null) ? sampleValue : 0,
 				// baseline should not be allowed to be smaller than one as it is use as a divisor
-				baseline: baselineValue && !Object.is(baselineValue, null) && !Object.is(baselineValue, 0) ? baselineValue : 1
+				baseline:
+					baselineValue &&
+					!Object.is(baselineValue, null) &&
+					!Object.is(baselineValue, 0)
+						? baselineValue
+						: 1
 			});
 
-			const ok = this.direction === 'up'
-				? data.sample / data.baseline < this.threshold
-				: data.sample / data.baseline > 1 / this.threshold;
+			const ok =
+				this.direction === 'up'
+					? data.sample / data.baseline < this.threshold
+					: data.sample / data.baseline > 1 / this.threshold;
 
 			const details = `Direction: ${this.direction} Sample: ${data.sample} Baseline: ${data.baseline} Threshold: ${this.threshold}`;
 			if (ok) {
 				this.status = status.PASSED;
-			 	this.checkOutput = `No spike detected in graphite data. ${details}`;
+				this.checkOutput = `No spike detected in graphite data. ${details}`;
 			} else {
 				this.status = status.FAILED;
 				this.checkOutput = `Spike detected in graphite data. ${details}`;
 				logger.warn({
-					event: "graphiteSpike fail",
+					event: 'graphiteSpike fail',
 					checkId: this.id,
 					checkName: this.name,
 					threshold: this.threshold,
@@ -130,14 +157,17 @@ class GraphiteSpikeCheck extends Check {
 						url: this.baselineUrl,
 						rawValue: baselineValue,
 						normalisedValue: data.baseline
-					},
+					}
 				});
 			}
-
-		} catch(err) {
-			logger.error({ event: `${logEventPrefix}_ERROR`, url: this.sampleUrl }, err);
+		} catch (err) {
+			logger.error(
+				{ event: `${logEventPrefix}_ERROR`, url: this.sampleUrl },
+				err
+			);
 			this.status = status.FAILED;
-			this.checkOutput = 'Graphite spike check failed to fetch data: ' + err.message;
+			this.checkOutput =
+				'Graphite spike check failed to fetch data: ' + err.message;
 		}
 	}
 }

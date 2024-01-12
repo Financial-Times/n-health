@@ -1,8 +1,8 @@
 'use strict';
 module.exports = {
 	name: 'graphite',
-	descriptions : '',
-	checks : [
+	descriptions: '',
+	checks: [
 		{
 			type: 'graphiteSpike',
 			numerator: 'next.metric.200',
@@ -10,7 +10,7 @@ module.exports = {
 			severity: 2,
 			businessImpact: 'catastrophic',
 			technicalSummary: 'god knows',
-			panicGuide: 'Don\'t Panic'
+			panicGuide: "Don't Panic"
 		}
 	]
 };

@@ -11,18 +11,18 @@ module.exports = {
 			severity: 2,
 			businessImpact: 'blah',
 			technicalSummary: 'god knows',
-			panicGuide: 'Don\'t Panic',
+			panicGuide: "Don't Panic",
 			checkResult: {
 				PASSED: 'Text if check passed',
 				FAILED: 'Text is check failed',
 				PENDING: 'This check has not yet run'
 			},
 			interval: '1s',
-            fetchOptions: {
-                headers: {
-                    ApiKey: "ApiKey"
-                }
-            }
+			fetchOptions: {
+				headers: {
+					ApiKey: 'ApiKey'
+				}
+			}
 		}
 	]
 };

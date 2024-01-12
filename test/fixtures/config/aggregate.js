@@ -10,7 +10,7 @@ module.exports = {
 			severity: 2,
 			businessImpact: 'blah',
 			technicalSummary: 'god knows',
-			panicGuide: 'Don\'t Panic',
+			panicGuide: "Don't Panic",
 			interval: '1s'
 		},
 		{
@@ -20,7 +20,7 @@ module.exports = {
 			severity: 2,
 			businessImpact: 'blah',
 			technicalSummary: 'god knows',
-			panicGuide: 'Don\'t Panic',
+			panicGuide: "Don't Panic",
 			interval: '1s'
 		},
 		{
@@ -30,9 +30,9 @@ module.exports = {
 			watch: ['test1', 'test2'],
 			mode: 'atLeastOne',
 			interval: '1s',
-			panicGuide: 'Don\'t Panic',
+			panicGuide: "Don't Panic",
 			technicalSummary: 'god knows',
-			businessImpact: 'blah',
+			businessImpact: 'blah'
 		}
 	]
 };

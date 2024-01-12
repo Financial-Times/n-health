@@ -10,20 +10,20 @@ module.exports = {
 			severity: 2,
 			businessImpact: 'blah',
 			technicalSummary: 'god knows',
-			panicGuide: 'Don\'t Panic',
+			panicGuide: "Don't Panic",
 			checkResult: {
 				PASSED: 'Text if check passed',
 				FAILED: 'Text is check failed',
 				PENDING: 'This check has not yet run'
 			},
 			interval: '1s',
-			callback: function(json){
+			callback: function (json) {
 				return json.propertyToCheck;
 			},
 			fetchOptions: {
-			    headers: {
-			        ApiKey: "ApiKey"
-			    }
+				headers: {
+					ApiKey: 'ApiKey'
+				}
 			}
 		}
 	]
