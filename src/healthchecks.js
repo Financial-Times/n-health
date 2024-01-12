@@ -1,34 +1,33 @@
 'use strict';
 
 class HealthChecks {
-
-	constructor(config, healthchecks){
+	constructor(config, healthchecks) {
 		this.name = config.name;
 		this.description = config.description;
 		this.checks = config.checks
-			.filter(check => {
+			.filter((check) => {
 				return check.type in healthchecks;
 			})
-			.map(check => {
+			.map((check) => {
 				return new healthchecks[check.type](check, this);
 			});
 	}
 
-	start(){
-		this.checks.forEach(check => check.start());
+	start() {
+		this.checks.forEach((check) => check.start());
 	}
 
-	stop(){
-		this.checks.forEach(check => check.stop());
+	stop() {
+		this.checks.forEach((check) => check.stop());
 	}
 
-	getStatus(){
+	getStatus() {
 		let status = {
 			schemaVersion: 1,
 			name: this.name,
 			description: this.description
 		};
-		status.checks = this.checks.map(check => check.getStatus());
+		status.checks = this.checks.map((check) => check.getStatus());
 		return status;
 	}
 }

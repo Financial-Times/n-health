@@ -10,7 +10,7 @@ module.exports = {
 			apps: 'all',
 			businessImpact: 'blah',
 			technicalSummary: 'god knows',
-			panicGuide: 'Don\'t Panic',
+			panicGuide: "Don't Panic",
 			interval: '1m',
 			window: '10m',
 			threshold: 1

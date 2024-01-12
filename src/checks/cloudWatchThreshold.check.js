@@ -8,8 +8,7 @@ const Check = require('./check');
 
 // Detects when the value of a metric climbs above/below a threshold value
 class CloudWatchThresholdCheck extends Check {
-
-	constructor(options){
+	constructor(options) {
 		super(options);
 
 		this.threshold = options.threshold;
@@ -22,7 +21,10 @@ class CloudWatchThresholdCheck extends Check {
 		this.cloudWatchStatistic = options.cloudWatchStatistic || 'Sum';
 		this.cloudWatchDimensions = options.cloudWatchDimensions || [];
 
-		this.cloudWatch = new AWS.CloudWatch({region: this.cloudWatchRegion, apiVersion: '2010-08-01'});
+		this.cloudWatch = new AWS.CloudWatch({
+			region: this.cloudWatchRegion,
+			apiVersion: '2010-08-01'
+		});
 
 		this.checkOutput = 'CloudWatch threshold check has not yet run';
 	}
@@ -47,20 +49,21 @@ class CloudWatchThresholdCheck extends Check {
 		const params = this.generateParams();
 
 		try {
-			const res = await this.cloudWatch
-				.getMetricStatistics(params)
-				.promise();
+			const res = await this.cloudWatch.getMetricStatistics(params).promise();
 
 			res.Datapoints.sort((a, b) => b['Timestamp'] - a['Timestamp']);
 			const value = res.Datapoints[0][this.cloudWatchStatistic];
 
-			const ok = this.direction === 'above'
-				? value <= this.threshold
-				: value >= this.threshold;
+			const ok =
+				this.direction === 'above'
+					? value <= this.threshold
+					: value >= this.threshold;
 
 			this.status = ok ? status.PASSED : status.FAILED;
-			this.checkOutput = ok ? `No threshold change detected in CloudWatch data. Current value: ${value}` : `CloudWatch data ${this.direction} required threshold. Current value: ${value}`;
-		} catch(err) {
+			this.checkOutput = ok
+				? `No threshold change detected in CloudWatch data. Current value: ${value}`
+				: `CloudWatch data ${this.direction} required threshold. Current value: ${value}`;
+		} catch (err) {
 			logger.error('Failed to get CloudWatch data', err);
 			this.status = status.FAILED;
 			this.checkOutput = `Cloudwatch threshold check failed to fetch data: ${err.message}`;
