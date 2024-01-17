@@ -6,12 +6,23 @@ const Check = require('./check');
 const fetch = require('node-fetch');
 const fetchres = require('fetchres');
 
+let deprecationWarningLogged = false;
 const logEventPrefix = 'GRAPHITE_THRESHOLD_CHECK';
 
 // Detects when the value of a metric climbs above/below a threshold value
 
 class GraphiteThresholdCheck extends Check {
 	constructor(options) {
+		if (!deprecationWarningLogged) {
+			deprecationWarningLogged = true;
+			logger.warn({
+				event: 'HEALTH_CHECK_DEPRECATED',
+				message:
+					"The 'GraphiteThresholdCheck' health check is deprecated and will be removed in a later version of n-health.",
+				deprecatedHealthCheck: 'GraphiteThresholdCheck'
+			});
+		}
+
 		super(options);
 		this.threshold = options.threshold;
 		this.direction = options.direction || 'above';

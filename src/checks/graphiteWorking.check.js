@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 const logger = require('@dotcom-reliability-kit/logger');
 const fetchres = require('fetchres');
 
+let deprecationWarningLogged = false;
 const logEventPrefix = 'GRAPHITE_WORKING_CHECK';
 
 function badJSON(message) {
@@ -14,6 +15,16 @@ function badJSON(message) {
 
 class GraphiteWorkingCheck extends Check {
 	constructor(options) {
+		if (!deprecationWarningLogged) {
+			deprecationWarningLogged = true;
+			logger.warn({
+				event: 'HEALTH_CHECK_DEPRECATED',
+				message:
+					"The 'GraphiteWorkingCheck' health check is deprecated and will be removed in a later version of n-health.",
+				deprecatedHealthCheck: 'GraphiteWorkingCheck'
+			});
+		}
+
 		options.technicalSummary =
 			options.technicalSummary ||
 			'There has been no metric data for a sustained period of time';

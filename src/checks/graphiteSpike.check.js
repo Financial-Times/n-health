@@ -26,12 +26,23 @@ const fetch = require('node-fetch');
 const fetchres = require('fetchres');
 const ms = require('ms');
 
+let deprecationWarningLogged = false;
 const logEventPrefix = 'GRAPHITE_SPIKE_CHECK';
 
 /** Detects spikes/troughs in a given metric compared to baseline historical data */
 
 class GraphiteSpikeCheck extends Check {
 	constructor(options) {
+		if (!deprecationWarningLogged) {
+			deprecationWarningLogged = true;
+			logger.warn({
+				event: 'HEALTH_CHECK_DEPRECATED',
+				message:
+					"The 'GraphiteSpikeCheck' health check is deprecated and will be removed in a later version of n-health.",
+				deprecatedHealthCheck: 'GraphiteSpikeCheck'
+			});
+		}
+
 		super(options);
 		this.threshold = options.threshold || 3;
 		this.direction = options.direction || 'up';
