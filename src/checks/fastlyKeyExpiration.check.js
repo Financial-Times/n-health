@@ -1,8 +1,9 @@
 const fetch = require('node-fetch');
-const moment = require('moment');
 const logger = require('@dotcom-reliability-kit/logger');
 const Check = require('./check');
 const status = require('./status');
+
+const twoWeeksInDays = 2 * 7;
 
 const fastlyApiEndpoint = 'https://api.fastly.com/tokens/self';
 const defaultPanicGuide =
@@ -79,8 +80,15 @@ class FastlyKeyExpirationCheck extends Check {
 	}
 
 	parseStringDate(stringDate) {
-		const date = moment(stringDate, 'YYYY-MM-DDTHH:mm:ssZ');
-		if (!date.isValid()) {
+		let dateIsValid = true;
+		let date;
+		try {
+			date = new Date(stringDate);
+			dateIsValid = Number.isNaN(date.getDate());
+		} catch (error) {
+			dateIsValid = false;
+		}
+		if (!dateIsValid) {
 			logger.warn(`Invalid Fastly Key expiration date ${stringDate}`);
 			this.setState(this.states.FAILED_DATE);
 			throw new Error('Invalid date');
@@ -95,12 +103,13 @@ class FastlyKeyExpirationCheck extends Check {
 	}
 
 	checkExpirationDate(expirationDate) {
-		const now = moment();
-		const limitDate = moment().add(2, 'weeks');
+		const now = new Date();
+		const limitDate = new Date();
+		limitDate.setDate(now.getDate() + twoWeeksInDays);
 		switch (true) {
-			case expirationDate.isAfter(limitDate):
+			case expirationDate > limitDate:
 				return this.states.PASSED;
-			case expirationDate.isBefore(now):
+			case expirationDate < now:
 				return this.states.FAILED_URGENT_VALIDATION;
 			default:
 				return this.states.FAILED_VALIDATION;
