@@ -84,7 +84,7 @@ class FastlyKeyExpirationCheck extends Check {
 		let date;
 		try {
 			date = new Date(stringDate);
-			dateIsValid = Number.isNaN(date.getDate());
+			dateIsValid = !Number.isNaN(date.getDate());
 		} catch (error) {
 			dateIsValid = false;
 		}
@@ -109,7 +109,7 @@ class FastlyKeyExpirationCheck extends Check {
 		switch (true) {
 			case expirationDate > limitDate:
 				return this.states.PASSED;
-			case expirationDate < now:
+			case expirationDate <= now:
 				return this.states.FAILED_URGENT_VALIDATION;
 			default:
 				return this.states.FAILED_VALIDATION;
