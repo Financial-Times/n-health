@@ -1,7 +1,6 @@
 'use strict';
 
 const AWS = require('aws-sdk');
-const moment = require('moment');
 const logger = require('@dotcom-reliability-kit/logger');
 const status = require('./status');
 const Check = require('./check');
@@ -32,11 +31,12 @@ class CloudWatchThresholdCheck extends Check {
 	generateParams() {
 		// use a larger window when gathering stats, because CloudWatch
 		// can take its sweet time with populating new datapoints.
-		let timeWindow = this.samplePeriod * 1.5;
-		const now = moment();
+		let timeWindowInMs = this.samplePeriod * 1.5 * 1000;
+		const now = new Date();
+		const startTime = new Date(now.getTime() - timeWindowInMs);
 		return {
 			EndTime: now.toISOString(),
-			StartTime: now.subtract(timeWindow, 'seconds').toISOString(),
+			StartTime: startTime.toISOString(),
 			MetricName: this.cloudWatchMetricName,
 			Namespace: this.cloudWatchNamespace,
 			Period: this.samplePeriod,
