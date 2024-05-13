@@ -4,23 +4,33 @@ module.exports = {
 	description: '',
 	checks: [
 		{
-			type: 'graphiteThreshold',
+			type: 'json',
 			name: 'test1',
-			metric: 'next.fake.metric',
+			url: 'http://pretendurl.com',
 			severity: 2,
 			businessImpact: 'blah',
 			technicalSummary: 'god knows',
 			panicGuide: "Don't Panic",
+			checkResult: {
+				PASSED: 'Text if check passed',
+				FAILED: 'Text is check failed',
+				PENDING: 'This check has not yet run'
+			},
 			interval: '1s'
 		},
 		{
-			type: 'graphiteThreshold',
+			type: 'json',
 			name: 'test2',
-			metric: 'next.fake.metric',
+			url: 'http://pretendurl.com',
 			severity: 2,
 			businessImpact: 'blah',
 			technicalSummary: 'god knows',
 			panicGuide: "Don't Panic",
+			checkResult: {
+				PASSED: 'Text if check passed',
+				FAILED: 'Text is check failed',
+				PENDING: 'This check has not yet run'
+			},
 			interval: '1s'
 		},
 		{
