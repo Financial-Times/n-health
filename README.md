@@ -96,34 +96,20 @@ Reports on the status of other checks. Useful if you have a multi-region service
 	- `'atLeastOne'` the check succeeds if at least one of its subchecks succeeds
 
 #### `graphiteSpike`
-Compares current and historical graphite metrics to see if there is a spike
 
-* `numerator`: [required] Name of main graphite metric to count (may contain wildcards)
-* `divisor`: [optional] Name of graphite metric to divide by (may contain wildcards)
-* `normalize`: [optional] Boolean indicating whether to normalize to adjust for difference in size between sample and baseline timescales. Default is `true` if no divisor specified, `false` otherwise.
-* `samplePeriod`: [default: `'10min'`] Length of time to count metrics for a sample of current behaviour
-* `baselinePeriod`: [default: `'7d'`] Length of time to count metrics for to establish baseline behaviour
-* `direction`: [default: `'up'`] Direction in which to look for spikes; 'up' = sharp increase in activity, 'down' = sharp decrease in activity
-* `threshold`: [default: `3`] Amount of difference between current and baseline activity which registers as a spike e.g. 5 means current activity must be 5 times greater/less than the baseline activity
+> [!CAUTION]
+> The `graphiteSpike` check type has been removed. If you need to create alerts based on Graphite data you must now do so in the [grafana repo](https://github.com/Financial-Times/grafana).
 
 #### `graphiteThreshold`
 Checks whether the value of a graphite metric has crossed a threshold
 
-* `metric`: [required] Name of graphite metric to count (may contain wildcards)
-* `threshold`: [required] Value to check the metrics against
-* `samplePeriod`: [default: `'10min'`] Length of time to count metrics for a sample of current behaviour
-* `isConsistentBreach`: [default: `false`] Boolan value to dictate whether all data points need to have breached the defined threshold to fail the check
-* `direction`: [default: `'above'`] Direction on which to trigger the healthcheck:
-	- `'above'` = alert if value goes above the threshold
-	- `'below'` = alert if value goes below the threshold
+> [!CAUTION]
+> The `graphiteThreshold` check type has been removed. If you need to create alerts based on Graphite data you must now do so in the [grafana repo](https://github.com/Financial-Times/grafana).
 
 #### `graphiteWorking`
 
-Checks if the value of a graphite metric has received data recently.
-
-* `metric`: [required] Name of graphite metric to count (may contain wildcards)
-	- Use `summarize` if the metric receives data infrequently, e.g. `summarize(next.heroku.next-article.some-infrequent-periodic-metric, '30mins', 'sum', true)`
-* `time`: [default: `'-5minutes'`] Length of time to count metrics
+> [!CAUTION]
+> The `graphiteWorking` check type has been removed. If you need to create alerts based on Graphite data you must now do so in the [grafana repo](https://github.com/Financial-Times/grafana).
 
 #### `cloudWatchThreshold`
 Checks whether the value of a CloudWatch metric has crossed a threshold

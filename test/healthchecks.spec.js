@@ -1,7 +1,7 @@
 'use strict';
 
 const expect = require('chai').expect;
-const GraphiteThresholdCheck = require('../src/checks/').graphiteThreshold;
+const JsonCheck = require('../src/checks/').json;
 
 describe('Healthchecks', function () {
 	let Healthchecks;
@@ -29,7 +29,7 @@ describe('Healthchecks', function () {
 	});
 
 	it('Should create new checks as described in the config', function () {
-		expect(healthchecks.checks[0]).to.be.an.instanceOf(GraphiteThresholdCheck);
+		expect(healthchecks.checks[0]).to.be.an.instanceOf(JsonCheck);
 	});
 
 	it('Should report its status correctly', function () {
