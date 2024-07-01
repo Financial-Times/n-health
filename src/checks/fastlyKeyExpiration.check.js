@@ -7,7 +7,7 @@ const twoWeeksInDays = 2 * 7;
 
 const fastlyApiEndpoint = 'https://api.fastly.com/tokens/self';
 const defaultPanicGuide =
-	'Generate a new key in your own Fastly account with the same permissions and update it in Vault or your app';
+	'Generate a new key in your own Fastly account with the same permissions and update it in Doppler or your app';
 const defaultTechnicalSummary =
 	'Check the Fastly key in the api token information endpoint to obtain the expiration date';
 const defaultSeverity = 2;
