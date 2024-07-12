@@ -3,5 +3,4 @@
 .github
 .prettierrc.json
 .toolkitrc.yml
-renovate.json
 test
