@@ -30,7 +30,7 @@
     "@dotcom-tool-kit/mocha": "^3.2.0",
     "@dotcom-tool-kit/prettier": "^3.2.0",
     "@financial-times/eslint-config-next": "^7.1.0",
-    "chai": "^4.3.6",
+    "chai": "^5.1.1",
     "dotcom-tool-kit": "^3.4.0",
     "mocha": "^10.0.0",
     "proxyquire": "^1.7.4",
