@@ -34,7 +34,7 @@
     "dotcom-tool-kit": "^3.4.0",
     "mocha": "^10.0.0",
     "proxyquire": "^1.7.4",
-    "sinon": "^14.0.0"
+    "sinon": "^18.0.0"
   },
   "dependencies": {
     "@dotcom-reliability-kit/logger": "^3.0.3",
