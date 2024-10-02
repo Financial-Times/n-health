@@ -5,7 +5,7 @@ plugins:
   - '@dotcom-tool-kit/lint-staged-npm'
   - '@dotcom-tool-kit/mocha'
   - '@dotcom-tool-kit/prettier'
-hooks:
+commands:
   test:local:
     - Eslint
     - Mocha
@@ -15,8 +15,9 @@ hooks:
   git:precommit:
     - LintStaged
 options:
-  '@dotcom-tool-kit/circleci':
-    nodeVersion:
-      - '22.3'
-      - '20.15'
-      - '18.20'
+  plugins:
+    '@dotcom-tool-kit/circleci':
+      cimgNodeVersions:
+        - '22.9'
+        - '20.17'
+        - '18.20'
