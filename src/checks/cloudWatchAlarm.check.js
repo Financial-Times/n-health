@@ -1,6 +1,9 @@
 'use strict';
 
-const AWS = require('aws-sdk');
+const {
+	CloudWatchClient,
+	DescribeAlarmsCommand
+} = require('@aws-sdk/client-cloudwatch');
 const logger = require('@dotcom-reliability-kit/logger');
 const status = require('./status');
 const Check = require('./check');
@@ -12,7 +15,7 @@ class CloudWatchAlarmCheck extends Check {
 
 		this.cloudWatchRegion = options.cloudWatchRegion || 'eu-west-1';
 		this.cloudWatchAlarmName = options.cloudWatchAlarmName;
-		this.cloudWatch = new AWS.CloudWatch({
+		this.cloudWatch = new CloudWatchClient({
 			region: this.cloudWatchRegion,
 			apiVersion: '2010-08-01'
 		});
@@ -33,8 +36,7 @@ class CloudWatchAlarmCheck extends Check {
 		};
 
 		return this.cloudWatch
-			.describeAlarms(params)
-			.promise()
+			.send(new DescribeAlarmsCommand(params))
 			.then((res) => {
 				const state = res.MetricAlarms[0].StateValue;
 				this.status = this.stateToStatus[state];

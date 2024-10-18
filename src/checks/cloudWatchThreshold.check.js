@@ -1,6 +1,9 @@
 'use strict';
 
-const AWS = require('aws-sdk');
+const {
+	CloudWatchClient,
+	GetMetricStatisticsCommand
+} = require('@aws-sdk/client-cloudwatch');
 const logger = require('@dotcom-reliability-kit/logger');
 const status = require('./status');
 const Check = require('./check');
@@ -20,7 +23,7 @@ class CloudWatchThresholdCheck extends Check {
 		this.cloudWatchStatistic = options.cloudWatchStatistic || 'Sum';
 		this.cloudWatchDimensions = options.cloudWatchDimensions || [];
 
-		this.cloudWatch = new AWS.CloudWatch({
+		this.cloudWatch = new CloudWatchClient({
 			region: this.cloudWatchRegion,
 			apiVersion: '2010-08-01'
 		});
@@ -35,8 +38,8 @@ class CloudWatchThresholdCheck extends Check {
 		const now = new Date();
 		const startTime = new Date(now.getTime() - timeWindowInMs);
 		return {
-			EndTime: now.toISOString(),
-			StartTime: startTime.toISOString(),
+			EndTime: now,
+			StartTime: startTime,
 			MetricName: this.cloudWatchMetricName,
 			Namespace: this.cloudWatchNamespace,
 			Period: this.samplePeriod,
@@ -49,7 +52,9 @@ class CloudWatchThresholdCheck extends Check {
 		const params = this.generateParams();
 
 		try {
-			const res = await this.cloudWatch.getMetricStatistics(params).promise();
+			const res = await this.cloudWatch.send(
+				new GetMetricStatisticsCommand(params)
+			);
 
 			res.Datapoints.sort((a, b) => b['Timestamp'] - a['Timestamp']);
 			const value = res.Datapoints[0][this.cloudWatchStatistic];
