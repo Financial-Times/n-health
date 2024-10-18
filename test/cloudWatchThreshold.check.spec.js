@@ -22,35 +22,32 @@ function loadFixture(fixture) {
 
 const dataFixture = loadFixture('./test/fixtures/cloudWatchThresholdResponse');
 
-let cloudWatchDatapointMock;
-let cloudWatchMock;
+const cloudWatchClientMock = {
+	send: sinon.stub()
+};
 
-const awsMock = {
-	CloudWatch: function () {
-		this.getMetricStatistics = cloudWatchMock;
-	}
+const cloudWatchCommandMock = {};
+
+const cloudWatchSdkMock = {
+	CloudWatchClient: sinon.stub().returns(cloudWatchClientMock),
+	GetMetricStatisticsCommand: sinon.stub().returns(cloudWatchCommandMock)
 };
 
 const Check = proxyquire('../src/checks/cloudWatchThreshold.check', {
-	'aws-sdk': awsMock
+	'@aws-sdk/client-cloudwatch': cloudWatchSdkMock
 });
 
 describe('CloudWatch Threshold Check', () => {
 	let check;
-	beforeEach(() => {
-		cloudWatchDatapointMock = sinon
-			.stub()
-			.returns({ promise: () => Promise.resolve(dataFixture) });
-	});
 
 	afterEach(() => {
-		cloudWatchDatapointMock.reset();
+		cloudWatchClientMock.send.reset();
 		check.stop();
 		sinon.restore();
 	});
 
 	it('Should be healthy if not above threshold', (done) => {
-		cloudWatchMock = cloudWatchDatapointMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(dataFixture));
 		check = new Check(
 			getCheckConfig({
 				threshold: 100
@@ -64,7 +61,7 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('should be unhealthy if below threshold', (done) => {
-		cloudWatchMock = cloudWatchDatapointMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(dataFixture));
 		check = new Check(
 			getCheckConfig({
 				threshold: 40
@@ -78,7 +75,7 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('Should be healthy if not below threshold', (done) => {
-		cloudWatchMock = cloudWatchDatapointMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(dataFixture));
 		check = new Check(
 			getCheckConfig({
 				threshold: 40,
@@ -93,7 +90,7 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('should be unhealthy if above threshold', (done) => {
-		cloudWatchMock = cloudWatchDatapointMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(dataFixture));
 		check = new Check(
 			getCheckConfig({
 				threshold: 100,
@@ -108,7 +105,7 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('Should be possible to configure sample period', (done) => {
-		cloudWatchMock = cloudWatchDatapointMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(dataFixture));
 		check = new Check(
 			getCheckConfig({
 				samplePeriod: 60 * 10
@@ -116,7 +113,7 @@ describe('CloudWatch Threshold Check', () => {
 		);
 		check.start();
 		setTimeout(() => {
-			let args = cloudWatchMock.firstCall.args[0];
+			let args = cloudWatchSdkMock.GetMetricStatisticsCommand.lastCall.args[0];
 			expect(args).to.have.property('Period');
 			expect(args.Period).to.equal(600);
 			done();
@@ -124,7 +121,7 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('Should be send sample period as ISO timestamp to CloudWatch API', (done) => {
-		cloudWatchMock = cloudWatchDatapointMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(dataFixture));
 		check = new Check(
 			getCheckConfig({
 				samplePeriod: 60 * 10
@@ -132,19 +129,17 @@ describe('CloudWatch Threshold Check', () => {
 		);
 		check.start();
 		setTimeout(() => {
-			let args = cloudWatchMock.firstCall.args[0];
-			const isoregex =
-				/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
+			let args = cloudWatchSdkMock.GetMetricStatisticsCommand.lastCall.args[0];
 			expect(args).to.have.property('StartTime');
-			expect(args.StartTime).to.match(isoregex);
+			expect(args.StartTime).to.be.an.instanceof(Date);
 			expect(args).to.have.property('EndTime');
-			expect(args.StartTime).to.match(isoregex);
+			expect(args.EndTime).to.be.an.instanceof(Date);
 			done();
 		});
 	});
 
 	it('Should be possible to configure metric dimensions', (done) => {
-		cloudWatchMock = cloudWatchDatapointMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(dataFixture));
 		check = new Check(
 			getCheckConfig({
 				cloudWatchDimensions: [
@@ -157,7 +152,7 @@ describe('CloudWatch Threshold Check', () => {
 		);
 		check.start();
 		setTimeout(() => {
-			let args = cloudWatchMock.firstCall.args[0];
+			let args = cloudWatchSdkMock.GetMetricStatisticsCommand.lastCall.args[0];
 			expect(args).to.have.property('Dimensions');
 			expect(args.Dimensions).to.have.length(1);
 			expect(args.Dimensions[0].Name).to.equal('foo');
@@ -167,7 +162,7 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('should have the metric value in the check output', (done) => {
-		cloudWatchMock = cloudWatchDatapointMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(dataFixture));
 		check = new Check(getCheckConfig());
 		check.start();
 		setTimeout(() => {
@@ -177,7 +172,7 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('should use the latest datapoint if >1 datapoint is returned', (done) => {
-		cloudWatchMock = cloudWatchDatapointMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(dataFixture));
 		check = new Check(getCheckConfig());
 		check.start();
 		setTimeout(() => {
@@ -187,7 +182,7 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('should use a 90 second window for a 60 second period', (done) => {
-		cloudWatchMock = cloudWatchDatapointMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(dataFixture));
 		check = new Check(
 			getCheckConfig({
 				samplePeriod: 60
@@ -195,7 +190,7 @@ describe('CloudWatch Threshold Check', () => {
 		);
 		check.start();
 		setTimeout(() => {
-			let args = cloudWatchMock.firstCall.args[0];
+			let args = cloudWatchSdkMock.GetMetricStatisticsCommand.lastCall.args[0];
 			let timeWindow = new Date(args.EndTime) - new Date(args.StartTime);
 			expect(timeWindow).to.equal(90 * 1000);
 			done();
@@ -203,7 +198,7 @@ describe('CloudWatch Threshold Check', () => {
 	});
 
 	it('should use a 450 second window for a 300 second period', (done) => {
-		cloudWatchMock = cloudWatchDatapointMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(dataFixture));
 		check = new Check(
 			getCheckConfig({
 				samplePeriod: 300
@@ -211,7 +206,7 @@ describe('CloudWatch Threshold Check', () => {
 		);
 		check.start();
 		setTimeout(() => {
-			let args = cloudWatchMock.firstCall.args[0];
+			let args = cloudWatchSdkMock.GetMetricStatisticsCommand.lastCall.args[0];
 			let timeWindow = new Date(args.EndTime) - new Date(args.StartTime);
 			expect(timeWindow).to.equal(450 * 1000);
 			done();

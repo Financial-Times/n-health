@@ -9,19 +9,19 @@ const passedFixture = require('./fixtures/cloudWatchAlarmPassedResponse');
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const sinon = require('sinon');
 
-let cloudWatchFailedMock;
-let cloudWatchInsuficientMock;
-let cloudWatchPassedMock;
-let cloudWatchMock;
+const cloudWatchClientMock = {
+	send: sinon.stub()
+};
 
-const awsMock = {
-	CloudWatch: function () {
-		this.describeAlarms = cloudWatchMock;
-	}
+const cloudWatchCommandMock = {};
+
+const cloudWatchSdkMock = {
+	CloudWatchClient: sinon.stub().returns(cloudWatchClientMock),
+	DescribeAlarmsCommand: sinon.stub().returns(cloudWatchCommandMock)
 };
 
 const Check = proxyquire('../src/checks/cloudWatchAlarm.check', {
-	'aws-sdk': awsMock
+	'@aws-sdk/client-cloudwatch': cloudWatchSdkMock
 });
 
 function waitFor(time) {
@@ -30,41 +30,38 @@ function waitFor(time) {
 
 describe('CloudWatch Alarm Check', () => {
 	let check;
-	beforeEach(() => {
-		cloudWatchFailedMock = sinon
-			.stub()
-			.returns({ promise: () => Promise.resolve(failedFixture) });
-		cloudWatchInsuficientMock = sinon
-			.stub()
-			.returns({ promise: () => Promise.resolve(insufficentFixture) });
-		cloudWatchPassedMock = sinon
-			.stub()
-			.returns({ promise: () => Promise.resolve(passedFixture) });
-	});
 
 	afterEach(() => {
-		cloudWatchFailedMock.reset();
-		cloudWatchPassedMock.reset();
+		cloudWatchClientMock.send.reset();
 		check.stop();
 		sinon.restore();
 	});
 
 	it('Should call AWS using the given alarm name', async () => {
-		cloudWatchMock = cloudWatchPassedMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(passedFixture));
 		check = new Check(configFixture);
 		check.start();
 		await waitFor(10);
 		//
-		const args = cloudWatchPassedMock.lastCall.args[0];
-		expect(cloudWatchPassedMock.called).to.be.true;
-		expect(args).to.have.property('AlarmNames');
-		expect(args.AlarmNames).to.be.an('Array');
-		expect(args.AlarmNames[0]).to.be.an('String');
-		expect(args.AlarmNames[0]).to.equal('test');
+		expect(cloudWatchSdkMock.CloudWatchClient.calledOnce).to.be.true;
+		expect(cloudWatchSdkMock.CloudWatchClient.calledWithNew()).to.be.true;
+		expect(cloudWatchSdkMock.DescribeAlarmsCommand.calledOnce).to.be.true;
+		expect(cloudWatchSdkMock.DescribeAlarmsCommand.calledWithNew()).to.be.true;
+		expect(cloudWatchClientMock.send.calledOnce).to.be.true;
+
+		const sendArgs = cloudWatchClientMock.send.lastCall.args[0];
+		expect(sendArgs).to.deep.equal(cloudWatchCommandMock);
+
+		const commandArgs =
+			cloudWatchSdkMock.DescribeAlarmsCommand.lastCall.args[0];
+		expect(commandArgs).to.have.property('AlarmNames');
+		expect(commandArgs.AlarmNames).to.be.an('Array');
+		expect(commandArgs.AlarmNames[0]).to.be.an('String');
+		expect(commandArgs.AlarmNames[0]).to.equal('test');
 	});
 
 	it('Should pass if the current state of the given alarm is OK', async () => {
-		cloudWatchMock = cloudWatchPassedMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(passedFixture));
 		check = new Check(configFixture);
 		check.start();
 		await waitFor(10);
@@ -72,7 +69,7 @@ describe('CloudWatch Alarm Check', () => {
 	});
 
 	it('Should fail if the current state of the given alarm is ALARM', async () => {
-		cloudWatchMock = cloudWatchFailedMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(failedFixture));
 		check = new Check(configFixture);
 		check.start();
 		await waitFor(10);
@@ -80,7 +77,7 @@ describe('CloudWatch Alarm Check', () => {
 	});
 
 	it('Should fail if there is no data', async () => {
-		cloudWatchMock = cloudWatchInsuficientMock;
+		cloudWatchClientMock.send.returns(Promise.resolve(insufficentFixture));
 		check = new Check(configFixture);
 		check.start();
 		await waitFor(10);

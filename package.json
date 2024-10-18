@@ -37,8 +37,8 @@
     "sinon": "^19.0.0"
   },
   "dependencies": {
+    "@aws-sdk/client-cloudwatch": "^3.670.0",
     "@dotcom-reliability-kit/logger": "^3.0.3",
-    "aws-sdk": "^2.6.10",
     "fetchres": "^1.5.1",
     "ms": "^2.0.0",
     "node-fetch": "^2.6.7"
