@@ -1,6 +1,6 @@
 'use strict';
 
-const expect = require('chai').expect;
+const assert = require('node:assert/strict');
 const JsonCheck = require('../src/checks/').json;
 
 describe('Healthchecks', function () {
@@ -25,19 +25,19 @@ describe('Healthchecks', function () {
 
 	it('Should be able to read in the config object', function () {
 		const props = ['name', 'description'];
-		expect(extract(healthchecks, props)).to.deep.equal(extract(fixture, props));
+		assert.deepEqual(extract(healthchecks, props), extract(fixture, props));
 	});
 
 	it('Should create new checks as described in the config', function () {
-		expect(healthchecks.checks[0]).to.be.an.instanceOf(JsonCheck);
+		assert.ok(healthchecks.checks[0] instanceof JsonCheck);
 	});
 
 	it('Should report its status correctly', function () {
 		const status = healthchecks.getStatus();
-		expect(status.name).to.equal(fixture.name);
-		expect(status.description).to.equal(fixture.description);
-		expect(status.checks.length).to.equal(1);
-		expect(status.checks[0].name).to.equal(fixture.checks[0].name);
-		expect(status.checks[0].panicGuide).to.equal(fixture.checks[0].panicGuide);
+		assert.equal(status.name, fixture.name);
+		assert.equal(status.description, fixture.description);
+		assert.equal(status.checks.length, 1);
+		assert.equal(status.checks[0].name, fixture.checks[0].name);
+		assert.equal(status.checks[0].panicGuide, fixture.checks[0].panicGuide);
 	});
 });

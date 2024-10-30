@@ -1,6 +1,6 @@
 'use strict';
 
-const expect = require('chai').expect;
+const assert = require('node:assert/strict');
 const configFixture = require('./fixtures/config/cloudWatchThresholdFixture');
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const sinon = require('sinon');
@@ -55,7 +55,7 @@ describe('CloudWatch Threshold Check', () => {
 		);
 		check.start();
 		setTimeout(() => {
-			expect(check.getStatus().ok).to.be.true;
+			assert.equal(check.getStatus().ok, true);
 			done();
 		});
 	});
@@ -69,7 +69,7 @@ describe('CloudWatch Threshold Check', () => {
 		);
 		check.start();
 		setTimeout(() => {
-			expect(check.getStatus().ok).to.be.false;
+			assert.equal(check.getStatus().ok, false);
 			done();
 		});
 	});
@@ -84,7 +84,7 @@ describe('CloudWatch Threshold Check', () => {
 		);
 		check.start();
 		setTimeout(() => {
-			expect(check.getStatus().ok).to.be.true;
+			assert.equal(check.getStatus().ok, true);
 			done();
 		});
 	});
@@ -99,7 +99,7 @@ describe('CloudWatch Threshold Check', () => {
 		);
 		check.start();
 		setTimeout(() => {
-			expect(check.getStatus().ok).to.be.false;
+			assert.equal(check.getStatus().ok, false);
 			done();
 		});
 	});
@@ -114,8 +114,7 @@ describe('CloudWatch Threshold Check', () => {
 		check.start();
 		setTimeout(() => {
 			let args = cloudWatchSdkMock.GetMetricStatisticsCommand.lastCall.args[0];
-			expect(args).to.have.property('Period');
-			expect(args.Period).to.equal(600);
+			assert.equal(args.Period, 600);
 			done();
 		});
 	});
@@ -130,10 +129,8 @@ describe('CloudWatch Threshold Check', () => {
 		check.start();
 		setTimeout(() => {
 			let args = cloudWatchSdkMock.GetMetricStatisticsCommand.lastCall.args[0];
-			expect(args).to.have.property('StartTime');
-			expect(args.StartTime).to.be.an.instanceof(Date);
-			expect(args).to.have.property('EndTime');
-			expect(args.EndTime).to.be.an.instanceof(Date);
+			assert.ok(args.StartTime instanceof Date);
+			assert.ok(args.EndTime instanceof Date);
 			done();
 		});
 	});
@@ -153,10 +150,7 @@ describe('CloudWatch Threshold Check', () => {
 		check.start();
 		setTimeout(() => {
 			let args = cloudWatchSdkMock.GetMetricStatisticsCommand.lastCall.args[0];
-			expect(args).to.have.property('Dimensions');
-			expect(args.Dimensions).to.have.length(1);
-			expect(args.Dimensions[0].Name).to.equal('foo');
-			expect(args.Dimensions[0].Value).to.equal('bar');
+			assert.deepEqual(args.Dimensions, [{ Name: 'foo', Value: 'bar' }]);
 			done();
 		});
 	});
@@ -166,7 +160,7 @@ describe('CloudWatch Threshold Check', () => {
 		check = new Check(getCheckConfig());
 		check.start();
 		setTimeout(() => {
-			expect(check.getStatus().checkOutput).to.match(/Current value: [\d.]+/);
+			assert.match(check.getStatus().checkOutput, /Current value: [\d.]+/);
 			done();
 		});
 	});
@@ -176,7 +170,7 @@ describe('CloudWatch Threshold Check', () => {
 		check = new Check(getCheckConfig());
 		check.start();
 		setTimeout(() => {
-			expect(check.getStatus().checkOutput).to.match(/Current value: 99$/);
+			assert.match(check.getStatus().checkOutput, /Current value: 99$/);
 			done();
 		});
 	});
@@ -192,7 +186,7 @@ describe('CloudWatch Threshold Check', () => {
 		setTimeout(() => {
 			let args = cloudWatchSdkMock.GetMetricStatisticsCommand.lastCall.args[0];
 			let timeWindow = new Date(args.EndTime) - new Date(args.StartTime);
-			expect(timeWindow).to.equal(90 * 1000);
+			assert.equal(timeWindow, 90 * 1000);
 			done();
 		});
 	});
@@ -208,7 +202,7 @@ describe('CloudWatch Threshold Check', () => {
 		setTimeout(() => {
 			let args = cloudWatchSdkMock.GetMetricStatisticsCommand.lastCall.args[0];
 			let timeWindow = new Date(args.EndTime) - new Date(args.StartTime);
-			expect(timeWindow).to.equal(450 * 1000);
+			assert.equal(timeWindow, 450 * 1000);
 			done();
 		});
 	});

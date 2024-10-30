@@ -1,6 +1,6 @@
 'use strict';
 
-const expect = require('chai').expect;
+const assert = require('node:assert/strict');
 const config = require('./fixtures/config/aggregate').checks[2];
 const AggregateCheck = require('../src/checks/').aggregate;
 
@@ -34,7 +34,7 @@ describe('Aggregate Check', function () {
 			MockHealthChecks.checks[1].ok = true;
 			check.start();
 			setTimeout(function () {
-				expect(check.getStatus().ok).to.be.true;
+				assert.equal(check.getStatus().ok, true);
 				done();
 			});
 		});
@@ -44,7 +44,7 @@ describe('Aggregate Check', function () {
 			MockHealthChecks.checks[1].ok = false;
 			check.start();
 			setTimeout(function () {
-				expect(check.getStatus().ok).to.be.false;
+				assert.equal(check.getStatus().ok, false);
 				done();
 			});
 		});
