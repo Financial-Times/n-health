@@ -1,6 +1,6 @@
 'use strict';
 
-const expect = require('chai').expect;
+const assert = require('node:assert/strict');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const config = require('./fixtures/config/responseCompareFixture').checks;
@@ -32,7 +32,7 @@ describe('Response Compare Check', function () {
 			check.start();
 			setImmediate(function () {
 				sinon.assert.called(mockFetch);
-				expect(check.getStatus().ok).to.be.true;
+				assert.equal(check.getStatus().ok, true);
 				check.stop();
 				done();
 			});
@@ -43,7 +43,7 @@ describe('Response Compare Check', function () {
 			check.start();
 			setImmediate(function () {
 				sinon.assert.called(mockFetch);
-				expect(check.getStatus().ok).to.be.false;
+				assert.equal(check.getStatus().ok, false);
 				check.stop();
 				done();
 			});
@@ -54,7 +54,7 @@ describe('Response Compare Check', function () {
 			check.start();
 			setImmediate(function () {
 				sinon.assert.called(mockFetch);
-				expect(check.getStatus().ok).to.be.true;
+				assert.equal(check.getStatus().ok, true);
 				check.stop();
 				done();
 			});
@@ -65,7 +65,7 @@ describe('Response Compare Check', function () {
 			check.start();
 			setImmediate(function () {
 				sinon.assert.called(mockFetch);
-				expect(check.getStatus().ok).to.be.false;
+				assert.equal(check.getStatus().ok, false);
 				check.stop();
 				done();
 			});

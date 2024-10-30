@@ -1,5 +1,5 @@
 const sinon = require('sinon');
-const { expect } = require('chai');
+const assert = require('node:assert/strict');
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 const logger = require('@dotcom-reliability-kit/logger');
 const FastlyCheck = require('../src/checks/fastlyKeyExpiration.check');
@@ -53,21 +53,19 @@ describe('Fastly Key Expiration Check', () => {
 				severity: 2
 			}
 		};
-		expect(fastlyKeyExpirationCheck.states).to.be.deep.equal(initialStates);
+		assert.deepEqual(fastlyKeyExpirationCheck.states, initialStates);
 		fastlyKeyExpirationCheck.severity = 1;
-		expect(fastlyKeyExpirationCheck.states).to.be.deep.equal(initialStates);
+		assert.deepEqual(fastlyKeyExpirationCheck.states, initialStates);
 	});
 
 	it('returns ok=false if fastly key check has not yet run', async () => {
 		sinon.stub(FastlyCheck.prototype, 'tick');
 		const fastlyCheck = new FastlyCheck(defaultOptions);
 		const result = fastlyCheck.getStatus();
-		expect(result.ok).to.be.false;
+		assert.equal(result.ok, false);
 		// Default error message for ERRORED states in parent function Check
-		expect(result.checkOutput).to.be.equal(
-			fastlyCheck.states.PENDING.checkOutput
-		);
-		expect(result.severity).to.be.equal(fastlyCheck.states.PENDING.severity);
+		assert.equal(result.checkOutput, fastlyCheck.states.PENDING.checkOutput);
+		assert.equal(result.severity, fastlyCheck.states.PENDING.severity);
 	});
 	it('returns ok=false if key check failed to fetch data & logs errors', async () => {
 		// Arrange
@@ -80,11 +78,11 @@ describe('Fastly Key Expiration Check', () => {
 		// Act
 		const result = fastlyCheck.getStatus();
 		// Assert
-		expect(result.ok).to.be.false;
+		assert.equal(result.ok, false);
 		// Default error message for ERRORED states in parent function Check
-		expect(result.checkOutput).to.be.equal('Healthcheck failed to execute');
-		expect(result.severity).to.be.equal(fastlyCheck.states.ERRORED.severity);
-		expect(logger.error.args).to.be.deep.equal([
+		assert.equal(result.checkOutput, 'Healthcheck failed to execute');
+		assert.equal(result.severity, fastlyCheck.states.ERRORED.severity);
+		assert.deepEqual(logger.error.args, [
 			['Failed to get Fastly key metadata', 'Timeout']
 		]);
 	});
@@ -104,11 +102,13 @@ describe('Fastly Key Expiration Check', () => {
 		// Act
 		const result = fastlyCheck.getStatus();
 		// Assert
-		expect(result.ok).to.be.false;
-		expect(result.checkOutput).to.be.equal(
+		assert.equal(result.ok, false);
+		assert.equal(
+			result.checkOutput,
 			fastlyCheck.states.FAILED_URGENT_VALIDATION.checkOutput
 		);
-		expect(result.severity).to.be.equal(
+		assert.equal(
+			result.severity,
 			fastlyCheck.states.FAILED_URGENT_VALIDATION.severity
 		);
 	});
@@ -128,11 +128,13 @@ describe('Fastly Key Expiration Check', () => {
 		// Act
 		const result = fastlyCheck.getStatus();
 		// Assert
-		expect(result.ok).to.be.false;
-		expect(result.checkOutput).to.be.equal(
+		assert.equal(result.ok, false);
+		assert.equal(
+			result.checkOutput,
 			fastlyCheck.states.FAILED_VALIDATION.checkOutput
 		);
-		expect(result.severity).to.be.equal(
+		assert.equal(
+			result.severity,
 			fastlyCheck.states.FAILED_VALIDATION.severity
 		);
 	});
@@ -152,11 +154,9 @@ describe('Fastly Key Expiration Check', () => {
 		// Act
 		const result = fastlyCheck.getStatus();
 		// Assert
-		expect(result.ok).to.be.true;
-		expect(result.checkOutput).to.be.equal(
-			fastlyCheck.states.PASSED.checkOutput
-		);
-		expect(result.severity).to.be.equal(fastlyCheck.states.PASSED.severity);
+		assert.equal(result.ok, true);
+		assert.equal(result.checkOutput, fastlyCheck.states.PASSED.checkOutput);
+		assert.equal(result.severity, fastlyCheck.states.PASSED.severity);
 	});
 	it('returns ok=false if expiration date is not valid & logs warning', async () => {
 		// Arrange
@@ -168,14 +168,13 @@ describe('Fastly Key Expiration Check', () => {
 		// Act
 		const result = fastlyCheck.getStatus();
 		// Assert
-		expect(result.ok).to.be.false;
-		expect(result.checkOutput).to.be.equal(
+		assert.equal(result.ok, false);
+		assert.equal(
+			result.checkOutput,
 			fastlyCheck.states.FAILED_DATE.checkOutput
 		);
-		expect(result.severity).to.be.equal(
-			fastlyCheck.states.FAILED_DATE.severity
-		);
-		expect(logger.warn.args).to.be.deep.equal([
+		assert.equal(result.severity, fastlyCheck.states.FAILED_DATE.severity);
+		assert.deepEqual(logger.warn.args, [
 			['Invalid Fastly Key expiration date aaaa']
 		]);
 	});

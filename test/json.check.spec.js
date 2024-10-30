@@ -1,6 +1,6 @@
 'use strict';
 
-const expect = require('chai').expect;
+const assert = require('node:assert/strict');
 const sinon = require('sinon');
 const config = require('./fixtures/config/jsonCheckFixture').checks[0];
 const proxyquire = require('proxyquire').noCallThru().noPreserveCache();
@@ -43,7 +43,7 @@ describe('JSON Checker', function () {
 		check.start();
 		setTimeout(function () {
 			sinon.assert.calledWith(mockFetch, config.url, config.fetchOptions);
-			expect(check.getStatus().ok).to.be.true;
+			assert.equal(check.getStatus().ok, true);
 			done();
 		});
 	});
@@ -53,7 +53,7 @@ describe('JSON Checker', function () {
 		check.start();
 		setTimeout(function () {
 			sinon.assert.calledWith(mockFetch, config.url, config.fetchOptions);
-			expect(check.getStatus().ok).to.be.false;
+			assert.equal(check.getStatus().ok, false);
 			done();
 		});
 	});

@@ -1,6 +1,6 @@
 'use strict';
 
-const expect = require('chai').expect;
+const assert = require('node:assert/strict');
 const configFixture = require('./fixtures/config/cloudWatchAlarmFixture')
 	.checks[0];
 const failedFixture = require('./fixtures/cloudWatchAlarmFailedResponse');
@@ -43,21 +43,20 @@ describe('CloudWatch Alarm Check', () => {
 		check.start();
 		await waitFor(10);
 		//
-		expect(cloudWatchSdkMock.CloudWatchClient.calledOnce).to.be.true;
-		expect(cloudWatchSdkMock.CloudWatchClient.calledWithNew()).to.be.true;
-		expect(cloudWatchSdkMock.DescribeAlarmsCommand.calledOnce).to.be.true;
-		expect(cloudWatchSdkMock.DescribeAlarmsCommand.calledWithNew()).to.be.true;
-		expect(cloudWatchClientMock.send.calledOnce).to.be.true;
+		assert.equal(cloudWatchSdkMock.CloudWatchClient.calledOnce, true);
+		assert.equal(cloudWatchSdkMock.CloudWatchClient.calledWithNew(), true);
+		assert.equal(cloudWatchSdkMock.DescribeAlarmsCommand.calledOnce, true);
+		assert.equal(cloudWatchSdkMock.DescribeAlarmsCommand.calledWithNew(), true);
+		assert.equal(cloudWatchClientMock.send.calledOnce, true);
 
 		const sendArgs = cloudWatchClientMock.send.lastCall.args[0];
-		expect(sendArgs).to.deep.equal(cloudWatchCommandMock);
+		assert.deepEqual(sendArgs, cloudWatchCommandMock);
 
 		const commandArgs =
 			cloudWatchSdkMock.DescribeAlarmsCommand.lastCall.args[0];
-		expect(commandArgs).to.have.property('AlarmNames');
-		expect(commandArgs.AlarmNames).to.be.an('Array');
-		expect(commandArgs.AlarmNames[0]).to.be.an('String');
-		expect(commandArgs.AlarmNames[0]).to.equal('test');
+		assert.ok(commandArgs.AlarmNames);
+		assert.ok(Array.isArray(commandArgs.AlarmNames));
+		assert.equal(commandArgs.AlarmNames[0], 'test');
 	});
 
 	it('Should pass if the current state of the given alarm is OK', async () => {
@@ -65,7 +64,7 @@ describe('CloudWatch Alarm Check', () => {
 		check = new Check(configFixture);
 		check.start();
 		await waitFor(10);
-		expect(check.getStatus().ok).to.be.true;
+		assert.equal(check.getStatus().ok, true);
 	});
 
 	it('Should fail if the current state of the given alarm is ALARM', async () => {
@@ -73,7 +72,7 @@ describe('CloudWatch Alarm Check', () => {
 		check = new Check(configFixture);
 		check.start();
 		await waitFor(10);
-		expect(check.getStatus().ok).to.be.false;
+		assert.equal(check.getStatus().ok, false);
 	});
 
 	it('Should fail if there is no data', async () => {
@@ -81,6 +80,6 @@ describe('CloudWatch Alarm Check', () => {
 		check = new Check(configFixture);
 		check.start();
 		await waitFor(10);
-		expect(check.getStatus().ok).to.be.false;
+		assert.equal(check.getStatus().ok, false);
 	});
 });
