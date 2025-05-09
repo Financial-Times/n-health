@@ -10,7 +10,7 @@
     "format": "dotcom-tool-kit format:local"
   },
   "engines": {
-    "node": "20.x || 22.x"
+    "node": "20.x || 22.x || 24.x"
   },
   "repository": {
     "type": "git",
