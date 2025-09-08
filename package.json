@@ -20,7 +20,7 @@
   "bugs": "https://github.com/Financial-Times/n-health/issues",
   "homepage": "https://github.com/Financial-Times/n-health#readme",
   "devDependencies": {
-    "@babel/eslint-parser": "^7.28.0",
+    "@babel/eslint-parser": "^7.28.4",
     "@dotcom-reliability-kit/eslint-config": "^4.1.0",
     "@dotcom-tool-kit/component": "^5.1.19",
     "@dotcom-tool-kit/eslint": "^4.3.5",
