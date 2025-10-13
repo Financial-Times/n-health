@@ -22,7 +22,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.28.4",
     "@dotcom-reliability-kit/eslint-config": "^4.1.0",
-    "@dotcom-tool-kit/component": "^5.1.21",
+    "@dotcom-tool-kit/component": "^5.1.22",
     "@dotcom-tool-kit/eslint": "^4.3.6",
     "@dotcom-tool-kit/husky-npm": "^5.1.14",
     "@dotcom-tool-kit/lint-staged-npm": "^4.2.6",
