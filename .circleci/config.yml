@@ -22,11 +22,10 @@ jobs:
           path: .
 workflows:
   tool-kit:
-    when:
-      not:
-        equal:
-          - scheduled_pipeline
-          - << pipeline.trigger_source >>
+    when: |
+      pipeline.trigger_source != "scheduled_pipeline" and
+      (pipeline.event.name == "push" or (pipeline.event.name == "pull_request"
+      and pipeline.event.action != "closed"))
     jobs:
       - checkout:
           filters:
@@ -122,3 +121,22 @@ workflows:
                 - node20_18
           requires:
             - tool-kit/build-<< matrix.executor >>
+  pr-close:
+    jobs:
+      - checkout:
+          requires: []
+      - tool-kit/setup:
+          name: tool-kit/setup-<< matrix.executor >>
+          matrix:
+            parameters:
+              executor:
+                - node
+                - node22_13
+                - node20_18
+          requires:
+            - checkout
+    when: >
+      pipeline.trigger_source != "scheduled_pipeline" and
+
+      (pipeline.event.name == "pull_request" and pipeline.event.action ==
+      "closed")
